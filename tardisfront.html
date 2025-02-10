@@ -1,70 +1,46 @@
-<div id="stats-container" style="margin: 20px 0; padding: 10px; border: 1px solid #ccc;">
-  <h2>Team TARDIS 5356 Quick Stats</h2>
-  <form id="stats-form">
-    <label for="season">Season (year):</label>
-    <select id="season" name="season" style="margin: 0 10px 0 5px;">
-      <option value="">-- Select Season --</option>
-      <option value="2024">2024 Into The Deep</option>
-      <option value="2023">2023 Centerstage</option>
-      <option value="2022">2022 Power Play</option>
-      <option value="2021">2021 Freight Frenzy</option>
-      <option value="2020">2020 Ultimate Goal</option>
-      <option value="2019">2019 Skystone</option>
-    </select>
+<html>
+  <head>
+    <meta charset="UTF-8">
+    <title>Team TARDIS 5356 Quick Stats</title>
+  </head>
+  <body>
+    <div id="stats-container" style="margin: 20px 0; padding: 10px; border: 1px solid #ccc;">
+      <h2>Team TARDIS 5356 Quick Stats</h2>
+      <form id="stats-form">
+        <button type="submit">Get Quick Stats</button>
+      </form>
+      <div id="stats-result" style="margin-top: 15px;"></div>
+    </div>
     
-    <label for="region">Region:</label>
-    <select id="region" name="region" style="margin: 0 10px 0 5px;">
-      <option value="">-- Select Region --</option>
-      <option value="US">US</option>
-      <option value="International">International</option>
-      <option value="California - Los Angeles">California - Los Angeles</option>
-      <option value="LAUSD">LAUSD</option>
-      <option value="Northern">Northern</option>
-      <option value="San Diego">San Diego</option>
-    </select>
-    
-    <button type="submit">Get Stats</button>
-  </form>
-  <div id="stats-result" style="margin-top: 15px;"></div>
-</div>
-
-<script>
-  (function() {
-    document.getElementById("stats-form").addEventListener("submit", function(event) {
-      event.preventDefault();
-      
-      // Retrieve form values from the dropdown menus
-      var season = document.getElementById("season").value;
-      var region = document.getElementById("region").value;
-      
-      // Construct the API URL for team 5356 quick stats, using valid query parameters
-      var apiUrl = "https://api.ftcscout.org/rest/v1/teams/5356/quick-stats";
-      var queryParams = [];
-      if (season) queryParams.push("season=" + encodeURIComponent(season));
-      if (region) queryParams.push("region=" + encodeURIComponent(region));
-      if (queryParams.length > 0) {
-        apiUrl += "?" + queryParams.join("&");
-      }
-      
-      // Display a loading message
-      var resultDiv = document.getElementById("stats-result");
-      resultDiv.innerHTML = "Loading...";
-      
-      // Fetch data from the FTCScout REST API without additional headers
-      fetch(apiUrl)
-        .then(function(response) {
-          if (!response.ok) {
-            throw new Error("API request failed with status " + response.status);
-          }
-          return response.json();
-        })
-        .then(function(data) {
-          // Display the received data in a formatted manner
-          resultDiv.innerHTML = "<pre>" + JSON.stringify(data, null, 2) + "</pre>";
-        })
-        .catch(function(error) {
-          resultDiv.innerHTML = "Error: " + error.message;
+    <script>
+      (function() {
+        document.getElementById("stats-form").addEventListener("submit", function(event) {
+          event.preventDefault();
+          
+          // Construct the API URL for team 5356 quick stats.
+          var apiUrl = "https://api.ftcscout.org/rest/v1/teams/5356/quick-stats";
+          
+          // Display a loading message.
+          var resultDiv = document.getElementById("stats-result");
+          resultDiv.innerHTML = "Loading...";
+          
+          // Fetch data from the FTCScout REST API.
+          fetch(apiUrl)
+            .then(function(response) {
+              if (!response.ok) {
+                throw new Error("API request failed with status " + response.status);
+              }
+              return response.json();
+            })
+            .then(function(data) {
+              // Display the received data in a formatted manner.
+              resultDiv.innerHTML = "<pre>" + JSON.stringify(data, null, 2) + "</pre>";
+            })
+            .catch(function(error) {
+              resultDiv.innerHTML = "Error: " + error.message;
+            });
         });
-    });
-  })();
-</script>
+      })();
+    </script>
+  </body>
+</html>
