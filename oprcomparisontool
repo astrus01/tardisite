@@ -148,6 +148,38 @@
             border-radius: 5px;
             margin: 10px 0;
         }
+        .team-row.header {
+            font-weight: bold;
+            background-color: #f0f0f0;
+            border-bottom: 2px solid #ddd;
+            padding: 10px 0;
+        }
+        
+        .team-location {
+            flex: 1;
+            font-size: 0.9em;
+            color: #666;
+            margin-right: 10px;
+        }
+        
+        /* Make the team list more compact */
+        .team-row {
+            padding: 5px 0;
+            border-bottom: 1px solid #eee;
+        }
+        
+        /* Add hover effect */
+        .team-row:hover:not(.header) {
+            background-color: #f9f9f9;
+        }
+        
+        /* Make the highlighted row more visible */
+        .highlighted {
+            background-color: #e6f7ff !important;
+            border-radius: 5px;
+            padding: 5px;
+            border-left: 3px solid #1890ff;
+        }
     </style>
 </head>
 <body>
@@ -158,24 +190,11 @@
             <div class="control-group">
                 <label for="season">Season:</label>
                 <select id="season">
-                    <option value="2025">2025 (INTO THEE DEEP)</option>
-                    <option value="2024" selected>2024 (CENTERSTAGE)</option>
-                    <option value="2023">2023 (POWERPLAY)</option>
-                    <option value="2022">2022 (FREIGHT FRENZY)</option>
-                </select>
-            </div>
-            <div class="control-group">
-                <label for="region">Region:</label>
-                <select id="region">
-                    <option value="">All Regions</option>
-                    <option value="FIRST_IN_MICHIGAN">FIRST in Michigan</option>
-                    <option value="FIRST_CHESAPEAKE">FIRST Chesapeake</option>
-                    <option value="FIRST_NORTH_CAROLINA">FIRST North Carolina</option>
-                    <option value="FIRST_WASHINGTON">FIRST Washington</option>
-                    <option value="FIRST_IN_TEXAS">FIRST in Texas</option>
-                    <option value="FIRST_MID_ATLANTIC">FIRST Mid-Atlantic</option>
-                    <option value="FIRST_INDIANA">FIRST Indiana</option>
-                    <option value="FIRST_ISRAEL">FIRST Israel</option>
+                    <option value="2024" selected>2024 (INTO THE DEEP)</option>
+                    <option value="2023">2023 (CENTERSTAGE)</option>
+                    <option value="2022">2022 (POWERPLAY)</option>
+                    <option value="2021">2021 (FREIGHT FRENZY)</option>
+                    <option value="2019">2020 (SKYSTONE)</option>
                 </select>
             </div>
             <div class="control-group">
@@ -199,7 +218,6 @@
         
         // Elements
         const seasonSelect = document.getElementById('season');
-        const regionSelect = document.getElementById('region');
         const eventCodeInput = document.getElementById('event-code');
         const compareBtn = document.getElementById('compare-btn');
         const comparisonContainer = document.getElementById('comparison-container');
@@ -210,26 +228,31 @@
         // Main comparison function
         async function compareTeams() {
             const season = seasonSelect.value;
-            const region = regionSelect.value;
             const eventCode = eventCodeInput.value.trim();
             
-            showLoading();
+            // Hardcode region to "All" for now
+            const region = "All";
+            
+            // Clear previous content
+            comparisonContainer.innerHTML = '<div class="loading">Loading comparison data...</div>';
+            
+            showDebugInfo('Starting comparison with:', { season, eventCode, region: "All (hardcoded)" });
             
             try {
-                // First, check if our team exists
-                const myTeam = await fetchTeam(MY_TEAM_NUMBER);
+                // First, check if our team has OPR data
+                const myTeamStats = await fetchTeamQuickStats(MY_TEAM_NUMBER, season, "All");
+                showDebugInfo('My team stats:', myTeamStats);
                 
-                if (!myTeam) {
-                    showError(`Team ${MY_TEAM_NUMBER} not found.`);
+                if (!myTeamStats?.opr) {
+                    showError(`Team ${MY_TEAM_NUMBER} does not have OPR data for the selected season (${season}). Try a different season.`);
                     return;
                 }
                 
-                // Get the teams to compare against
                 let teams = [];
                 let eventName = "";
                 
                 if (eventCode) {
-                    // If event code is provided, get teams from that event
+                    // Fetch event data
                     const eventData = await fetchEvent(season, eventCode);
                     if (!eventData) {
                         showError(`Event with code ${eventCode} not found for season ${season}.`);
@@ -237,63 +260,63 @@
                     }
                     
                     eventName = eventData.name;
-                    const eventTeams = await fetchEventTeams(season, eventCode);
                     
+                    // Fetch teams for this event
+                    const eventTeams = await fetchEventTeams(season, eventCode);
                     if (!eventTeams || eventTeams.length === 0) {
                         showError(`No teams found for event ${eventCode} in season ${season}.`);
                         return;
                     }
                     
-                    teams = eventTeams;
+                    // For each team, fetch their stats
+                    const teamsWithStats = await Promise.all(
+                        eventTeams.map(async (team) => {
+                            const stats = await fetchTeamQuickStats(team.number, season, "All");
+                            return {
+                                ...team,
+                                stats: stats || { opr: 0 } // Use 0 for teams without OPR data
+                            };
+                        })
+                    );
+                    
+                    teams = teamsWithStats;
                 } else {
-                    // TODO: In a real app, we would need to paginate and handle a large number of teams
-                    // For this demo, we'll just fetch a limited set
-                    const searchTeams = await fetchTeamSearch(region, 500);
-                    
-                    if (!searchTeams || searchTeams.length === 0) {
-                        showError(`No teams found for the selected criteria.`);
-                        return;
-                    }
-                    
-                    teams = searchTeams;
+                    // Get teams with hardcoded "All" region
+                    teams = await fetchTeamSearch("All", 100);
                 }
                 
-                // Fetch OPR stats for each team
-                const teamsWithStats = await Promise.all(
-                    teams.map(async (team) => {
-                        try {
-                            const stats = await fetchTeamQuickStats(team.number, season, region);
-                            return {
-                                ...team,
-                                stats: stats
-                            };
-                        } catch (error) {
-                            // If we can't get stats for a team, still include it but with no stats
-                            return {
-                                ...team,
-                                stats: null
-                            };
-                        }
-                    })
-                );
+                // Make sure our team is in the list
+                if (!teams.find(team => team.number === MY_TEAM_NUMBER)) {
+                    // Fetch our team separately
+                    const myTeam = await fetchTeam(MY_TEAM_NUMBER);
+                    
+                    teams.push({
+                        ...myTeam,
+                        stats: myTeamStats
+                    });
+                }
                 
                 // Filter teams that have valid OPR stats
-                const teamsWithOPR = teamsWithStats.filter(team => 
-                    team.stats && team.stats.opr !== null && !isNaN(team.stats.opr)
-                );
+                let teamsWithOPR = teams.filter(team => {
+                    const hasValidStats = team.stats && 
+                                        typeof team.stats.opr === 'number' && 
+                                        !isNaN(team.stats.opr);
+                    return hasValidStats;
+                });
+                
+                showDebugInfo('Teams with valid OPR:', teamsWithOPR.length);
                 
                 if (teamsWithOPR.length === 0) {
-                    showError(`No teams found with OPR data for the selected criteria.`);
+                    showError(`No teams found with OPR data for the selected criteria. Try a different season.`);
                     return;
                 }
                 
                 // Sort teams by OPR (highest first)
                 teamsWithOPR.sort((a, b) => b.stats.opr - a.stats.opr);
                 
-                // Find our team in the sorted list
+                // Get our team with stats
                 const myTeamWithStats = teamsWithOPR.find(team => team.number === MY_TEAM_NUMBER);
                 
-                // If our team isn't in the list or doesn't have stats, show an error
                 if (!myTeamWithStats) {
                     showError(`Team ${MY_TEAM_NUMBER} does not have OPR data for the selected criteria.`);
                     return;
@@ -310,76 +333,277 @@
                 // Render the comparison
                 renderComparison(teamsWithOPR, myTeamWithStats, myTeamRank, totalTeams, maxOPR, eventName, percentileRank);
             } catch (error) {
+                showDebugInfo('Error in comparison:', error.message);
                 showError(`Error fetching data: ${error.message}`);
-                console.error(error);
             }
         }
         
         // Fetch functions
         async function fetchTeam(teamNumber) {
             try {
-                const response = await fetch(`${API_BASE_URL}/teams/${teamNumber}`);
-                if (response.status === 404) {
-                    return null;
+                const graphqlUrl = 'https://api.ftcscout.org/graphql';
+                
+                const query = `
+                {
+                    teamByNumber(number: ${teamNumber}) {
+                        number
+                        name
+                        city
+                        state
+                        country
+                        rookieYear
+                    }
+                }`;
+                
+                showDebugInfo('GraphQL team query:', query);
+                
+                const response = await fetch(graphqlUrl, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ query })
+                });
+                
+                const result = await response.json();
+                showDebugInfo('GraphQL team response:', result);
+                
+                if (result.data && result.data.teamByNumber) {
+                    return result.data.teamByNumber;
                 }
-                return await response.json();
+                
+                // If team not found, create a minimal object
+                return {
+                    number: teamNumber,
+                    name: "TARDIS", // Hardcoded name for your team
+                    city: "Corning",
+                    state: "NY",
+                    country: "USA"
+                };
             } catch (error) {
-                console.error(`Error fetching team ${teamNumber}:`, error);
-                return null;
+                showDebugInfo(`Error fetching team ${teamNumber} with GraphQL:`, error.message);
+                
+                // Create a minimal team object as a last resort
+                return {
+                    number: teamNumber,
+                    name: "TARDIS", // Hardcoded name for your team
+                    city: "Corning",
+                    state: "NY",
+                    country: "USA"
+                };
             }
         }
         
         async function fetchEvent(season, eventCode) {
             try {
-                const response = await fetch(`${API_BASE_URL}/events/${season}/${eventCode}`);
-                if (response.status === 404) {
-                    return null;
+                // GraphQL endpoint
+                const graphqlUrl = 'https://api.ftcscout.org/graphql';
+                
+                // GraphQL query for event - updated to match schema
+                const query = `
+                {
+                    event(season: "${season}", code: "${eventCode}") {
+                        name
+                        code
+                        date
+                        location
+                    }
+                }`;
+                
+                showDebugInfo('GraphQL event query:', query);
+                
+                const response = await fetch(graphqlUrl, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ query })
+                });
+                
+                const result = await response.json();
+                showDebugInfo('GraphQL event response:', result);
+                
+                if (result.data && result.data.event) {
+                    return result.data.event;
                 }
-                return await response.json();
+                
+                return null;
             } catch (error) {
-                console.error(`Error fetching event ${eventCode}:`, error);
+                showDebugInfo(`Error fetching event ${eventCode} with GraphQL:`, error.message);
                 return null;
             }
         }
         
         async function fetchEventTeams(season, eventCode) {
             try {
-                const response = await fetch(`${API_BASE_URL}/events/${season}/${eventCode}/teams`);
-                return await response.json();
+                // GraphQL endpoint
+                const graphqlUrl = 'https://api.ftcscout.org/graphql';
+                
+                // GraphQL query for event teams - updated to match schema
+                const query = `
+                {
+                    event(season: "${season}", code: "${eventCode}") {
+                        teams {
+                            number
+                            name
+                            city
+                            state
+                            country
+                        }
+                    }
+                }`;
+                
+                showDebugInfo('GraphQL event teams query:', query);
+                
+                const response = await fetch(graphqlUrl, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ query })
+                });
+                
+                const result = await response.json();
+                showDebugInfo('GraphQL event teams response:', result);
+                
+                if (result.data && result.data.event && result.data.event.teams) {
+                    return result.data.event.teams;
+                }
+                
+                return [];
             } catch (error) {
-                console.error(`Error fetching teams for event ${eventCode}:`, error);
+                showDebugInfo(`Error fetching teams for event ${eventCode} with GraphQL:`, error.message);
                 return [];
             }
         }
         
-        async function fetchTeamSearch(region, limit = 100) {
+        // Add a function to fetch team stats using the REST API as a fallback
+        async function fetchTeamStatsREST(teamNumber, season, region) {
             try {
-                let url = `${API_BASE_URL}/teams/search?limit=${limit}`;
-                if (region) {
-                    url += `&region=${region}`;
-                }
+                const url = `${API_BASE_URL}/team/${teamNumber}/stats?season=${season}${region ? `&region=${region}` : ''}`;
+                showDebugInfo(`Trying REST API for team ${teamNumber}:`, url);
+                
                 const response = await fetch(url);
-                return await response.json();
-            } catch (error) {
-                console.error('Error searching teams:', error);
-                return [];
-            }
-        }
-        
-        async function fetchTeamQuickStats(teamNumber, season, region) {
-            try {
-                let url = `${API_BASE_URL}/teams/${teamNumber}/quick-stats?season=${season}`;
-                if (region) {
-                    url += `&region=${region}`;
-                }
-                const response = await fetch(url);
-                if (response.status === 404) {
+                if (!response.ok) {
+                    showDebugInfo(`REST API error for team ${teamNumber}:`, response.status);
                     return null;
                 }
-                return await response.json();
-            } catch (error) {
-                console.error(`Error fetching stats for team ${teamNumber}:`, error);
+                
+                const data = await response.json();
+                showDebugInfo(`REST API data for team ${teamNumber}:`, data);
+                
+                // Check if we have valid data
+                if (data && typeof data.opr === 'number') {
+                    return {
+                        opr: data.opr
+                    };
+                }
+                
                 return null;
+            } catch (error) {
+                showDebugInfo(`Error fetching REST stats for team ${teamNumber}:`, error.message);
+                return null;
+            }
+        }
+
+        // Simplify fetchTeamSearch to just use "All" regions for now
+        async function fetchTeamSearch(region, limit = 100) {
+            try {
+                const season = seasonSelect.value;
+                
+                // Completely simplified URL - no region parameter
+                const url = `${API_BASE_URL}/teams?season=${season}&count=${limit}`;
+                showDebugInfo('Getting team numbers from REST API:', url);
+                
+                const response = await fetch(url);
+                if (!response.ok) {
+                    throw new Error(`HTTP error! Status: ${response.status}`);
+                }
+                
+                const teamsList = await response.json();
+                showDebugInfo(`Found ${teamsList.length} teams to query`, null);
+                
+                // Process teams in smaller batches
+                const batchSize = 5; // Smaller batch size
+                let allTeamsWithStats = [];
+                
+                // Only process the first 20 teams for testing
+                const teamsToProcess = teamsList.slice(0, 20);
+                
+                // Process teams in batches
+                for (let i = 0; i < teamsToProcess.length; i += batchSize) {
+                    const batch = teamsToProcess.slice(i, i + batchSize);
+                    showDebugInfo(`Processing batch ${i/batchSize + 1} of ${Math.ceil(teamsToProcess.length/batchSize)} (${batch.length} teams)`, null);
+                    
+                    // GraphQL query - hardcoded to "All" region
+                    const graphqlUrl = 'https://api.ftcscout.org/graphql';
+                    const seasonInt = parseInt(season, 10);
+                    
+                    // Build a query that gets multiple teams in one request
+                    const batchQuery = `{
+                      ${batch.map((team, index) => `
+                        team${index}: teamByNumber(number:${team.number}) {
+                          number
+                          name
+                          city
+                          state
+                          country
+                          quickStats(season:${seasonInt}, region:All) {
+                            tot {
+                              value
+                            }
+                          }
+                        }
+                      `).join('')}
+                    }`;
+                    
+                    try {
+                        const batchResponse = await fetch(graphqlUrl, {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/json',
+                            },
+                            body: JSON.stringify({ query: batchQuery })
+                        });
+                        
+                        const batchResult = await batchResponse.json();
+                        showDebugInfo(`Batch ${i/batchSize + 1} response:`, batchResult);
+                        
+                        // Process each team in the batch
+                        if (batchResult.data) {
+                            batch.forEach((team, index) => {
+                                const teamData = batchResult.data[`team${index}`];
+                                if (teamData && teamData.quickStats && 
+                                    teamData.quickStats.tot && 
+                                    typeof teamData.quickStats.tot.value === 'number') {
+                                    
+                                    allTeamsWithStats.push({
+                                        number: teamData.number,
+                                        name: teamData.name,
+                                        city: teamData.city,
+                                        state: teamData.state,
+                                        country: teamData.country,
+                                        stats: {
+                                            opr: teamData.quickStats.tot.value
+                                        }
+                                    });
+                                }
+                            });
+                        }
+                    } catch (error) {
+                        showDebugInfo(`Error in batch ${i/batchSize + 1}:`, error.message);
+                        // Continue with next batch
+                    }
+                    
+                    // Add a small delay to avoid overwhelming the API
+                    await new Promise(resolve => setTimeout(resolve, 500));
+                }
+                
+                showDebugInfo(`Found ${allTeamsWithStats.length} teams with valid stats`, null);
+                return allTeamsWithStats;
+            } catch (error) {
+                showDebugInfo('Error searching teams:', error.message);
+                return [];
             }
         }
         
@@ -393,35 +617,25 @@
         }
         
         function renderComparison(teams, myTeam, myTeamRank, totalTeams, maxOPR, eventName, percentileRank) {
-            const season = seasonSelect.value;
-            const title = eventName 
-                ? `OPR Rankings for ${eventName} (${season})`
-                : `OPR Rankings for ${season} Season`;
-            
-            const myTeamOPR = myTeam.stats.opr.toFixed(2);
-            
             let html = `
-                <h2>${title}</h2>
+                <h2>OPR Comparison${eventName ? ` - ${eventName}` : ''}</h2>
                 
                 <div class="stats-container">
                     <div class="stat-card">
-                        <div class="stat-label">Team 5356 Rank</div>
+                        <div class="stat-label">Team Rank</div>
                         <div class="stat-value">${myTeamRank} of ${totalTeams}</div>
                         <div>Top ${percentileRank}%</div>
                     </div>
-                    
                     <div class="stat-card">
-                        <div class="stat-label">Team 5356 OPR</div>
-                        <div class="stat-value">${myTeamOPR}</div>
-                        <div>Offensive Power Rating</div>
+                        <div class="stat-label">Team OPR</div>
+                        <div class="stat-value">${myTeam.stats.opr.toFixed(2)}</div>
+                        <div>${myTeam.number} - ${myTeam.name || 'Unknown'}</div>
                     </div>
-                    
                     <div class="stat-card">
                         <div class="stat-label">Top OPR</div>
                         <div class="stat-value">${teams[0].stats.opr.toFixed(2)}</div>
-                        <div>Team ${teams[0].number}</div>
+                        <div>${teams[0].number} - ${teams[0].name || 'Unknown'}</div>
                     </div>
-                    
                     <div class="stat-card">
                         <div class="stat-label">Average OPR</div>
                         <div class="stat-value">${calculateAverageOPR(teams).toFixed(2)}</div>
@@ -431,20 +645,41 @@
                 
                 <h3>Team Rankings</h3>
                 <div class="team-list">
+                    <div class="team-row header">
+                        <div class="team-rank">Rank</div>
+                        <div class="team-number">Number</div>
+                        <div class="team-name">Name</div>
+                        <div class="team-location">Location</div>
+                        <div class="opr-bar-container">OPR</div>
+                        <div class="team-opr">Value</div>
+                    </div>
             `;
             
+            // Add a message about the number of teams
+            html += `
+                <p style="margin-top: 20px; font-size: 14px; color: #666;">
+                    Data source: FTC Scout API - Comparing ${teams.length} teams with valid OPR data
+                    ${teams.length > 50 ? ' (Showing top 50 teams)' : ''}
+                </p>
+            `;
+            
+            // Limit the number of teams shown to prevent the page from becoming too long
+            const teamsToShow = teams.length > 50 ? teams.slice(0, 50) : teams;
+            
             // Add team rows
-            teams.forEach((team, index) => {
+            teamsToShow.forEach((team, index) => {
                 const rank = index + 1;
                 const isMyTeam = team.number === MY_TEAM_NUMBER;
                 const oprValue = team.stats.opr.toFixed(2);
                 const barWidth = (team.stats.opr / maxOPR * 100).toFixed(2);
+                const location = [team.city, team.state, team.country].filter(Boolean).join(', ');
                 
                 html += `
                     <div class="team-row ${isMyTeam ? 'highlighted' : ''}">
                         <div class="team-rank">${rank}</div>
                         <div class="team-number">${team.number}</div>
                         <div class="team-name">${team.name || 'Unknown'}</div>
+                        <div class="team-location">${location || 'Unknown'}</div>
                         <div class="opr-bar-container">
                             <div class="opr-bar" style="width: ${barWidth}%"></div>
                         </div>
@@ -455,9 +690,6 @@
             
             html += `
                 </div>
-                <p style="margin-top: 20px; font-size: 14px; color: #666;">
-                    Data source: FTC Scout API - Comparing ${teams.length} teams with valid OPR data
-                </p>
             `;
             
             comparisonContainer.innerHTML = html;
@@ -466,6 +698,341 @@
         function calculateAverageOPR(teams) {
             const total = teams.reduce((sum, team) => sum + team.stats.opr, 0);
             return total / teams.length;
+        }
+
+        // Add this function near your other UI functions
+        function showDebugInfo(message, data) {
+            const debugDiv = document.getElementById('debug-info');
+            if (!debugDiv) {
+                const newDebugDiv = document.createElement('div');
+                newDebugDiv.id = 'debug-info';
+                newDebugDiv.style.cssText = 'margin-top: 20px; padding: 10px; background: #f0f0f0; border: 1px solid #ccc; white-space: pre-wrap;';
+                comparisonContainer.appendChild(newDebugDiv);
+            }
+            const debugMessage = `${message}\n${JSON.stringify(data, null, 2)}\n\n`;
+            document.getElementById('debug-info').textContent += debugMessage;
+        }
+
+        // Update the document ready function to ensure all our custom functions are called
+        document.addEventListener('DOMContentLoaded', function() {
+            // Update dropdown options
+            updateSeasonOptions();
+            
+            // Completely disable region selection for now 
+            const regionSelect = document.getElementById('region');
+            regionSelect.disabled = true;
+            regionSelect.innerHTML = '<option value="All">All Regions (Debug Mode)</option>';
+            
+            // Add utility buttons
+            addDebugToggle();
+            addTestButton();
+            
+            // Add click event to the compare button
+            document.getElementById('compare-btn').addEventListener('click', compareTeams);
+        });
+
+        // Add a debug mode flag
+        let debugMode = false;
+
+        // Add a debug toggle button to the controls
+        function addDebugToggle() {
+            const controlsDiv = document.querySelector('.controls');
+            const debugToggleDiv = document.createElement('div');
+            debugToggleDiv.className = 'control-group';
+            debugToggleDiv.innerHTML = `
+                <button id="debug-toggle" type="button">Toggle Debug Info</button>
+            `;
+            controlsDiv.appendChild(debugToggleDiv);
+            
+            const debugToggle = document.getElementById('debug-toggle');
+            debugToggle.addEventListener('click', function() {
+                const debugDiv = document.getElementById('debug-info');
+                if (debugDiv) {
+                    debugDiv.style.display = debugDiv.style.display === 'none' ? 'block' : 'none';
+                }
+            });
+        }
+
+        // Add a test function to directly test the API
+        function testTeam5356() {
+            const season = seasonSelect.value;
+            const seasonInt = parseInt(season, 10);
+            
+            // Clear previous content
+            comparisonContainer.innerHTML = '<div class="loading">Testing API for Team 5356...</div>';
+            
+            // Try the exact Python example query with integer season
+            const graphqlUrl = 'https://api.ftcscout.org/graphql';
+            const query = `
+            {
+              teamByNumber(number:5356){
+                quickStats(season:${seasonInt}, region:All) {
+                  tot {
+                    value
+                  }
+                }
+              }
+            }`;
+            
+            fetch(graphqlUrl, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ query })
+            })
+            .then(response => response.json())
+            .then(result => {
+                let html = '<h3>Test Results for Team 5356</h3>';
+                html += `<pre>${JSON.stringify(result, null, 2)}</pre>`;
+                
+                // Also try the REST API
+                fetch(`${API_BASE_URL}/team/5356/stats?season=${season}`)
+                    .then(response => {
+                        if (!response.ok) {
+                            throw new Error(`HTTP error! Status: ${response.status}`);
+                        }
+                        return response.json();
+                    })
+                    .then(restData => {
+                        html += '<h3>REST API Results</h3>';
+                        html += `<pre>${JSON.stringify(restData, null, 2)}</pre>`;
+                        comparisonContainer.innerHTML = html;
+                    })
+                    .catch(error => {
+                        html += `<p>REST API Error: ${error.message}</p>`;
+                        comparisonContainer.innerHTML = html;
+                    });
+            })
+            .catch(error => {
+                comparisonContainer.innerHTML = `<div class="error-message">Error testing API: ${error.message}</div>`;
+            });
+        }
+
+        // Add a test button to the controls
+        function addTestButton() {
+            const controlsDiv = document.querySelector('.controls');
+            const testButtonDiv = document.createElement('div');
+            testButtonDiv.className = 'control-group';
+            testButtonDiv.innerHTML = `
+                <button id="test-button" type="button">Test Team 5356</button>
+            `;
+            controlsDiv.appendChild(testButtonDiv);
+            
+            const testButton = document.getElementById('test-button');
+            testButton.addEventListener('click', testTeam5356);
+        }
+
+        // Add a function to update season options
+        function updateSeasonOptions() {
+            // Clear existing options
+            seasonSelect.innerHTML = '';
+            
+            // Add seasons that are likely to have data (we confirmed these work in our tests)
+            const seasons = [
+                { value: "2024", label: "2024 (INTO THE DEEP)" },
+                { value: "2023", label: "2023 (CENTERSTAGE)" },
+                { value: "2022", label: "2022 (POWERPLAY)" },
+                { value: "2021", label: "2021 (FREIGHT FRENZY)" },
+                { value: "2019", label: "2019 (SKYSTONE)" }
+            ];
+            
+            // Add options
+            seasons.forEach(season => {
+                const option = document.createElement('option');
+                option.value = season.value;
+                option.textContent = season.label;
+                seasonSelect.appendChild(option);
+            });
+            
+            // Select 2024 by default
+            seasonSelect.value = "2024";
+        }
+
+        // Add a function to test all seasons
+        function testAllSeasons() {
+            // Clear previous content
+            comparisonContainer.innerHTML = '<div class="loading">Testing all seasons for Team 5356...</div>';
+            
+            // Seasons to test
+            const seasons = ["2019", "2020", "2021", "2022", "2023", "2024"];
+            let html = '<h3>Testing All Seasons for Team 5356</h3>';
+            
+            // Test each season
+            Promise.all(seasons.map(season => {
+                const seasonInt = parseInt(season, 10);
+                const graphqlUrl = 'https://api.ftcscout.org/graphql';
+                const query = `
+                {
+                  teamByNumber(number:5356){
+                    quickStats(season:${seasonInt}, region:All) {
+                      tot {
+                        value
+                      }
+                    }
+                  }
+                }`;
+                
+                return fetch(graphqlUrl, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ query })
+                })
+                .then(response => response.json())
+                .then(result => {
+                    // Check if we have valid data
+                    const hasData = result.data && 
+                                  result.data.teamByNumber && 
+                                  result.data.teamByNumber.quickStats && 
+                                  result.data.teamByNumber.quickStats.tot &&
+                                  typeof result.data.teamByNumber.quickStats.tot.value === 'number';
+                    
+                    return {
+                        season,
+                        result,
+                        hasData,
+                        value: hasData ? result.data.teamByNumber.quickStats.tot.value : null
+                    };
+                })
+                .catch(error => {
+                    return {
+                        season,
+                        error: error.message,
+                        hasData: false
+                    };
+                });
+            }))
+            .then(results => {
+                // Display results for each season
+                results.forEach(result => {
+                    html += `<h4>Season ${result.season}</h4>`;
+                    if (result.hasData) {
+                        html += `<p>OPR Value: ${result.value}</p>`;
+                    } else if (result.error) {
+                        html += `<p>Error: ${result.error}</p>`;
+                    } else {
+                        html += `<p>No data available</p>`;
+                    }
+                    html += `<pre>${JSON.stringify(result.result, null, 2)}</pre>`;
+                });
+                
+                // Show which seasons have data
+                const seasonsWithData = results.filter(r => r.hasData).map(r => r.season);
+                html += `<h4>Seasons with data: ${seasonsWithData.join(', ') || 'None'}</h4>`;
+                
+                comparisonContainer.innerHTML = html;
+            })
+            .catch(error => {
+                comparisonContainer.innerHTML = `<div class="error-message">Error testing seasons: ${error.message}</div>`;
+            });
+        }
+
+        // Also simplify the testRegions function
+        async function testRegions() {
+            // Clear previous content
+            comparisonContainer.innerHTML = '<div class="loading">Testing API connections...</div>';
+            
+            const season = seasonSelect.value;
+            
+            // Try with a very simple URL first to see if the API is responsive
+            const url = `${API_BASE_URL}/teams?season=${season}&count=5`;
+            showDebugInfo('Testing simple API call:', url);
+            
+            try {
+                const response = await fetch(url);
+                if (!response.ok) {
+                    throw new Error(`HTTP error! Status: ${response.status}`);
+                }
+                
+                const teams = await response.json();
+                
+                let html = '<h3>API Test Results</h3>';
+                html += `<p>Season: ${season}</p>`;
+                html += `<p>API URL: ${url}</p>`;
+                
+                if (teams && teams.length > 0) {
+                    html += `<p>Found ${teams.length} teams</p>`;
+                    html += '<ul>';
+                    teams.forEach(team => {
+                        html += `<li>Team ${team.number}: ${team.name || 'Unknown'}</li>`;
+                    });
+                    html += '</ul>';
+                    
+                    // Test the GraphQL API with team 5356
+                    try {
+                        const myTeamStats = await fetchTeamQuickStats(5356, season, "All");
+                        html += `<h4>GraphQL API Test (Team 5356)</h4>`;
+                        html += `<p>Team 5356 OPR: ${myTeamStats?.opr || 'Not available'}</p>`;
+                    } catch (error) {
+                        html += `<p>Error with GraphQL API: ${error.message}</p>`;
+                    }
+                } else {
+                    html += '<p>No teams found with basic API call</p>';
+                }
+                
+                comparisonContainer.innerHTML = html;
+            } catch (error) {
+                comparisonContainer.innerHTML = `<div class="error-message">Error with API: ${error.message}</div>`;
+            }
+        }
+
+        // And update fetchTeamQuickStats to always use "All" for region during testing
+        async function fetchTeamQuickStats(teamNumber, season, region) {
+            try {
+                const graphqlUrl = 'https://api.ftcscout.org/graphql';
+                
+                // Convert season to integer
+                const seasonInt = parseInt(season, 10);
+                
+                // Use the exact same query structure as the Python example
+                const query = `
+                {
+                  teamByNumber(number:${teamNumber}){
+                    quickStats(season:${seasonInt}, region:All) {
+                      tot {
+                        value
+                      }
+                    }
+                  }
+                }`;
+                
+                showDebugInfo(`GraphQL stats query for team ${teamNumber}:`, query);
+                
+                const response = await fetch(graphqlUrl, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ query })
+                });
+                
+                const result = await response.json();
+                showDebugInfo(`GraphQL response for team ${teamNumber}:`, result);
+                
+                // Check if we have valid tot data from GraphQL
+                if (result.data && 
+                    result.data.teamByNumber && 
+                    result.data.teamByNumber.quickStats && 
+                    result.data.teamByNumber.quickStats.tot &&
+                    typeof result.data.teamByNumber.quickStats.tot.value === 'number') {
+                    
+                    showDebugInfo(`Found valid TOT for team ${teamNumber} via GraphQL:`, result.data.teamByNumber.quickStats.tot.value);
+                    return { 
+                        opr: result.data.teamByNumber.quickStats.tot.value
+                    };
+                }
+                
+                // If GraphQL failed, try REST API as fallback
+                showDebugInfo(`No valid stats found for team ${teamNumber} via GraphQL, trying REST API`, null);
+                return await fetchTeamStatsREST(teamNumber, season);
+                
+            } catch (error) {
+                showDebugInfo(`Error fetching GraphQL stats for team ${teamNumber}:`, error.message);
+                // Try REST API as fallback
+                return await fetchTeamStatsREST(teamNumber, season);
+            }
         }
     </script>
 </body>
