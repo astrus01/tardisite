@@ -1,0 +1,1530 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Team OPR Comparison</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        .container {
+            background-color: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+        h1 {
+            color: #333;
+            text-align: center;
+        }
+        .controls {
+            display: flex;
+            gap: 20px;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+            align-items: flex-end;
+        }
+        .control-group {
+            flex: 1;
+            min-width: 200px;
+        }
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: bold;
+        }
+        select, input, button {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 16px;
+        }
+        button {
+            background-color: #a200ff;
+            color: white;
+            cursor: pointer;
+            border: none;
+            font-weight: bold;
+        }
+        button:hover {
+            background-color: #6c00ab;
+        }
+        #comparison-container {
+            margin-top: 30px;
+        }
+        .loading {
+            text-align: center;
+            padding: 20px;
+            font-style: italic;
+            color: #666;
+        }
+        .chart-container {
+            position: relative;
+            height: 400px;
+            margin: 20px 0;
+        }
+        .team-row {
+            display: flex;
+            margin-bottom: 10px;
+            align-items: center;
+        }
+        .team-rank {
+            width: 40px;
+            font-weight: bold;
+            text-align: center;
+        }
+        .team-number {
+            width: 80px;
+            font-weight: bold;
+        }
+        .team-name {
+            flex: 1;
+        }
+        .team-opr {
+            width: 80px;
+            text-align: right;
+            font-weight: bold;
+        }
+        .opr-bar-container {
+            flex: 2;
+            background-color: #eee;
+            height: 20px;
+            margin: 0 20px;
+            border-radius: 10px;
+            overflow: hidden;
+        }
+        .opr-bar {
+            height: 100%;
+            background-color: #a200ff;
+            border-radius: 10px;
+        }
+        .highlighted {
+            background-color: #f0f7ff;
+            border-radius: 5px;
+            padding: 5px;
+        }
+        .team-list {
+            max-height: 600px;
+            overflow-y: auto;
+            padding: 10px;
+            border: 1px solid #eee;
+            border-radius: 5px;
+        }
+        .stats-container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 20px;
+            margin-bottom: 20px;
+        }
+        .stat-card {
+            flex: 1;
+            min-width: 200px;
+            background-color: #f9f9f9;
+            padding: 15px;
+            border-radius: 8px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+            text-align: center;
+        }
+        .stat-value {
+            font-size: 24px;
+            font-weight: bold;
+            color: #0066cc;
+            margin: 10px 0;
+        }
+        .stat-label {
+            font-size: 14px;
+            color: #666;
+        }
+        .error-message {
+            color: #d9534f;
+            padding: 10px;
+            background-color: #ffeeee;
+            border-radius: 5px;
+            margin: 10px 0;
+        }
+        .team-row.header {
+            font-weight: bold;
+            background-color: #f0f0f0;
+            border-bottom: 2px solid #ddd;
+            padding: 10px 0;
+        }
+        
+        .team-location {
+            flex: 1;
+            font-size: 0.9em;
+            color: #666;
+            margin-right: 10px;
+        }
+        
+        /* Make the team list more compact */
+        .team-row {
+            padding: 5px 0;
+            border-bottom: 1px solid #eee;
+        }
+        
+        /* Add hover effect */
+        .team-row:hover:not(.header) {
+            background-color: #f9f9f9;
+        }
+        
+        /* Make the highlighted row more visible */
+        .highlighted {
+            background-color: #e6f7ff !important;
+            border-radius: 5px;
+            padding: 5px;
+            border-left: 3px solid #a200ff;
+        }
+        .fallback-btn {
+            margin-top: 15px;
+            background-color: #666;
+            color: white;
+            padding: 8px 15px;
+        }
+        .fallback-btn:hover {
+            background-color: #555;
+        }
+        .test-data-notice {
+            background-color: #fff3cd;
+            color: #856404;
+            padding: 10px;
+            margin-top: 20px;
+            border-radius: 5px;
+            text-align: center;
+            font-weight: bold;
+        }
+        .team-search-controls {
+            display: flex;
+            justify-content: space-between;
+            margin: 10px 0;
+            max-width: 500px;
+        }
+        .search-group {
+            display: flex;
+        }
+        .compact-btn {
+            padding: 5px 10px;
+            font-size: 0.9rem;
+            height: 30px;
+        }
+        #team-search {
+            width: 80px;
+            margin-right: 5px;
+            height: 30px;
+        }
+        .my-team-summary {
+            display: flex;
+            margin: 15px 0;
+            flex-wrap: wrap;
+        }
+        .stat-box {
+            background: #f5f5f5;
+            border: 1px solid #ddd;
+            padding: 10px;
+            margin-right: 10px;
+            margin-bottom: 10px;
+            min-width: 100px;
+            text-align: center;
+        }
+        .stat-label {
+            font-size: 0.9rem;
+            color: #666;
+            margin-bottom: 5px;
+        }
+        .stat-value {
+            font-size: 1.2rem;
+            font-weight: bold;
+        }
+        .full-width {
+            width: 100%;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Team OPR Comparison</h1>
+        
+        <div class="controls">
+            <div class="control-group">
+                <label for="season">Season:</label>
+                <select id="season">
+                    <option value="2024" selected>2024 (INTO THE DEEP)</option>
+                    <option value="2023">2023 (CENTERSTAGE)</option>
+                    <option value="2022">2022 (POWERPLAY)</option>
+                    <option value="2021">2021 (FREIGHT FRENZY)</option>
+                    <option value="2019">2020 (SKYSTONE)</option>
+                </select>
+            </div>
+            <div class="control-group">
+                <label for="region-code">Region/State (optional):</label>
+                <input type="text" id="region-code" placeholder="e.g., Minnesota">
+            </div>
+            <div class="control-group">
+                <button id="compare-btn">Compare Teams</button>
+            </div>
+        </div>
+        
+        <div id="comparison-container">
+            <p>Select options above and click "Compare Teams" to see how Team 5356 ranks against other teams.</p>
+        </div>
+    </div>
+
+    <script>
+        // Constants
+        const MY_TEAM_NUMBER = 5356;
+        const FTC_API_BASE_URL = 'https://ftc-events.firstinspires.org/v2.0';
+        const API_BASE_URL = 'https://api.ftcscout.org/rest/v1';
+        
+        // IMPORTANT: In a production app, you should NEVER include your auth token in client-side code
+        // This is for demonstration purposes only - in production, use a backend proxy
+        const FTC_AUTH_TOKEN = 'A3E13F35-4DB2-44CA-A8D2-BBB405896D62';
+        
+        // Elements
+        const seasonSelect = document.getElementById('season');
+        const regionCodeInput = document.getElementById('region-code');
+        const compareBtn = document.getElementById('compare-btn');
+        const comparisonContainer = document.getElementById('comparison-container');
+        
+        // Event listeners
+        compareBtn.addEventListener('click', compareTeams);
+        
+        // Add this debug function
+        function debugLog(message, data) {
+            console.log(message);
+            if (data) {
+                console.log(data);
+            }
+            
+            // Also display in the UI for users who don't have console open
+            const debugDiv = document.createElement('div');
+            debugDiv.className = 'debug-log';
+            debugDiv.style.fontSize = '12px';
+            debugDiv.style.fontFamily = 'monospace';
+            debugDiv.style.padding = '5px';
+            debugDiv.style.margin = '5px 0';
+            debugDiv.style.backgroundColor = '#f8f8f8';
+            debugDiv.style.border = '1px solid #ddd';
+            debugDiv.textContent = message;
+            comparisonContainer.appendChild(debugDiv);
+        }
+
+        // Display team comparison with centered UI, smaller buttons, and region sorting
+        function displayTeamComparison(teams, myTeamNumber, eventName) {
+            debugLog(`Displaying comparison for ${teams.length} teams`);
+            
+            // Find my team in the data
+            const myTeam = teams.find(t => t.number === myTeamNumber) || {
+                number: myTeamNumber,
+                name: `Team ${myTeamNumber}`,
+                stats: { opr: 0, hasRealData: false }
+            };
+            
+            // Sort teams by OPR (highest first)
+            const sortedTeams = [...teams].sort((a, b) => {
+                // Teams with real data come first
+                if (a.stats.hasRealData && !b.stats.hasRealData) return -1;
+                if (!a.stats.hasRealData && b.stats.hasRealData) return 1;
+                
+                // Then sort by OPR value
+                return b.stats.opr - a.stats.opr;
+            });
+            
+            // Find my team's rank in the sorted list
+            const myTeamRank = sortedTeams.findIndex(t => t.number === myTeamNumber) + 1;
+            
+            // Calculate max OPR for bar scaling
+            const maxOPR = Math.max(...sortedTeams.filter(t => t.stats.hasRealData).map(t => t.stats.opr), 1);
+            
+            // Count teams with OPR data
+            const teamsWithOPRData = sortedTeams.filter(t => t.stats.hasRealData).length;
+            const percentWithData = Math.round((teamsWithOPRData / sortedTeams.length) * 100);
+            
+            // Group teams by region for the dropdown
+            const regions = {};
+            sortedTeams.forEach(team => {
+                const region = team.state || team.country || 'Unknown';
+                if (!regions[region]) {
+                    regions[region] = [];
+                }
+                regions[region].push(team);
+            });
+            
+            // Generate the HTML with centered styling and compact buttons
+            const html = `
+                <style>
+                    .team-stats-summary {
+                        margin-bottom: 20px;
+                        text-align: center;
+                    }
+                    .stats-summary {
+                        margin-bottom: 15px;
+                    }
+                    .my-team-summary {
+                        display: flex;
+                        flex-wrap: wrap;
+                        gap: 10px;
+                        margin-bottom: 20px;
+                        justify-content: center;
+                    }
+                    .stat-box {
+                        border: 1px solid #ccc;
+                        border-radius: 4px;
+                        padding: 10px;
+                        background-color: #f9f9f9;
+                        min-width: 120px;
+                        text-align: center;
+                    }
+                    .stat-label {
+                        font-size: 0.9rem;
+                        color: #666;
+                        margin-bottom: 5px;
+                    }
+                    .stat-value {
+                        font-size: 1.2rem;
+                        font-weight: bold;
+                    }
+                    .search-controls {
+                        margin: 15px 0;
+                        display: flex;
+                        justify-content: center;
+                        gap: 10px;
+                    }
+                    .compact-btn {
+                        padding: 4px 8px;
+                        font-size: 0.85rem;
+                    }
+                    .team-list-header {
+                        display: flex;
+                        font-weight: bold;
+                        background-color: #eee;
+                        padding: 8px 10px;
+                        border-radius: 4px 4px 0 0;
+                        border: 1px solid #ddd;
+                    }
+                    .header-rank, .team-rank { width: 50px; }
+                    .header-number, .team-number { width: 80px; }
+                    .header-name, .team-name { flex: 1; }
+                    .header-location, .team-location { width: 200px; }
+                    .header-opr, .team-opr { width: 80px; text-align: right; }
+                    .header-bar, .opr-bar-container { width: 200px; }
+                    .region-filter {
+                        margin: 10px 0;
+                        display: flex;
+                        justify-content: center;
+                        gap: 10px;
+                        align-items: center;
+                    }
+                    .pagination {
+                        text-align: center;
+                        margin: 15px 0;
+                    }
+                    .note {
+                        text-align: center;
+                        font-size: 0.9rem;
+                        color: #666;
+                    }
+                </style>
+                
+                <div class="team-stats-summary">
+                    <h2>${eventName || 'Team Comparison'}</h2>
+                    <p class="stats-summary">Found ${sortedTeams.length} teams, ${teamsWithOPRData} (${percentWithData}%) with OPR data</p>
+                    
+                    <div class="my-team-summary">
+                        <div class="stat-box">
+                            <div class="stat-label">Team</div>
+                            <div class="stat-value">${myTeam.number}</div>
+                        </div>
+                        <div class="stat-box">
+                            <div class="stat-label">Name</div>
+                            <div class="stat-value">${myTeam.name}</div>
+                        </div>
+                        <div class="stat-box">
+                            <div class="stat-label">OPR</div>
+                            <div class="stat-value">${myTeam.stats.hasRealData ? myTeam.stats.opr.toFixed(1) : 'N/A'}</div>
+                        </div>
+                        <div class="stat-box">
+                            <div class="stat-label">Rank</div>
+                            <div class="stat-value">${myTeam.stats.hasRealData ? `${myTeamRank} of ${sortedTeams.length}` : 'N/A'}</div>
+                        </div>
+                    </div>
+                    
+                    <div class="search-controls">
+                        <input type="number" id="team-search" placeholder="Team #" style="width:80px;">
+                        <button id="search-btn" class="compact-btn">Find</button>
+                        <button id="jump-to-my-team" class="compact-btn">Jump to ${myTeamNumber}</button>
+                    </div>
+                    
+                    <div class="region-filter">
+                        <label for="region-select">Filter by region: </label>
+                        <select id="region-select">
+                            <option value="all">All Regions</option>
+                            ${Object.keys(regions).sort().map(region => 
+                                `<option value="${region}">${region} (${regions[region].length})</option>`
+                            ).join('')}
+                        </select>
+                    </div>
+                    
+                    <div class="team-list-header">
+                        <div class="header-rank">Rank</div>
+                        <div class="header-number">Team #</div>
+                        <div class="header-name">Name</div>
+                        <div class="header-location">Location</div>
+                        <div class="header-opr">OPR</div>
+                        <div class="header-bar"></div>
+                    </div>
+                    <div class="teams-list" id="teams-list"></div>
+                </div>
+                
+                <div class="pagination">
+                    <button id="prev-page" class="compact-btn">&laquo; Previous</button>
+                    <span>Page <input type="number" id="page-input" min="1" value="1" style="width:40px;"> of <span id="total-pages">1</span></span>
+                    <button id="next-page" class="compact-btn">Next &raquo;</button>
+                </div>
+                
+                <div class="note">
+                    <p>* Teams without TOT OPR data are shown with a value of 0.</p>
+                </div>
+            `;
+            
+            comparisonContainer.innerHTML = html;
+            
+            // Teams per page
+            const teamsPerPage = 50;
+            let currentTeams = sortedTeams; // Track current displayed teams (all or filtered)
+            
+            // Function to update pagination and display
+            function updateTeamDisplay() {
+                const totalPages = Math.ceil(currentTeams.length / teamsPerPage);
+                document.getElementById('total-pages').textContent = totalPages;
+                showTeamPage(1); // Reset to first page when filter changes
+            }
+            
+            // Initial display
+            updateTeamDisplay();
+            
+            // Event listener for region filter
+            document.getElementById('region-select').addEventListener('change', (e) => {
+                const selectedRegion = e.target.value;
+                if (selectedRegion === 'all') {
+                    currentTeams = sortedTeams; // Show all teams
+                } else {
+                    // Filter teams by the selected region
+                    currentTeams = sortedTeams.filter(team => 
+                        (team.state === selectedRegion) || (team.country === selectedRegion)
+                    );
+                }
+                updateTeamDisplay();
+            });
+            
+            // Event listeners for pagination
+            document.getElementById('prev-page').addEventListener('click', () => {
+                const currentPage = parseInt(document.getElementById('page-input').value);
+                if (currentPage > 1) {
+                    showTeamPage(currentPage - 1);
+                }
+            });
+            
+            document.getElementById('next-page').addEventListener('click', () => {
+                const currentPage = parseInt(document.getElementById('page-input').value);
+                const totalPages = Math.ceil(currentTeams.length / teamsPerPage);
+                if (currentPage < totalPages) {
+                    showTeamPage(currentPage + 1);
+                }
+            });
+            
+            document.getElementById('page-input').addEventListener('change', (e) => {
+                let page = parseInt(e.target.value);
+                if (isNaN(page) || page < 1) page = 1;
+                const totalPages = Math.ceil(currentTeams.length / teamsPerPage);
+                if (page > totalPages) page = totalPages;
+                showTeamPage(page);
+            });
+            
+            // Team search
+            document.getElementById('search-btn').addEventListener('click', () => {
+                const searchNumber = parseInt(document.getElementById('team-search').value);
+                if (isNaN(searchNumber)) return;
+                
+                const teamIndex = currentTeams.findIndex(t => t.number === searchNumber);
+                if (teamIndex === -1) {
+                    alert(`Team ${searchNumber} not found in current view`);
+                    return;
+                }
+                
+                const page = Math.floor(teamIndex / teamsPerPage) + 1;
+                showTeamPage(page);
+                
+                // Highlight the team
+                setTimeout(() => {
+                    const teamElement = document.querySelector(`.team-row[data-team="${searchNumber}"]`);
+                    if (teamElement) {
+                        teamElement.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                        teamElement.classList.add('highlight');
+                        setTimeout(() => teamElement.classList.remove('highlight'), 2000);
+                    }
+                }, 100);
+            });
+            
+            // Jump to my team
+            document.getElementById('jump-to-my-team').addEventListener('click', () => {
+                const myTeamIndex = currentTeams.findIndex(t => t.number === myTeamNumber);
+                if (myTeamIndex === -1) {
+                    alert(`Team ${myTeamNumber} not found in current view`);
+                    return;
+                }
+                
+                const page = Math.floor(myTeamIndex / teamsPerPage) + 1;
+                showTeamPage(page);
+                
+                // Highlight my team
+                setTimeout(() => {
+                    const teamElement = document.querySelector(`.team-row[data-team="${myTeamNumber}"]`);
+                    if (teamElement) {
+                        teamElement.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                    }
+                }, 100);
+            });
+            
+            // Function to show a specific page
+            function showTeamPage(page) {
+                document.getElementById('page-input').value = page;
+                
+                const startIdx = (page - 1) * teamsPerPage;
+                const endIdx = Math.min(startIdx + teamsPerPage, currentTeams.length);
+                const teamsToShow = currentTeams.slice(startIdx, endIdx);
+                
+                const listContainer = document.getElementById('teams-list');
+                listContainer.innerHTML = '';
+                
+                for (let i = 0; i < teamsToShow.length; i++) {
+                    const team = teamsToShow[i];
+                    const rank = sortedTeams.findIndex(t => t.number === team.number) + 1; // Always show overall rank
+                    const isMyTeam = team.number === myTeamNumber;
+                    
+                    // Calculate bar width
+                    const barWidth = team.stats.hasRealData ? (team.stats.opr / maxOPR) * 100 : 0;
+                    
+                    // Format location
+                    const location = [team.city, team.state, team.country].filter(Boolean).join(', ');
+                    
+                    const row = document.createElement('div');
+                    row.className = `team-row ${isMyTeam ? 'my-team' : ''}`;
+                    row.setAttribute('data-team', team.number);
+                    
+                    row.innerHTML = `
+                        <div class="team-rank">${rank}</div>
+                        <div class="team-number">${team.number}</div>
+                        <div class="team-name">${team.name}</div>
+                        <div class="team-location">${location}</div>
+                        <div class="team-opr">${team.stats.hasRealData ? team.stats.opr.toFixed(1) : '-'}</div>
+                        <div class="opr-bar-container">
+                            <div class="opr-bar" style="width: ${barWidth}%"></div>
+                        </div>
+                    `;
+                    
+                    listContainer.appendChild(row);
+                }
+            }
+        }
+        
+        // Modified main UI with comprehensive region dropdown
+        function setupUI() {
+            // Create region mapping with friendly names
+            const regionMapping = {
+                // International
+                "AU": "Australia",
+                "BR": "Brazil",
+                "CAAB": "Alberta, Canada",
+                "CABC": "British Columbia, Canada",
+                "CAON": "Ontario, Canada",
+                "CAQC": "Quebec, Canada",
+                "CN": "China",
+                "CY": "Cyprus",
+                "DE": "Germany",
+                "EG": "Egypt",
+                "ES": "Spain",
+                "FR": "France",
+                "GB": "United Kingdom",
+                "IL": "Israel",
+                "IN": "India",
+                "JM": "Jamaica",
+                "KR": "South Korea",
+                "KZ": "Kazakhstan",
+                "LY": "Libya",
+                "MX": "Mexico",
+                "NG": "Nigeria",
+                "NL": "Netherlands",
+                "NZ": "New Zealand",
+                "QA": "Qatar",
+                "RO": "Romania",
+                "RU": "Russia",
+                "SA": "Saudi Arabia",
+                "TH": "Thailand",
+                "TW": "Taiwan",
+                "ZA": "South Africa",
+                
+                // United States
+                "USAK": "Alaska",
+                "USAL": "Alabama",
+                "USAR": "Arkansas",
+                "USARL": "Arkansas/Louisiana",
+                "USAZ": "Arizona",
+                "USCALA": "Los Angeles, CA",
+                "USCALS": "Central California",
+                "USCANO": "Northern California",
+                "USCASD": "San Diego, CA",
+                "USCHS": "Charleston, SC",
+                "USCO": "Colorado",
+                "USCT": "Connecticut",
+                "USDE": "Delaware",
+                "USFL": "Florida",
+                "USGA": "Georgia",
+                "USHI": "Hawaii",
+                "USIA": "Iowa",
+                "USID": "Idaho",
+                "USIL": "Illinois",
+                "USIN": "Indiana",
+                "USKY": "Kentucky",
+                "USLA": "Louisiana",
+                "USMA": "Massachusetts",
+                "USMD": "Maryland",
+                "USMI": "Michigan",
+                "USMN": "Minnesota",
+                "USMOKS": "Missouri/Kansas",
+                "USMS": "Mississippi",
+                "USMT": "Montana",
+                "USNC": "North Carolina",
+                "USND": "North Dakota",
+                "USNE": "Nebraska",
+                "USNH": "New Hampshire",
+                "USNJ": "New Jersey",
+                "USNM": "New Mexico",
+                "USNV": "Nevada",
+                "USNYEX": "Excelsior, NY",
+                "USNYLI": "Long Island, NY",
+                "USNYNY": "New York City, NY",
+                "USOH": "Ohio",
+                "USOK": "Oklahoma",
+                "USOR": "Oregon",
+                "USPA": "Pennsylvania",
+                "USRI": "Rhode Island",
+                "USSC": "South Carolina",
+                "USTN": "Tennessee",
+                "USTXCE": "Central Texas",
+                "USTXHO": "Houston, TX",
+                "USTXNO": "North Texas",
+                "USTXSO": "South Texas",
+                "USTXWP": "West Plains, TX",
+                "USUT": "Utah",
+                "USVA": "Virginia",
+                "USVT": "Vermont",
+                "USWA": "Washington",
+                "USWI": "Wisconsin",
+                "USWV": "West Virginia",
+                "USWY": "Wyoming",
+                
+                // Championship
+                "CMPIC": "Championship - Innovation Center",
+                "CMPZ2": "Championship - Zone 2",
+                "ONADOD": "ONADOD"
+            };
+            
+            // Build the dropdown options HTML
+            let regionOptions = '<option value="">All Regions</option>';
+            
+            // US regions first, sorted alphabetically by display name
+            const usRegions = Object.entries(regionMapping)
+                .filter(([code]) => code.startsWith('US'))
+                .sort((a, b) => a[1].localeCompare(b[1]));
+                
+            regionOptions += '<optgroup label="United States">';
+            for (const [code, name] of usRegions) {
+                regionOptions += `<option value="${code}">${name} (${code})</option>`;
+            }
+            regionOptions += '</optgroup>';
+            
+            // International regions, sorted alphabetically by display name
+            const intlRegions = Object.entries(regionMapping)
+                .filter(([code]) => !code.startsWith('US') && !code.startsWith('CMP'))
+                .sort((a, b) => a[1].localeCompare(b[1]));
+                
+            regionOptions += '<optgroup label="International">';
+            for (const [code, name] of intlRegions) {
+                regionOptions += `<option value="${code}">${name} (${code})</option>`;
+            }
+            regionOptions += '</optgroup>';
+            
+            // Championship regions at the end
+            const champRegions = Object.entries(regionMapping)
+                .filter(([code]) => code.startsWith('CMP'));
+                
+            if (champRegions.length > 0) {
+                regionOptions += '<optgroup label="Championship">';
+                for (const [code, name] of champRegions) {
+                    regionOptions += `<option value="${code}">${name} (${code})</option>`;
+                }
+                regionOptions += '</optgroup>';
+            }
+            
+            // Add ONADOD separately if it exists
+            if (regionMapping['ONADOD']) {
+                regionOptions += '<optgroup label="Other">';
+                regionOptions += `<option value="ONADOD">${regionMapping['ONADOD']} (ONADOD)</option>`;
+                regionOptions += '</optgroup>';
+            }
+            
+            // Set up UI with regions dropdown
+            document.querySelector('.sidebar-content').innerHTML = `
+                <h2>FTC OPR Comparison</h2>
+                
+                <div class="form-field">
+                    <label for="region-select">Region:</label>
+                    <select id="region-select" class="full-width">
+                        ${regionOptions}
+                    </select>
+                    <div class="hint">
+                        Select a region or leave as "All Regions" for a sample
+                    </div>
+                </div>
+                
+                <div class="form-field">
+                    <label for="season-select">Season:</label>
+                    <select id="season-select">
+                        <option value="2023">2023-2024 (CENTERSTAGE)</option>
+                        <option value="2022">2022-2023 (POWERPLAY)</option>
+                        <option value="2021">2021-2022 (FREIGHT FRENZY)</option>
+                        <option value="2020">2020-2021 (ULTIMATE GOAL)</option>
+                    </select>
+                </div>
+                
+                <style>
+                    .full-width {
+                        width: 100%;
+                    }
+                </style>
+                
+                <div class="tools">
+                    <button id="compare-btn">Compare Teams</button>
+                </div>
+                
+                <div class="about">
+                    <p>Compare OPR stats for FIRST Tech Challenge teams.</p>
+                    <p class="footnote">
+                        Data from <a href="https://ftcscout.org" target="_blank">ftcscout.org</a>
+                    </p>
+                </div>
+            `;
+            
+            // Set up event listeners
+            document.getElementById('compare-btn').addEventListener('click', compareTeams);
+        }
+        
+        // Updated compare function to use the region dropdown
+        async function compareTeams() {
+            // Clear previous content and show loading
+            comparisonContainer.innerHTML = '<div class="loading">Loading teams data...</div>';
+            debugLog("Starting team comparison...");
+            
+            try {
+                const season = document.getElementById('season-select').value;
+                const regionCode = document.getElementById('region-select').value;
+                
+                debugLog(`Season: ${season}, Region: ${regionCode}`);
+                
+                let teams = [];
+                let eventName = null;
+                
+                if (regionCode) {
+                    // Fetch teams for selected region
+                    debugLog(`Fetching teams for region: ${regionCode}`);
+                    const url = `https://api.ftcscout.org/rest/v1/teams/search?region=${regionCode}&limit=100`;
+                    
+                    const response = await fetch(url);
+                    if (!response.ok) {
+                        throw new Error(`Region API error: ${response.status}`);
+                    }
+                    
+                    const regionTeams = await response.json();
+                    if (!regionTeams || regionTeams.length === 0) {
+                        throw new Error(`No teams found in region ${regionCode}`);
+                    }
+                    
+                    teams = regionTeams.map(team => ({
+                        number: team.number,
+                        name: team.name || `Team ${team.number}`,
+                        city: team.city || '',
+                        state: team.state || '',
+                        country: team.country || ''
+                    }));
+                    
+                    // Find region name from dropdown for display
+                    const regionSelect = document.getElementById('region-select');
+                    const selectedOption = regionSelect.options[regionSelect.selectedIndex];
+                    const regionName = selectedOption.text.split(' (')[0]; // Get name without code
+                    eventName = `${regionName} Teams`;
+                } else {
+                    // Fetch sample teams (limited)
+                    debugLog("Fetching sample of teams...");
+                    teams = await fetchLimitedTeams(season);
+                    eventName = "Sample FTC Teams";
+                }
+                
+                debugLog(`Found ${teams.length} teams`);
+                
+                if (!teams || teams.length === 0) {
+                    throw new Error('No teams found with the specified criteria');
+                }
+                
+                // Always fetch team 5356 using REST API for reliability
+                const myTeamNumber = MY_TEAM_NUMBER;
+                const myTeamData = await fetchTeamByREST(myTeamNumber, season);
+                
+                // Make sure team 5356 is in the list
+                const existingMyTeam = teams.findIndex(team => team.number === myTeamNumber);
+                if (existingMyTeam >= 0) {
+                    teams[existingMyTeam] = myTeamData; // Replace with our reliable REST data
+                } else {
+                    teams.push(myTeamData);
+                }
+                
+                // Get stats for all teams
+                const teamsWithStats = await fetchTeamStatsInBatches(teams, season);
+                debugLog(`Got stats for ${teamsWithStats.length} teams`);
+                
+                // Display the team comparison
+                displayTeamComparison(teamsWithStats, myTeamNumber, eventName);
+            } catch (error) {
+                debugLog(`Error: ${error.message}`);
+                comparisonContainer.innerHTML = `
+                    <div class="error-message">
+                        <p>Error: ${error.message}</p>
+                        <p>Please try selecting a different region or season.</p>
+                    </div>
+                `;
+            }
+        }
+
+        // New function to fetch limited teams for faster testing
+        async function fetchLimitedTeams(season) {
+            debugLog(`Fetching limited sample of teams for testing`);
+            
+            comparisonContainer.innerHTML = `
+                <div class="loading">
+                    <h3>Loading sample of FTC teams...</h3>
+                    <progress style="width:100%;"></progress>
+                </div>
+            `;
+            
+            try {
+                // Use the search endpoint with limit
+                const url = `https://api.ftcscout.org/rest/v1/teams/search?limit=100`;
+                debugLog(`Fetching teams: ${url}`);
+                
+                const response = await fetch(url);
+                
+                if (!response.ok) {
+                    throw new Error(`API error: ${response.status}`);
+                }
+                
+                const teams = await response.json();
+                debugLog(`Retrieved ${teams.length} teams from API`);
+                
+                if (!teams || teams.length === 0) {
+                    throw new Error('No teams found');
+                }
+                
+                return teams.map(team => ({
+                    number: team.number,
+                    name: team.name || `Team ${team.number}`,
+                    city: team.city || '',
+                    state: team.state || '',
+                    country: team.country || ''
+                }));
+            } catch (error) {
+                debugLog(`Error fetching teams: ${error.message}`);
+                throw new Error(`Could not retrieve teams. ${error.message}`);
+            }
+        }
+        
+        // Updated team fetching function with limit parameter
+        async function fetchAllTeams(season) {
+            return fetchLimitedTeams(season);
+        }
+
+        // Filter teams by region code (state, country, etc.)
+        function filterTeamsByRegion(teams, regionCode) {
+            debugLog(`Filtering ${teams.length} teams by region code: ${regionCode}`);
+            
+            // First check if it's a standard US state code
+            const upperRegion = regionCode.toUpperCase();
+            
+            const filtered = teams.filter(team => {
+                // Check state field first (for US teams)
+                if (team.state && team.state.toUpperCase() === upperRegion) {
+                    return true;
+                }
+                
+                // Check country field (for international teams)
+                if (team.country && team.country.toUpperCase() === upperRegion) {
+                    return true;
+                }
+                
+                // Check city field as well
+                if (team.city && team.city.toUpperCase().includes(upperRegion)) {
+                    return true;
+                }
+                
+                return false;
+            });
+            
+            debugLog(`Found ${filtered.length} teams in region ${regionCode}`);
+            return filtered;
+        }
+        
+        // Update compareTeams to use the new range-based fetching
+        async function compareTeams() {
+            // Clear previous content and show loading
+            comparisonContainer.innerHTML = '<div class="loading">Loading teams data...</div>';
+            debugLog("Starting team comparison...");
+            
+            try {
+                const season = seasonSelect.value;
+                const regionState = regionCodeInput.value.trim();
+                
+                debugLog(`Season: ${season}, Region: ${regionState}`);
+                
+                let teams = [];
+                let eventName = null;
+                
+                if (regionState) {
+                    // Directly fetch teams for a specific region using the search endpoint
+                    debugLog(`Fetching teams for region: ${regionState}`);
+                    const url = `https://api.ftcscout.org/rest/v1/teams/search?region=${regionState}&limit=100`;
+                    
+                    const response = await fetch(url);
+                    if (!response.ok) {
+                        throw new Error(`Region API error: ${response.status}`);
+                    }
+                    
+                    const regionTeams = await response.json();
+                    if (!regionTeams || regionTeams.length === 0) {
+                        throw new Error(`No teams found in region ${regionState}`);
+                    }
+                    
+                    teams = regionTeams.map(team => ({
+                        number: team.number,
+                        name: team.name || `Team ${team.number}`,
+                        city: team.city || '',
+                        state: team.state || '',
+                        country: team.country || ''
+                    }));
+                    
+                    eventName = `${regionState} Teams`;
+                } else {
+                    // Fetch teams with limit
+                    debugLog("Fetching limited teams sample...");
+                    teams = await fetchLimitedTeams(season);
+                }
+                
+                debugLog(`Found ${teams.length} teams`);
+                
+                if (!teams || teams.length === 0) {
+                    throw new Error('No teams found with the specified criteria');
+                }
+                
+                // Always fetch team 5356 using REST API for reliability
+                const myTeamNumber = MY_TEAM_NUMBER;
+                const myTeamData = await fetchTeamByREST(myTeamNumber, season);
+                
+                // Make sure team 5356 is in the list
+                const existingMyTeam = teams.findIndex(team => team.number === myTeamNumber);
+                if (existingMyTeam >= 0) {
+                    teams[existingMyTeam] = myTeamData; // Replace with our reliable REST data
+                } else {
+                    teams.push(myTeamData);
+                }
+                
+                // Get stats for all teams
+                const teamsWithStats = await fetchTeamStatsInBatches(teams, season);
+                debugLog(`Got stats for ${teamsWithStats.length} teams`);
+                
+                // Display the team comparison
+                displayTeamComparison(teamsWithStats, myTeamNumber, eventName);
+            } catch (error) {
+                debugLog(`Error: ${error.message}`);
+                comparisonContainer.innerHTML = `
+                    <div class="error-message">
+                        <p>Error: ${error.message}</p>
+                        <p>Please try using a region code like "MN" instead.</p>
+                    </div>
+                `;
+            }
+        }
+
+        // Event team fetching function
+        async function fetchEventTeams(season, eventCode) {
+            debugLog(`Fetching teams for event ${eventCode} in season ${season}`);
+            
+            try {
+                const url = `https://api.ftcscout.org/rest/v1/events/${eventCode}/teams?season=${season}`;
+                const response = await fetch(url);
+                
+                if (!response.ok) {
+                    throw new Error(`Event API error: ${response.status}`);
+                }
+                
+                const teams = await response.json();
+                
+                if (!teams || teams.length === 0) {
+                    throw new Error(`No teams found for event ${eventCode}`);
+                }
+                
+                return teams.map(team => ({
+                    number: team.number,
+                    name: team.name || `Team ${team.number}`,
+                    city: team.city || '',
+                    state: team.state || '',
+                    country: team.country || ''
+                }));
+            } catch (error) {
+                debugLog(`Error fetching event teams: ${error.message}`);
+                throw new Error(`Could not retrieve teams for event ${eventCode}. Please verify the event code.`);
+            }
+        }
+
+        // REST API fallback using the documented endpoints
+        async function fetchTeamsByRestAPI(season) {
+            debugLog("Using REST API fallback to fetch teams");
+            
+            try {
+                // Using the search endpoint from documentation
+                const url = `https://api.ftcscout.org/rest/v1/teams/search?`;
+                debugLog(`REST API URL: ${url}`);
+                
+                const response = await fetch(url);
+                
+                if (!response.ok) {
+                    const errorText = await response.text();
+                    debugLog(`REST API error: ${response.status} - ${errorText}`);
+                    throw new Error(`REST API error: ${response.status}`);
+                }
+                
+                const data = await response.json();
+                debugLog(`REST API returned ${data.length} teams`);
+                return data;
+            } catch (error) {
+                debugLog(`Error in REST API fallback: ${error.message}`);
+                // If everything fails, try to fetch from known events
+                return await fetchTeamsFromKnownEvents(season);
+            }
+        }
+        
+        // Updated fetchTeamsFromKnownEvents to use correct GraphQL syntax
+        async function fetchTeamsFromKnownEvents(season) {
+            debugLog("Using fallback to fetch teams from known events");
+            
+            // List of common event codes for the season
+            const knownEvents = [
+                "USFLGC", // Greater KC
+                "USMOMH", // Missouri 
+                "USFLAD", // Florida
+                "USMIHJ", // Michigan
+                "USTXJW", // Texas
+                "USNYEF", // New York
+                "USCANY", // California
+                "USMIFW"  // World Championship
+            ];
+            
+            let allTeams = [];
+            const promises = knownEvents.map(async (eventCode) => {
+                try {
+                    const graphqlUrl = 'https://api.ftcscout.org/graphql';
+                    
+                    // Corrected GraphQL query for event teams
+                    const query = `
+                    {
+                        event(season: "${season}", code: "${eventCode}") {
+                            teams {
+                                number
+                                name
+                                location {
+                                    city
+                                    state
+                                    country
+                                }
+                                region
+                            }
+                        }
+                    }`;
+                    
+                    const response = await fetch(graphqlUrl, {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                        },
+                        body: JSON.stringify({ query })
+                    });
+                    
+                    if (!response.ok) return [];
+                    
+                    const result = await response.json();
+                    
+                    if (result.data?.event?.teams) {
+                        debugLog(`Found ${result.data.event.teams.length} teams from event ${eventCode}`);
+                        
+                        // Transform the data structure
+                        return result.data.event.teams.map(team => ({
+                            number: parseInt(team.number, 10),
+                            name: team.name || 'Unknown',
+                            city: team.location?.city,
+                            state: team.location?.state,
+                            country: team.location?.country,
+                            region: team.region
+                        }));
+                    }
+                    return [];
+                } catch (error) {
+                    debugLog(`Error fetching teams from event ${eventCode}: ${error.message}`);
+                    return [];
+                }
+            });
+            
+            const results = await Promise.all(promises);
+            
+            // Combine all teams and remove duplicates
+            results.forEach(teams => {
+                teams.forEach(team => {
+                    if (!allTeams.some(t => t.number === team.number)) {
+                        allTeams.push(team);
+                    }
+                });
+            });
+            
+            debugLog(`Combined ${allTeams.length} unique teams from known events`);
+            return allTeams;
+        }
+        
+        async function fetchTeamStatsByRest(teamNumber, season) {
+            try {
+                const url = `${API_BASE_URL}/team/${teamNumber}/stats?season=${season}`;
+                const response = await fetch(url);
+                
+                if (!response.ok) {
+                    // Don't throw - just return a default value
+                    return { opr: 0 };
+                }
+                
+                const data = await response.json();
+                
+                if (data && typeof data.opr === 'number') {
+                    return { opr: data.opr };
+                }
+                
+                return { opr: 0 };
+            } catch (error) {
+                debugLog(`Error fetching stats for team ${teamNumber}: ${error.message}`);
+                return { opr: 0 };
+            }
+        }
+        
+        // Function to group teams by region
+        function groupTeamsByRegion(teams) {
+            const regions = {};
+            
+            teams.forEach(team => {
+                const region = team.region || team.state || 'Unknown';
+                if (!regions[region]) {
+                    regions[region] = [];
+                }
+                regions[region].push(team);
+            });
+            
+            // Sort each region's teams by OPR
+            Object.keys(regions).forEach(region => {
+                regions[region].sort((a, b) => b.stats.opr - a.stats.opr);
+            });
+            
+            return regions;
+        }
+
+        // Add a REST API function for fetching a single team's data
+        async function fetchTeamByREST(teamNumber, season) {
+            debugLog(`Fetching team ${teamNumber} via REST API`);
+            
+            try {
+                // Get team stats
+                const statsUrl = `https://api.ftcscout.org/rest/v1/teams/${teamNumber}/quick-stats?season=${season}`;
+                const statsResponse = await fetch(statsUrl);
+                
+                // Get team info
+                const teamInfoUrl = `https://api.ftcscout.org/rest/v1/teams/${teamNumber}`;
+                const teamInfoResponse = await fetch(teamInfoUrl);
+                
+                // Process team stats
+                let stats = { opr: 0, hasRealData: false };
+                if (statsResponse.ok) {
+                    const statsData = await statsResponse.json();
+                    if (statsData && statsData.tot && typeof statsData.tot.value === 'number') {
+                        stats = {
+                            opr: statsData.tot.value,
+                            rank: statsData.tot.rank || null,
+                            hasRealData: statsData.tot.value > 0
+                        };
+                    }
+                }
+                
+                // Process team info
+                let teamInfo = { 
+                    number: teamNumber,
+                    name: `Team ${teamNumber}`,
+                    city: 'Unknown',
+                    state: 'Unknown',
+                    country: 'Unknown'
+                };
+                
+                if (teamInfoResponse.ok) {
+                    const infoData = await teamInfoResponse.json();
+                    teamInfo = {
+                        number: teamNumber,
+                        name: infoData.name || teamInfo.name,
+                        city: infoData.city || teamInfo.city,
+                        state: infoData.state || teamInfo.state,
+                        country: infoData.country || teamInfo.country
+                    };
+                }
+                
+                return {
+                    ...teamInfo,
+                    stats: stats
+                };
+            } catch (error) {
+                debugLog(`Error in REST API for team ${teamNumber}: ${error.message}`);
+                return {
+                    number: teamNumber,
+                    name: `Team ${teamNumber}`,
+                    city: 'Unknown',
+                    state: 'Unknown',
+                    country: 'Unknown',
+                    stats: { opr: 0, hasRealData: false }
+                };
+            }
+        }
+
+        // Add the missing fetchTeamStatsInBatches function
+        async function fetchTeamStatsInBatches(teams, season) {
+            debugLog(`Fetching OPR for ${teams.length} teams via GraphQL`);
+            
+            // Show progress to user
+            comparisonContainer.innerHTML = `
+                <div class="loading">
+                    <h3>Loading OPR data for ${teams.length} teams...</h3>
+                    <progress value="0" max="${teams.length}" style="width:100%;"></progress>
+                    <div id="batch-status">Preparing data...</div>
+                    <div id="api-stats">
+                        <p>GraphQL batches: <span id="graphql-count">0</span></p>
+                        <p>REST fallbacks: <span id="rest-count">0</span></p>
+                        <p>Teams with OPR: <span id="teams-with-opr">0</span></p>
+                    </div>
+                </div>
+            `;
+            
+            // Helpers for updating UI
+            const updateStatus = (message) => {
+                const statusEl = document.getElementById('batch-status');
+                if (statusEl) statusEl.textContent = message;
+            };
+            
+            const updateStats = (graphqlCount, restCount, teamsWithOPR) => {
+                document.getElementById('graphql-count').textContent = graphqlCount;
+                document.getElementById('rest-count').textContent = restCount;
+                document.getElementById('teams-with-opr').textContent = teamsWithOPR;
+                
+                // Update progress bar
+                const progressEl = document.querySelector('.loading progress');
+                if (progressEl) {
+                    const processed = graphqlCount * batchSize + restCount;
+                    progressEl.value = Math.min(processed, teams.length);
+                }
+            };
+            
+            // Create a map for tracking stats
+            const teamStatsMap = new Map();
+            let graphqlBatches = 0;
+            let restFallbacks = 0;
+            let teamsWithOPR = 0;
+            
+            // Convert season to integer (API requires Int type)
+            const seasonInt = parseInt(season, 10);
+            
+            // Process in smaller batches
+            const batchSize = 10; // Small batch for more reliable processing
+            
+            for (let i = 0; i < teams.length; i += batchSize) {
+                const batch = teams.slice(i, Math.min(i + batchSize, teams.length));
+                const batchNumbers = batch.map(t => t.number);
+                
+                updateStatus(`Processing batch ${Math.floor(i/batchSize) + 1} of ${Math.ceil(teams.length/batchSize)}`);
+                
+                // Try GraphQL first
+                try {
+                    // Build GraphQL query for this batch with correct format
+                    const query = `
+                    query {
+                        ${batchNumbers.map(number => `
+                        team${number}: teamByNumber(number: ${number}) {
+                            number
+                            name
+                            location {
+                                city
+                                state
+                                country
+                            }
+                            quickStats(season: ${seasonInt}) {
+                                tot {
+                                    value
+                                    rank
+                                }
+                            }
+                        }
+                        `).join('\n')}
+                    }`;
+                    
+                    debugLog(`Sending GraphQL query for batch of ${batchNumbers.length} teams`);
+                    
+                    const response = await fetch('https://api.ftcscout.org/graphql', {
+                        method: 'POST',
+                        headers: { 
+                            'Content-Type': 'application/json',
+                            'Accept': 'application/json'
+                        },
+                        body: JSON.stringify({ query })
+                    });
+                    
+                    if (!response.ok) {
+                        throw new Error(`GraphQL HTTP error: ${response.status}`);
+                    }
+                    
+                    const result = await response.json();
+                    
+                    if (result.errors) {
+                        throw new Error(`GraphQL errors returned`);
+                    }
+                    
+                    graphqlBatches++;
+                    
+                    // Process each team in the batch
+                    for (const team of batch) {
+                        const teamKey = `team${team.number}`;
+                        const teamData = result.data?.[teamKey];
+                        
+                        if (teamData && teamData.quickStats?.tot?.value !== undefined) {
+                            const oprValue = teamData.quickStats.tot.value;
+                            const hasRealData = oprValue > 0;
+                            
+                            const processedTeam = {
+                                number: team.number,
+                                name: teamData.name || team.name,
+                                city: teamData.location?.city || team.city || '',
+                                state: teamData.location?.state || team.state || '',
+                                country: teamData.location?.country || team.country || '',
+                                stats: {
+                                    opr: oprValue,
+                                    rank: teamData.quickStats.tot.rank || null,
+                                    hasRealData: hasRealData
+                                }
+                            };
+                            
+                            teamStatsMap.set(team.number, processedTeam);
+                            if (hasRealData) teamsWithOPR++;
+                        } else {
+                            // Team exists but no OPR data
+                            teamStatsMap.set(team.number, {
+                                ...team,
+                                stats: { opr: 0, hasRealData: false }
+                            });
+                        }
+                    }
+                    
+                    updateStats(graphqlBatches, restFallbacks, teamsWithOPR);
+                    
+                } catch (error) {
+                    debugLog(`GraphQL error: ${error.message}`);
+                    
+                    // Fall back to individual REST API calls for each team
+                    let localRestCount = 0;
+                    for (const team of batch) {
+                        try {
+                            // Only do REST for teams we haven't processed successfully
+                            if (!teamStatsMap.has(team.number)) {
+                                const url = `https://api.ftcscout.org/rest/v1/teams/${team.number}/quick-stats?season=${season}`;
+                                
+                                const response = await fetch(url);
+                                
+                                if (response.ok) {
+                                    const data = await response.json();
+                                    
+                                    if (data && data.tot && typeof data.tot.value === 'number') {
+                                        const oprValue = data.tot.value;
+                                        const hasRealData = oprValue > 0;
+                                        
+                                        teamStatsMap.set(team.number, {
+                                            ...team,
+                                            stats: {
+                                                opr: oprValue,
+                                                rank: data.tot.rank || null,
+                                                hasRealData: hasRealData
+                                            }
+                                        });
+                                        
+                                        if (hasRealData) teamsWithOPR++;
+                                    } else {
+                                        teamStatsMap.set(team.number, {
+                                            ...team,
+                                            stats: { opr: 0, hasRealData: false }
+                                        });
+                                    }
+                                    
+                                    localRestCount++;
+                                    restFallbacks++;
+                                } else {
+                                    // REST API failed too, add team with no data
+                                    teamStatsMap.set(team.number, {
+                                        ...team,
+                                        stats: { opr: 0, hasRealData: false }
+                                    });
+                                }
+                            }
+                        } catch (restError) {
+                            debugLog(`REST fallback error for team ${team.number}: ${restError.message}`);
+                            
+                            // Add team with no data if we completely failed
+                            if (!teamStatsMap.has(team.number)) {
+                                teamStatsMap.set(team.number, {
+                                    ...team,
+                                    stats: { opr: 0, hasRealData: false }
+                                });
+                            }
+                        }
+                    }
+                    
+                    updateStats(graphqlBatches, restFallbacks, teamsWithOPR);
+                }
+                
+                // Add a small delay between batches
+                await new Promise(resolve => setTimeout(resolve, 200));
+            }
+            
+            // Convert the map back to an array
+            const teamsWithStats = Array.from(teamStatsMap.values());
+            debugLog(`Completed stats fetching. Teams with OPR data: ${teamsWithOPR}`);
+            
+            return teamsWithStats;
+        }
+    </script>
+</body>
+</html>
