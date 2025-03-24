@@ -10,16 +10,17 @@
             max-width: 1200px;
             margin: 0 auto;
             padding: 20px;
-            background-color: #f5f5f5;
+            background-color: #121212;
+            color: #e0e0e0;
         }
         .container {
-            background-color: white;
+            background-color: #1e1e1e;
             padding: 20px;
             border-radius: 8px;
-            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
         }
         h1 {
-            color: #333;
+            color: #e0e0e0;
             text-align: center;
         }
         .controls {
@@ -37,23 +38,26 @@
             display: block;
             margin-bottom: 8px;
             font-weight: bold;
+            color: #e0e0e0;
         }
         select, input, button {
             width: 100%;
             padding: 10px;
-            border: 1px solid #ddd;
+            border: 1px solid #333;
             border-radius: 4px;
             font-size: 16px;
+            background-color: #2a2a2a;
+            color: #e0e0e0;
         }
         button {
-            background-color: #a200ff;
+            background-color: #6c00ab;
             color: white;
             cursor: pointer;
             border: none;
             font-weight: bold;
         }
         button:hover {
-            background-color: #6c00ab;
+            background-color: #8400d1;
         }
         #comparison-container {
             margin-top: 30px;
@@ -62,7 +66,7 @@
             text-align: center;
             padding: 20px;
             font-style: italic;
-            color: #666;
+            color: #aaa;
         }
         .chart-container {
             position: relative;
@@ -73,6 +77,7 @@
             display: flex;
             margin-bottom: 10px;
             align-items: center;
+            background-color: #252525;
         }
         .team-rank {
             width: 40px;
@@ -93,7 +98,7 @@
         }
         .opr-bar-container {
             flex: 2;
-            background-color: #eee;
+            background-color: #333;
             height: 20px;
             margin: 0 20px;
             border-radius: 10px;
@@ -105,7 +110,7 @@
             border-radius: 10px;
         }
         .highlighted {
-            background-color: #f0f7ff;
+            background-color: #3a2840;
             border-radius: 5px;
             padding: 5px;
         }
@@ -113,7 +118,7 @@
             max-height: 600px;
             overflow-y: auto;
             padding: 10px;
-            border: 1px solid #eee;
+            border: 1px solid #333;
             border-radius: 5px;
         }
         .stats-container {
@@ -125,64 +130,64 @@
         .stat-card {
             flex: 1;
             min-width: 200px;
-            background-color: #f9f9f9;
+            background-color: #252525;
             padding: 15px;
             border-radius: 8px;
-            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+            box-shadow: 0 1px 3px rgba(0,0,0,0.3);
             text-align: center;
         }
         .stat-value {
             font-size: 24px;
             font-weight: bold;
-            color: #0066cc;
+            color: #a200ff;
             margin: 10px 0;
         }
         .stat-label {
             font-size: 14px;
-            color: #666;
+            color: #aaa;
         }
         .error-message {
-            color: #d9534f;
+            color: #ff9494;
             padding: 10px;
-            background-color: #ffeeee;
+            background-color: #3a1c1c;
             border-radius: 5px;
             margin: 10px 0;
         }
         .team-row.header {
             font-weight: bold;
-            background-color: #f0f0f0;
-            border-bottom: 2px solid #ddd;
+            background-color: #333;
+            border-bottom: 2px solid #444;
             padding: 10px 0;
         }
         
         .team-location {
             flex: 1;
             font-size: 0.9em;
-            color: #666;
+            color: #aaa;
             margin-right: 10px;
         }
         
         /* Make the team list more compact */
         .team-row {
             padding: 5px 0;
-            border-bottom: 1px solid #eee;
+            border-bottom: 1px solid #333;
         }
         
         /* Add hover effect */
         .team-row:hover:not(.header) {
-            background-color: #f9f9f9;
+            background-color: #2a2a2a;
         }
         
         /* Make the highlighted row more visible */
         .highlighted {
-            background-color: #e6f7ff !important;
+            background-color: #3a2257 !important;
             border-radius: 5px;
             padding: 5px;
             border-left: 3px solid #a200ff;
         }
         .fallback-btn {
             margin-top: 15px;
-            background-color: #666;
+            background-color: #444;
             color: white;
             padding: 8px 15px;
         }
@@ -190,8 +195,8 @@
             background-color: #555;
         }
         .test-data-notice {
-            background-color: #fff3cd;
-            color: #856404;
+            background-color: #3a2840;
+            color: #c9addb;
             padding: 10px;
             margin-top: 20px;
             border-radius: 5px;
@@ -208,14 +213,14 @@
             display: flex;
         }
         .compact-btn {
-            padding: 5px 10px;
-            font-size: 0.9rem;
-            height: 30px;
+            padding: 3px 8px;
+            height: 28px;
+            margin: 0 2px;
         }
         #team-search {
-            width: 80px;
+            width: 60px;
             margin-right: 5px;
-            height: 30px;
+            height: 28px;
         }
         .my-team-summary {
             display: flex;
@@ -223,8 +228,8 @@
             flex-wrap: wrap;
         }
         .stat-box {
-            background: #f5f5f5;
-            border: 1px solid #ddd;
+            background: #252525;
+            border: 1px solid #333;
             padding: 10px;
             margin-right: 10px;
             margin-bottom: 10px;
@@ -233,15 +238,80 @@
         }
         .stat-label {
             font-size: 0.9rem;
-            color: #666;
+            color: #aaa;
             margin-bottom: 5px;
         }
         .stat-value {
             font-size: 1.2rem;
             font-weight: bold;
+            color: #a200ff;
         }
         .full-width {
             width: 100%;
+        }
+        .pagination {
+            text-align: center;
+            margin: 15px 0;
+        }
+        .pagination span {
+            color: #e0e0e0;
+        }
+        #page-input {
+            width: 40px;
+            text-align: center;
+            padding: 3px;
+            height: 24px;
+        }
+        .search-controls {
+            margin: 15px 0;
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+        }
+        .teams-list {
+            background-color: #1e1e1e;
+            border: 1px solid #333;
+            border-radius: 0 0 4px 4px;
+        }
+        .team-list-header {
+            background-color: #333;
+            color: #e0e0e0;
+        }
+        .region-filter {
+            margin: 10px 0;
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            align-items: center;
+            color: #e0e0e0;
+        }
+        #region-select {
+            background-color: #2a2a2a;
+            color: #e0e0e0;
+            border: 1px solid #444;
+        }
+        .note {
+            color: #aaa;
+        }
+        progress {
+            -webkit-appearance: none;
+            appearance: none;
+            background-color: #333;
+            border: none;
+            border-radius: 4px;
+            height: 8px;
+        }
+        progress::-webkit-progress-bar {
+            background-color: #333;
+            border-radius: 4px;
+        }
+        progress::-webkit-progress-value {
+            background-color: #a200ff;
+            border-radius: 4px;
+        }
+        progress::-moz-progress-bar {
+            background-color: #a200ff;
+            border-radius: 4px;
         }
     </style>
 </head>
@@ -259,10 +329,6 @@
                     <option value="2021">2021 (FREIGHT FRENZY)</option>
                     <option value="2019">2020 (SKYSTONE)</option>
                 </select>
-            </div>
-            <div class="control-group">
-                <label for="region-code">Region/State (optional):</label>
-                <input type="text" id="region-code" placeholder="e.g., Minnesota">
             </div>
             <div class="control-group">
                 <button id="compare-btn">Compare Teams</button>
@@ -286,7 +352,6 @@
         
         // Elements
         const seasonSelect = document.getElementById('season');
-        const regionCodeInput = document.getElementById('region-code');
         const compareBtn = document.getElementById('compare-btn');
         const comparisonContainer = document.getElementById('comparison-container');
         
@@ -307,8 +372,9 @@
             debugDiv.style.fontFamily = 'monospace';
             debugDiv.style.padding = '5px';
             debugDiv.style.margin = '5px 0';
-            debugDiv.style.backgroundColor = '#f8f8f8';
-            debugDiv.style.border = '1px solid #ddd';
+            debugDiv.style.backgroundColor = '#252525';
+            debugDiv.style.border = '1px solid #444';
+            debugDiv.style.color = '#e0e0e0';
             debugDiv.textContent = message;
             comparisonContainer.appendChild(debugDiv);
         }
@@ -372,21 +438,23 @@
                         justify-content: center;
                     }
                     .stat-box {
-                        border: 1px solid #ccc;
+                        border: 1px solid #444;
                         border-radius: 4px;
                         padding: 10px;
-                        background-color: #f9f9f9;
+                        background-color: #252525 !important;
                         min-width: 120px;
                         text-align: center;
+                        color: #e0e0e0;
                     }
                     .stat-label {
                         font-size: 0.9rem;
-                        color: #666;
+                        color: #aaa;
                         margin-bottom: 5px;
                     }
                     .stat-value {
                         font-size: 1.2rem;
                         font-weight: bold;
+                        color: #a200ff;
                     }
                     .search-controls {
                         margin: 15px 0;
@@ -401,10 +469,11 @@
                     .team-list-header {
                         display: flex;
                         font-weight: bold;
-                        background-color: #eee;
+                        background-color: #333;
                         padding: 8px 10px;
                         border-radius: 4px 4px 0 0;
-                        border: 1px solid #ddd;
+                        border: 1px solid #444;
+                        color: #e0e0e0;
                     }
                     .header-rank, .team-rank { width: 50px; }
                     .header-number, .team-number { width: 80px; }
@@ -426,7 +495,7 @@
                     .note {
                         text-align: center;
                         font-size: 0.9rem;
-                        color: #666;
+                        color: #aaa;
                     }
                 </style>
                 
@@ -435,28 +504,28 @@
                     <p class="stats-summary">Found ${sortedTeams.length} teams, ${teamsWithOPRData} (${percentWithData}%) with OPR data</p>
                     
                     <div class="my-team-summary">
-                        <div class="stat-box">
+                        <div class="stat-box" style="background-color:#252525; color:#e0e0e0;">
                             <div class="stat-label">Team</div>
                             <div class="stat-value">${myTeam.number}</div>
                         </div>
-                        <div class="stat-box">
+                        <div class="stat-box" style="background-color:#252525; color:#e0e0e0;">
                             <div class="stat-label">Name</div>
                             <div class="stat-value">${myTeam.name}</div>
                         </div>
-                        <div class="stat-box">
+                        <div class="stat-box" style="background-color:#252525; color:#e0e0e0;">
                             <div class="stat-label">OPR</div>
                             <div class="stat-value">${myTeam.stats.hasRealData ? myTeam.stats.opr.toFixed(1) : 'N/A'}</div>
                         </div>
-                        <div class="stat-box">
+                        <div class="stat-box" style="background-color:#252525; color:#e0e0e0;">
                             <div class="stat-label">Rank</div>
                             <div class="stat-value">${myTeam.stats.hasRealData ? `${myTeamRank} of ${sortedTeams.length}` : 'N/A'}</div>
                         </div>
                     </div>
                     
                     <div class="search-controls">
-                        <input type="number" id="team-search" placeholder="Team #" style="width:80px;">
-                        <button id="search-btn" class="compact-btn">Find</button>
-                        <button id="jump-to-my-team" class="compact-btn">Jump to ${myTeamNumber}</button>
+                        <input type="number" id="team-search" placeholder="Team #" style="width:60px; height:28px; padding:3px 6px;">
+                        <button id="search-btn" class="compact-btn" style="width:auto; padding:3px 6px;">Find</button>
+                        <button id="jump-to-my-team" class="compact-btn" style="width:auto; padding:3px 6px;">Jump to ${myTeamNumber}</button>
                     </div>
                     
                     <div class="region-filter">
@@ -481,9 +550,9 @@
                 </div>
                 
                 <div class="pagination">
-                    <button id="prev-page" class="compact-btn">&laquo; Previous</button>
-                    <span>Page <input type="number" id="page-input" min="1" value="1" style="width:40px;"> of <span id="total-pages">1</span></span>
-                    <button id="next-page" class="compact-btn">Next &raquo;</button>
+                    <button id="prev-page" class="compact-btn" style="width:auto; padding:3px 6px; margin-right:5px;">&laquo; Prev</button>
+                    <span>Page <input type="number" id="page-input" min="1" value="1" style="width:40px; height:24px; padding:2px;"> of <span id="total-pages">1</span></span>
+                    <button id="next-page" class="compact-btn" style="width:auto; padding:3px 6px; margin-left:5px;">Next &raquo;</button>
                 </div>
                 
                 <div class="note">
@@ -831,48 +900,16 @@
             debugLog("Starting team comparison...");
             
             try {
-                const season = document.getElementById('season-select').value;
-                const regionCode = document.getElementById('region-select').value;
+                const season = seasonSelect.value;
                 
-                debugLog(`Season: ${season}, Region: ${regionCode}`);
+                debugLog(`Season: ${season}`);
                 
                 let teams = [];
                 let eventName = null;
                 
-                if (regionCode) {
-                    // Fetch teams for selected region
-                    debugLog(`Fetching teams for region: ${regionCode}`);
-                    const url = `https://api.ftcscout.org/rest/v1/teams/search?region=${regionCode}&limit=100`;
-                    
-                    const response = await fetch(url);
-                    if (!response.ok) {
-                        throw new Error(`Region API error: ${response.status}`);
-                    }
-                    
-                    const regionTeams = await response.json();
-                    if (!regionTeams || regionTeams.length === 0) {
-                        throw new Error(`No teams found in region ${regionCode}`);
-                    }
-                    
-                    teams = regionTeams.map(team => ({
-                        number: team.number,
-                        name: team.name || `Team ${team.number}`,
-                        city: team.city || '',
-                        state: team.state || '',
-                        country: team.country || ''
-                    }));
-                    
-                    // Find region name from dropdown for display
-                    const regionSelect = document.getElementById('region-select');
-                    const selectedOption = regionSelect.options[regionSelect.selectedIndex];
-                    const regionName = selectedOption.text.split(' (')[0]; // Get name without code
-                    eventName = `${regionName} Teams`;
-                } else {
-                    // Fetch sample teams (limited)
-                    debugLog("Fetching sample of teams...");
-                    teams = await fetchLimitedTeams(season);
-                    eventName = "Sample FTC Teams";
-                }
+                // Fetch teams with limit
+                debugLog("Fetching limited teams sample...");
+                teams = await fetchLimitedTeams(season);
                 
                 debugLog(`Found ${teams.length} teams`);
                 
@@ -903,7 +940,7 @@
                 comparisonContainer.innerHTML = `
                     <div class="error-message">
                         <p>Error: ${error.message}</p>
-                        <p>Please try selecting a different region or season.</p>
+                        <p>Please try using a region code like "MN" instead.</p>
                     </div>
                 `;
             }
@@ -994,42 +1031,15 @@
             
             try {
                 const season = seasonSelect.value;
-                const regionState = regionCodeInput.value.trim();
                 
-                debugLog(`Season: ${season}, Region: ${regionState}`);
+                debugLog(`Season: ${season}`);
                 
                 let teams = [];
                 let eventName = null;
                 
-                if (regionState) {
-                    // Directly fetch teams for a specific region using the search endpoint
-                    debugLog(`Fetching teams for region: ${regionState}`);
-                    const url = `https://api.ftcscout.org/rest/v1/teams/search?region=${regionState}&limit=100`;
-                    
-                    const response = await fetch(url);
-                    if (!response.ok) {
-                        throw new Error(`Region API error: ${response.status}`);
-                    }
-                    
-                    const regionTeams = await response.json();
-                    if (!regionTeams || regionTeams.length === 0) {
-                        throw new Error(`No teams found in region ${regionState}`);
-                    }
-                    
-                    teams = regionTeams.map(team => ({
-                        number: team.number,
-                        name: team.name || `Team ${team.number}`,
-                        city: team.city || '',
-                        state: team.state || '',
-                        country: team.country || ''
-                    }));
-                    
-                    eventName = `${regionState} Teams`;
-                } else {
-                    // Fetch teams with limit
-                    debugLog("Fetching limited teams sample...");
-                    teams = await fetchLimitedTeams(season);
-                }
+                // Fetch teams with limit
+                debugLog("Fetching limited teams sample...");
+                teams = await fetchLimitedTeams(season);
                 
                 debugLog(`Found ${teams.length} teams`);
                 
