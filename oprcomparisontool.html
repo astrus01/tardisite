@@ -460,7 +460,7 @@
                 .map(t => t.country.trim())))
                 .sort();
             
-            // Generate the HTML
+            // Generate the HTML with proper formatting and clear indication of pagination
             const html = `
                 <style>
                     /* Fix centering issues */
@@ -542,6 +542,67 @@
                         font-size: 0.9rem;
                         color: #aaa;
                     }
+                    
+                    /* Fix pagination styling */
+                    .pagination {
+                        text-align: center;
+                        margin: 15px 0;
+                        display: flex;
+                        justify-content: center;
+                        align-items: center;
+                        gap: 10px;
+                    }
+                    .pagination span {
+                        color: #e0e0e0;
+                        display: inline-flex;
+                        align-items: center;
+                    }
+                    #page-input {
+                        width: 40px;
+                        text-align: center;
+                        background: #2a2a2a;
+                        color: #e0e0e0;
+                        border: 1px solid #444;
+                        border-radius: 3px;
+                        padding: 3px;
+                        margin: 0 5px;
+                    }
+                    .compact-btn {
+                        padding: 3px 8px;
+                        background-color: #6c00ab;
+                        color: white;
+                        border: none;
+                        border-radius: 3px;
+                        cursor: pointer;
+                        font-size: 0.9em;
+                        height: auto;
+                        width: auto;
+                    }
+                    .compact-btn:hover {
+                        background-color: #8400d1;
+                    }
+                    
+                    /* Progress bar styling */
+                    progress {
+                        -webkit-appearance: none;
+                        appearance: none;
+                        background-color: #333;
+                        border: none;
+                        border-radius: 4px;
+                        height: 8px;
+                    }
+                    progress::-webkit-progress-bar {
+                        background-color: #333;
+                        border-radius: 4px;
+                    }
+                    progress::-webkit-progress-value {
+                        background-color: #a200ff;
+                        border-radius: 4px;
+                    }
+                    progress::-moz-progress-bar {
+                        background-color: #a200ff;
+                        border-radius: 4px;
+                    }
                 </style>
                     
                     <div class="my-team-summary">
@@ -595,16 +656,16 @@
                     <div class="teams-list" id="teams-list"></div>
                 
                 <div class="pagination">
-                    <button id="prev-page" class="compact-btn" style="width:auto; padding:3px 6px; margin-right:5px;">&laquo; Prev</button>
-                    <span>Page <input type="number" id="page-input" min="1" value="1" style="width:40px; height:24px; padding:2px;"> of <span id="total-pages">1</span></span>
-                    <button id="next-page" class="compact-btn" style="width:auto; padding:3px 6px; margin-left:5px;">Next &raquo;</button>
+                        <button id="prev-page" class="compact-btn">&laquo; Prev</button>
+                        <span>Page <input type="number" id="page-input" min="1" value="1"> of&nbsp;<span id="total-pages">1</span></span>
+                        <button id="next-page" class="compact-btn">Next &raquo;</button>
                 </div>
                 
                 <p class="note">Note: Teams without OPR data are not shown</p>
                 
                 <div style="text-align: center; margin-top: 20px;">
                     ${!window.isLoadingTeams ? `
-                        <button id="load-more-teams" class="compact-btn" style="width:auto; padding:8px 15px; background-color: #006b3a;">
+                            <button id="load-more-teams" class="compact-btn" style="padding:8px 15px; background-color: #006b3a;">
                             Load More Teams
                         </button>
                         <p class="load-more-note">
@@ -616,7 +677,7 @@
             
             comparisonContainer.innerHTML = html;
             
-            // Function to render a team row - ADD ID TO EACH ROW
+            // Function to render a team row with ID for each
             function renderTeamRow(team, index) {
                 const isMyTeam = team.number === myTeamNumber;
                 const rank = index + 1;
@@ -626,7 +687,6 @@
                 
                 const location = [team.city, team.state, team.country].filter(Boolean).join(', ');
                 
-                // Make sure each row has an id attribute
                 return `
                     <div class="team-row ${isMyTeam ? 'highlighted' : ''}" 
                         id="team-row-${team.number}" 
@@ -655,12 +715,6 @@
                 
                 document.getElementById('page-input').value = page;
                 currentPage = page;
-                
-                // Add debug info
-                console.log(`Displayed ${teamsToShow.length} teams, page ${page}`);
-                teamsToShow.forEach(team => {
-                    console.log(`Team ${team.number} has ID: team-row-${team.number}`);
-                });
             }
             
             // Set up pagination controls
@@ -695,33 +749,11 @@
             document.getElementById('jump-to-my-team').addEventListener('click', () => {
                 console.log(`Jumping to team ${myTeamNumber}`);
                 
-                // First check if the team is in the current view
-                const myTeamRow = document.getElementById(`team-row-${myTeamNumber}`);
-                console.log(`Found team row? ${myTeamRow ? 'Yes' : 'No'}`);
-                
-                if (myTeamRow) {
-                    // Team is in current view
-                    document.querySelectorAll('.team-row').forEach(row => {
-                        row.classList.remove('highlighted');
-                    });
-                    
-                    myTeamRow.classList.add('highlighted');
-                    myTeamRow.scrollIntoView({ behavior: 'smooth', block: 'center' });
-                    
-                    // Flash effect
-                    myTeamRow.style.transition = 'background-color 0.3s';
-                    myTeamRow.style.backgroundColor = '#6c00ab';
-                    setTimeout(() => {
-                        myTeamRow.style.backgroundColor = '';
-                    }, 500);
-                } else {
                     // Find which page the team is on
                     const myTeamIndex = currentTeams.findIndex(t => t.number === myTeamNumber);
-                    console.log(`Team ${myTeamNumber} is at index ${myTeamIndex}`);
                     
                     if (myTeamIndex >= 0) {
                         const page = Math.floor(myTeamIndex / teamsPerPage) + 1;
-                        console.log(`Team ${myTeamNumber} is on page ${page}`);
                         
                         // Navigate to that page
                 showTeamPage(page);
@@ -729,14 +761,8 @@
                         // Wait for the page to update then highlight the team
                 setTimeout(() => {
                             const teamRowAfterPageChange = document.getElementById(`team-row-${myTeamNumber}`);
-                            console.log(`Found team row after page change? ${teamRowAfterPageChange ? 'Yes' : 'No'}`);
                             
                             if (teamRowAfterPageChange) {
-                                document.querySelectorAll('.team-row').forEach(row => {
-                                    row.classList.remove('highlighted');
-                                });
-                                
-                                teamRowAfterPageChange.classList.add('highlighted');
                                 teamRowAfterPageChange.scrollIntoView({ behavior: 'smooth', block: 'center' });
                                 
                                 // Flash effect
@@ -745,116 +771,39 @@
                                 setTimeout(() => {
                                     teamRowAfterPageChange.style.backgroundColor = '';
                                 }, 500);
-                            } else {
-                                console.error(`Could not find team ${myTeamNumber} after page change`);
-                                alert(`Team ${myTeamNumber} should be on page ${page} but could not be found`);
                     }
                 }, 100);
                     } else {
-                        console.error(`Team ${myTeamNumber} not found in data`);
                         alert(`Team ${myTeamNumber} not found in dataset`);
-                    }
                 }
             });
             
-            // Team search functionality also needs to be fixed similarly
-            document.getElementById('search-btn').addEventListener('click', () => {
-                const searchInput = document.getElementById('team-search');
-                const teamNumber = parseInt(searchInput.value);
-                
-                if (isNaN(teamNumber)) {
-                    alert('Please enter a valid team number');
-                    return;
-                }
-                
-                console.log(`Searching for team ${teamNumber}`);
-                
-                // First check if the team is in the current view
-                const teamRow = document.getElementById(`team-row-${teamNumber}`);
-                console.log(`Found team row? ${teamRow ? 'Yes' : 'No'}`);
-                
-                if (teamRow) {
-                    // Team is in current view
-                    document.querySelectorAll('.team-row').forEach(row => {
-                        row.classList.remove('highlighted');
-                    });
-                    
-                    teamRow.classList.add('highlighted');
-                    teamRow.scrollIntoView({ behavior: 'smooth', block: 'center' });
-                    
-                    // Flash effect
-                    teamRow.style.transition = 'background-color 0.3s';
-                    teamRow.style.backgroundColor = '#6c00ab';
-                    setTimeout(() => {
-                        teamRow.style.backgroundColor = '';
-                    }, 500);
-                } else {
-                    // Find which page the team is on
-                    const teamIndex = currentTeams.findIndex(t => t.number === teamNumber);
-                    console.log(`Team ${teamNumber} is at index ${teamIndex}`);
-                    
-                    if (teamIndex >= 0) {
-                        const page = Math.floor(teamIndex / teamsPerPage) + 1;
-                        console.log(`Team ${teamNumber} is on page ${page}`);
-                        
-                        // Navigate to that page
-                showTeamPage(page);
-                
-                        // Wait for the page to update then highlight the team
-                setTimeout(() => {
-                            const teamRowAfterPageChange = document.getElementById(`team-row-${teamNumber}`);
-                            console.log(`Found team row after page change? ${teamRowAfterPageChange ? 'Yes' : 'No'}`);
-                            
-                            if (teamRowAfterPageChange) {
-                                document.querySelectorAll('.team-row').forEach(row => {
-                                    row.classList.remove('highlighted');
-                                });
-                                
-                                teamRowAfterPageChange.classList.add('highlighted');
-                                teamRowAfterPageChange.scrollIntoView({ behavior: 'smooth', block: 'center' });
-                                
-                                // Flash effect
-                                teamRowAfterPageChange.style.transition = 'background-color 0.3s';
-                                teamRowAfterPageChange.style.backgroundColor = '#6c00ab';
-                                setTimeout(() => {
-                                    teamRowAfterPageChange.style.backgroundColor = '';
-                                }, 500);
-                            } else {
-                                console.error(`Could not find team ${teamNumber} after page change`);
-                                alert(`Team ${teamNumber} should be on page ${page} but could not be found`);
-                    }
-                }, 100);
-                    } else {
-                        console.error(`Team ${teamNumber} not found in data`);
-                        alert(`Team ${teamNumber} not found in dataset`);
-                    }
-                }
-            });
-            
-            // Add region filter functionality that always includes MY_TEAM_NUMBER
+            // Add region filter functionality
             const regionFilter = document.getElementById('region-filter');
             regionFilter.addEventListener('change', () => {
                 const selectedRegion = regionFilter.value;
-                const teamsList = document.getElementById('teams-list');
-                const teamRows = teamsList.getElementsByClassName('team-row');
                 
-                Array.from(teamRows).forEach(row => {
-                    const teamNumber = parseInt(row.getAttribute('data-team'));
-                    const team = teams.find(t => t.number === teamNumber);
-                    
-                    // Always show MY_TEAM_NUMBER and teams from the selected region
-                    if (!selectedRegion || 
-                        teamNumber === MY_TEAM_NUMBER || 
-                        (team.state && team.state.includes(selectedRegion)) || 
-                        team.country === selectedRegion) {
-                        row.style.display = '';
+                if (!selectedRegion) {
+                    // Show all teams
+                    currentTeams = sortedTeams;
                     } else {
-                        row.style.display = 'none';
-                    }
-                });
+                    // Filter by region, but always include MY_TEAM_NUMBER
+                    currentTeams = sortedTeams.filter(team => 
+                        team.number === MY_TEAM_NUMBER || 
+                        (team.state && team.state.includes(selectedRegion)) || 
+                        team.country === selectedRegion
+                    );
+                }
+                
+                // Update pagination for filtered list
+                const totalPages = Math.ceil(currentTeams.length / teamsPerPage);
+                document.getElementById('total-pages').textContent = totalPages;
+                
+                // Reset to first page with new filter
+                showTeamPage(1);
             });
             
-            // After setting up all the other elements
+            // Set up team search functionality
             initSearchBox();
             
             // Add event listener for "Load More" button
@@ -872,11 +821,440 @@
                 // Process next batch of teams
                 await processNextTeamBatch(season, teamsData.teams);
                 
-                // Reload the comparison with the updated cache
-                compareTeams();
+                // The process will update the UI when complete
             });
         }
-        
+
+        // Fix compareTeams function to properly load and display cached data first
+        async function compareTeams(forceRefresh = false) {
+            // Don't start loading if we're already loading
+            if (window.isLoadingTeams) {
+                debugLog("Already loading teams. Not starting a new loading process.");
+                return;
+            }
+
+            comparisonContainer.innerHTML = '<div class="loading">Loading teams with OPR data...</div>';
+            debugLog("Starting team comparison...");
+            
+            try {
+                const season = seasonSelect.value;
+                debugLog(`Season: ${season}`);
+                
+                // Check for cached data first (unless force refresh)
+                const cachedData = forceRefresh ? null : getCachedTeamsData(season);
+                let teamsWithStats = [];
+                let apiMethod = "Unknown";
+
+                if (cachedData && !forceRefresh) {
+                    // Use cached data
+                    comparisonContainer.innerHTML = `
+                        <div class="loading">
+                            <h3>Loading cached teams with OPR data...</h3>
+                            <p>Using ${cachedData.teams.length} teams from cache</p>
+                        </div>
+                    `;
+                    
+                    teamsWithStats = cachedData.teams;
+                    apiMethod = cachedData.apiMethod;
+                    debugLog(`Using ${teamsWithStats.length} teams from cache`);
+                    
+                    // IMPORTANT: Display the cached teams FIRST before attempting to load more
+                    // This ensures the UI shows the cached data immediately
+                    displayTeamComparison(teamsWithStats, MY_TEAM_NUMBER, 
+                        `FTC Teams with OPR Data (${teamsWithStats.length} of 16,100 teams)`);
+                    
+                    // Add info banner after displaying teams
+                    setTimeout(() => {
+                        addInfoBanner(teamsWithStats, cachedData, forceRefresh);
+                    }, 100);
+                    
+                    // Only start automatic loading if we have some teams but not all
+                    if (teamsWithStats.length > 0 && teamsWithStats.length < 5000) {
+                        // Delay loading more teams to ensure UI is fully rendered
+                        setTimeout(async () => {
+                            if (!window.isLoadingTeams) {
+                                debugLog(`Starting automatic continuation of team loading from cached point`);
+                                await processNextTeamBatch(season, teamsWithStats);
+                            }
+                        }, 2000);
+                    }
+                } else {
+                    // No cache or forced refresh, fetch new data with live display
+                    debugLog(forceRefresh ? 
+                        "Force refreshing data from API" : 
+                        "No cache available, fetching new data");
+                    
+                    // Start fresh loading - this sets isLoadingTeams = true internally
+                    window.isLoadingTeams = true;
+                    const result = await fetchAllTeams(season);
+                    teamsWithStats = result.teams;
+                    apiMethod = result.apiMethod;
+                    window.isLoadingTeams = false;
+                    
+                    // Cache the new results
+                    cacheTeamsData(season, teamsWithStats, apiMethod);
+                    
+                    // Display the results
+                    displayTeamComparison(teamsWithStats, MY_TEAM_NUMBER, 
+                        `FTC Teams with OPR Data (${teamsWithStats.length} of 16,100 teams)`);
+                
+                    // Add info banner
+                setTimeout(() => {
+                        addInfoBanner(teamsWithStats, { timestamp: Date.now() }, forceRefresh);
+                    }, 100);
+                }
+            } catch (error) {
+                window.isLoadingTeams = false;
+                debugLog(`Error: ${error.message}`);
+                comparisonContainer.innerHTML = `
+                    <div class="error-message">
+                        <p>Error: ${error.message}</p>
+                        <p>We encountered an issue retrieving the team database.</p>
+                        <button id="retry-btn" class="compact-btn" style="margin-top:10px;">Retry</button>
+                        ${!window.isLoadingTeams ? `
+                            <button id="clear-cache-btn" class="compact-btn" style="margin-top:10px; margin-left:10px; background-color:#6b3030;">Clear Cache</button>
+                            <button id="force-refresh-btn" class="compact-btn" style="margin-top:10px; margin-left:10px; background-color:#006b3a;">Force Full Refresh</button>
+                        ` : ''}
+                    </div>
+                `;
+                document.getElementById('retry-btn')?.addEventListener('click', () => compareTeams());
+                document.getElementById('clear-cache-btn')?.addEventListener('click', () => {
+                    localStorage.removeItem(`ftc_opr_teams_${season}`);
+                    alert("Cache cleared. Retrying...");
+                    compareTeams();
+                });
+                document.getElementById('force-refresh-btn')?.addEventListener('click', () => {
+                    localStorage.removeItem(`ftc_opr_teams_${season}`);
+                    alert("Force refreshing all team data...");
+                    compareTeams(true);
+                });
+            }
+        }
+
+        // Add a helper function to add the info banner consistently
+        function addInfoBanner(teamsWithStats, cachedData, forceRefresh) {
+                    const infoDiv = document.createElement('div');
+                    infoDiv.className = 'api-info-banner';
+                    infoDiv.style.marginBottom = '10px';
+                    infoDiv.style.fontSize = '0.9rem';
+                    infoDiv.style.backgroundColor = '#274535';
+                    infoDiv.style.padding = '8px';
+                    infoDiv.style.borderRadius = '4px';
+                    infoDiv.style.textAlign = 'center';
+                    
+                    // Add cache age information if using cached data
+                    let cacheInfo = '';
+                    if (cachedData && !forceRefresh) {
+                        const cacheAge = Math.round((Date.now() - cachedData.timestamp) / 3600000);
+                        cacheInfo = ` (cached ${cacheAge} hours ago)`;
+                    }
+                    
+                    infoDiv.innerHTML = `
+                        <div>${teamsWithStats.length} teams with OPR data available${cacheInfo}</div>
+                        ${cachedData && !forceRefresh ? 
+                            `<div style="font-size: 0.8rem; margin-top: 4px;">
+                                <a href="#" id="clear-cache-link" style="color: #a0d8ff;">Clear cache and refresh</a>
+                            </div>` : ''}
+                    `;
+                    
+                    const container = document.querySelector('#comparison-container');
+            if (container) {
+                // Check if banner already exists and remove it
+                const existingBanner = container.querySelector('.api-info-banner');
+                if (existingBanner) {
+                    existingBanner.remove();
+                }
+                
+                // Insert the new banner at the top
+                if (container.firstChild) {
+                        container.insertBefore(infoDiv, container.firstChild);
+                } else {
+                    container.appendChild(infoDiv);
+                }
+                        
+                        // Add event listener to the "Clear cache" link
+                        document.getElementById('clear-cache-link')?.addEventListener('click', (e) => {
+                            e.preventDefault();
+                            const season = seasonSelect.value;
+                    clearCache(season);
+                            alert(`Cache cleared for season ${season}. Running full refresh...`);
+                    compareTeams(true);
+                });
+            }
+        }
+
+        // Fix the processNextTeamBatch function to ensure proper styling and status display
+        async function processNextTeamBatch(season, existingTeams) {
+            if (window.isLoadingTeams) {
+                debugLog('Already loading teams. Please wait for the current loading to complete.');
+                return;
+            }
+            
+            // Set the loading flag to prevent multiple processes
+            window.isLoadingTeams = true;
+            window.stopTeamLoading = false;
+            
+            try {
+                debugLog(`Starting to process next team batch, continuing from existing ${existingTeams.length} teams`);
+                
+                // Initialize teamsMap with existing teams
+                const teamsMap = new Map();
+                for (const team of existingTeams) {
+                    teamsMap.set(team.number, team);
+                }
+                
+                // Load the team list
+                const teamListResponse = await fetch('teamlist.txt');
+                const teamListText = await teamListResponse.text();
+                const lines = teamListText.split('\n').filter(line => line.trim());
+                
+                const allTeamNumbers = new Set();
+                for (let i = 0; i < lines.length; i += 3) {
+                    if (i < lines.length) {
+                        const teamNumber = parseInt(lines[i], 10);
+                        if (!isNaN(teamNumber)) {
+                            allTeamNumbers.add(teamNumber);
+                        }
+                    }
+                }
+                
+                // Get the highest team number from cache to continue from that point
+                const lastProcessedTeam = existingTeams.length > 0 ? 
+                    Math.max(...existingTeams.map(t => t.number)) : 0;
+                
+                // Filter for unprocessed teams
+                const unprocessedTeamNumbers = Array.from(allTeamNumbers)
+                    .filter(num => num > lastProcessedTeam)
+                    .sort((a, b) => a - b);
+                    
+                if (unprocessedTeamNumbers.length === 0) {
+                    debugLog('All teams have been processed!');
+                    window.isLoadingTeams = false;
+                    return;
+                }
+
+                debugLog(`Continuing from team ${lastProcessedTeam}, ${unprocessedTeamNumbers.length} teams remaining`);
+
+                // Create the floating progress display with improved styling
+                const progressDisplay = document.createElement('div');
+                progressDisplay.id = 'progress-display';
+                progressDisplay.style.position = 'fixed';
+                progressDisplay.style.bottom = '20px';
+                progressDisplay.style.right = '20px';
+                progressDisplay.style.backgroundColor = '#1e1e1e';
+                progressDisplay.style.border = '1px solid #444';
+                progressDisplay.style.padding = '15px';
+                progressDisplay.style.borderRadius = '4px';
+                progressDisplay.style.zIndex = '1000';
+                progressDisplay.style.boxShadow = '0 2px 10px rgba(0,0,0,0.3)';
+                progressDisplay.style.minWidth = '250px';
+                
+                // Make sure the progress display shows the correct starting position
+                const totalTeamsCount = allTeamNumbers.size;
+                const startingProgress = existingTeams.length;
+                
+                progressDisplay.innerHTML = `
+                    <div style="margin-bottom: 10px; font-weight: bold; color: #e0e0e0;">Loading More Teams...</div>
+                    <progress id="batch-progress" value="${startingProgress}" max="${totalTeamsCount}" 
+                        style="width:100%; margin-bottom: 8px; height: 8px; -webkit-appearance: none; appearance: none;">
+                    </progress>
+                    <style>
+                        #batch-progress {
+                            -webkit-appearance: none;
+                            appearance: none;
+                            background-color: #333;
+                            border: none;
+                            border-radius: 4px;
+                            height: 8px;
+                        }
+                        #batch-progress::-webkit-progress-bar {
+                            background-color: #333;
+                            border-radius: 4px;
+                        }
+                        #batch-progress::-webkit-progress-value {
+                            background-color: #a200ff;
+                            border-radius: 4px;
+                        }
+                        #batch-progress::-moz-progress-bar {
+                            background-color: #a200ff;
+                            border-radius: 4px;
+                        }
+                    </style>
+                    <div id="batch-status" style="font-size: 0.9em; color: #aaa;">
+                        Continuing from team ${lastProcessedTeam + 1}, ${startingProgress} teams already loaded
+                    </div>
+                    <div id="teams-found" style="font-size: 0.9em; margin-top: 5px; color: #a200ff;">
+                        ${teamsMap.size} teams with OPR data
+                    </div>
+                    <div id="parallel-status" style="font-size: 0.8em; margin-top: 5px; color: #888;">
+                        Running parallel requests
+                    </div>
+                    <button id="stop-loading" style="
+                        margin-top: 10px;
+                        background-color: #6b3030;
+                        color: white;
+                        border: none;
+                        padding: 5px 10px;
+                        border-radius: 3px;
+                        cursor: pointer;
+                        width: 100%;
+                    ">Stop Loading (Use Current Teams)</button>
+                `;
+                document.body.appendChild(progressDisplay);
+                
+                // Process teams in parallel with live updates
+                const PARALLEL_REQUESTS = 15;
+                const BATCH_SIZE = 20;
+                const UPDATE_INTERVAL = 250;
+                
+                // Add event listener to stop button BEFORE starting processing
+                const stopLoadingBtn = document.getElementById('stop-loading');
+                if (stopLoadingBtn) {
+                    stopLoadingBtn.addEventListener('click', () => {
+                        window.stopTeamLoading = true;
+                        stopLoadingBtn.textContent = 'Stopping...';
+                        stopLoadingBtn.disabled = true;
+                        debugLog('Stop loading requested - will complete current batch and stop');
+                    });
+                }
+
+                let lastUpdateTime = Date.now();
+                let processedCount = startingProgress;
+                
+                // Function to update the progress display
+                function updateProgressDisplay() {
+                    const teamsFoundEl = document.getElementById('teams-found');
+                    const progressEl = document.getElementById('batch-progress');
+                    const statusEl = document.getElementById('batch-status');
+                    
+                    if (teamsFoundEl) teamsFoundEl.textContent = `${teamsMap.size} teams with OPR data`;
+                    if (progressEl) progressEl.value = processedCount;
+                    if (statusEl) statusEl.textContent = 
+                        `Processed ${processedCount} of ${totalTeamsCount} teams (${unprocessedTeamNumbers.length - (processedCount - startingProgress)} remaining)`;
+                }
+
+                // Process teams in batches
+                for (let i = 0; i < unprocessedTeamNumbers.length; i += BATCH_SIZE * PARALLEL_REQUESTS) {
+                    if (window.stopTeamLoading) {
+                        debugLog('Stopping team loading as requested');
+                        break;
+                    }
+
+                    const batch = unprocessedTeamNumbers.slice(i, i + BATCH_SIZE * PARALLEL_REQUESTS);
+                    const promises = [];
+                    const newTeams = [];
+
+                    // Create parallel requests
+                    for (let j = 0; j < PARALLEL_REQUESTS; j++) {
+                        const teamNumbers = batch.filter((_, idx) => idx % PARALLEL_REQUESTS === j);
+                        promises.push((async () => {
+                            for (const teamNumber of teamNumbers) {
+                                if (window.stopTeamLoading) break;
+                                try {
+                                    const result = await fetchTeamByGraphQL(teamNumber, season);
+                                    if (result.stats.hasRealData) {
+                                        teamsMap.set(teamNumber, result);
+                                        newTeams.push(result);
+                                        processedCount++;
+
+                                        // Update progress display more frequently
+                                        if (processedCount % 5 === 0) {
+                                            updateProgressDisplay();
+                                        }
+                                    }
+                                } catch (error) {
+                                    if (error.message.includes('429')) {
+                                        await new Promise(resolve => setTimeout(resolve, 1000));
+                                        j--; // Retry this team
+                                        continue;
+                                    }
+                                    console.error(`Error fetching team ${teamNumber}:`, error);
+                                }
+                            }
+                        })());
+                    }
+
+                    // Wait for all parallel requests to complete
+                    await Promise.all(promises);
+
+                    // Update the display with all new teams
+                    if (newTeams.length > 0) {
+                        const allTeams = Array.from(teamsMap.values());
+                        const now = Date.now();
+                        
+                        // Always update the progress display
+                        updateProgressDisplay();
+                        
+                        // Less frequent UI updates (for performance)
+                        if (now - lastUpdateTime >= UPDATE_INTERVAL) {
+                            displayTeamComparison(allTeams, MY_TEAM_NUMBER, 
+                                `FTC Teams with OPR Data (${allTeams.length} of ${totalTeamsCount} teams)`);
+                            lastUpdateTime = now;
+                        }
+                        
+                        // Cache periodically
+                        if (i % (BATCH_SIZE * PARALLEL_REQUESTS * 2) === 0) {
+                            debugLog(`Periodic cache update with ${allTeams.length} teams`);
+                            cacheTeamsData(season, allTeams, "GraphQL");
+                        }
+                    }
+                }
+
+                // Final updates - ensure this happens even if loading is stopped
+                try {
+                    const finalTeams = Array.from(teamsMap.values());
+                    debugLog(`Final cache update with ${finalTeams.length} teams`);
+                    cacheTeamsData(season, finalTeams, "GraphQL");
+                    
+                    // Remove the progress display
+                    const progressElement = document.getElementById('progress-display');
+                    if (progressElement) {
+                        progressElement.style.transition = 'opacity 0.5s';
+                        progressElement.style.opacity = '0';
+                        setTimeout(() => {
+                            if (progressElement.parentNode) {
+                                progressElement.parentNode.removeChild(progressElement);
+                            }
+                        }, 500);
+                    }
+                    
+                    // Clear loading flags
+                    window.isLoadingTeams = false;
+                    window.stopTeamLoading = false;
+                    
+                    // Do a final display refresh with pagination included
+                    displayTeamComparison(finalTeams, MY_TEAM_NUMBER, 
+                        `FTC Teams with OPR Data (${finalTeams.length} of ${totalTeamsCount} teams)`);
+                    
+                    return finalTeams;
+                } catch (cacheError) {
+                    debugLog(`Error during final cache: ${cacheError.message}`);
+                    window.isLoadingTeams = false;
+                    window.stopTeamLoading = false;
+                    
+                    const teams = Array.from(teamsMap.values());
+                    displayTeamComparison(teams, MY_TEAM_NUMBER, 
+                        `FTC Teams with OPR Data (${teams.length} of ${totalTeamsCount} teams)`);
+                    
+                    return teams; // Return teams even if caching fails
+                }
+            } catch (error) {
+                // Clean up on error
+                window.isLoadingTeams = false;
+                window.stopTeamLoading = false;
+                
+                // Remove the progress display if there's an error
+                const progressElement = document.getElementById('progress-display');
+                if (progressElement && progressElement.parentNode) {
+                    progressElement.parentNode.removeChild(progressElement);
+                }
+                
+                debugLog(`Error processing batch: ${error.message}`);
+                alert(`Error loading more teams: ${error.message}`);
+                return existingTeams; // Return the original teams on error
+            }
+        }
+
         // Fix the team search functionality
         document.addEventListener('DOMContentLoaded', () => {
             // Make sure any previously bound event listeners don't interfere
@@ -958,76 +1336,354 @@
         // Add caching system for faster loads
         const CACHE_VERSION = 1;
 
-        // Improve the caching mechanism to ensure all teams are saved properly
+        // Improved caching system to ensure teams are properly saved
         function cacheTeamsData(season, teams, apiMethod) {
+            console.log(`Attempting to cache ${teams.length} teams for season ${season}`);
             try {
                 const currentTime = Date.now();
                 
                 // Add timestamps to teams that don't have them
-                const teamsWithTimestamps = teams.map(team => {
-                    if (!team.cachedAt) {
-                        return {...team, cachedAt: currentTime};
-                    }
-                    return team;
-                });
+                const teamsWithTimestamps = teams.map(team => ({
+                    ...team,
+                    cachedAt: team.cachedAt || currentTime
+                }));
                 
                 const cacheData = {
                     version: CACHE_VERSION,
                     timestamp: currentTime,
-                    teams: teamsWithTimestamps,
                     apiMethod: apiMethod,
                     season: season
                 };
                 
-                // Try to save in smaller chunks if needed
+                // Split the cache into smaller chunks for reliability
+                const MAX_CHUNK_SIZE = 200; // Smaller chunks to avoid storage limits
+                const chunks = [];
+                
+                for (let i = 0; i < teamsWithTimestamps.length; i += MAX_CHUNK_SIZE) {
+                    const chunk = teamsWithTimestamps.slice(i, i + MAX_CHUNK_SIZE);
+                    chunks.push(chunk);
+                }
+                
+                // Store metadata about chunks
+                const cacheMetadata = {
+                    season: season,
+                    version: CACHE_VERSION,
+                    timestamp: currentTime,
+                    totalTeams: teamsWithTimestamps.length,
+                    chunks: chunks.length,
+                    apiMethod: apiMethod
+                };
+                
+                // Store the metadata
                 try {
-                    localStorage.setItem(`ftc_opr_teams_${season}`, JSON.stringify(cacheData));
-                    debugLog(`Successfully cached ${teams.length} teams for season ${season}`);
-                } catch (storageError) {
-                    // If localStorage is full, try cleaning up other items first
-                    debugLog(`Storage error when caching ${teams.length} teams: ${storageError.message}`);
-                    if (storageError.name === 'QuotaExceededError') {
-                        // Clear older caches for other seasons but keep current season
-                        for (let i = 0; i < localStorage.length; i++) {
-                            const key = localStorage.key(i);
-                            if (key && key.startsWith('ftc_opr_teams_') && key !== `ftc_opr_teams_${season}`) {
-                                debugLog(`Removing older cache: ${key}`);
-                                localStorage.removeItem(key);
+                    localStorage.setItem(`ftc_opr_teams_${season}_metadata`, JSON.stringify(cacheMetadata));
+                    console.log(`Stored cache metadata: ${chunks.length} chunks, ${teamsWithTimestamps.length} teams`);
+                } catch (e) {
+                    console.error(`Failed to store cache metadata: ${e.message}`);
+                }
+                
+                // Store each chunk separately with retry logic
+                let successfulChunks = 0;
+                for (let i = 0; i < chunks.length; i++) {
+                    const chunkData = {
+                        ...cacheData,
+                        teams: chunks[i],
+                        chunkIndex: i,
+                        totalChunks: chunks.length
+                    };
+                    
+                    try {
+                        const chunkKey = `ftc_opr_teams_${season}_chunk_${i}`;
+                        const chunkJson = JSON.stringify(chunkData);
+                        localStorage.setItem(chunkKey, chunkJson);
+                        successfulChunks++;
+                        
+                        // Verify the data was saved properly
+                        const savedData = localStorage.getItem(chunkKey);
+                        if (!savedData || savedData.length < 10) {
+                            throw new Error(`Chunk ${i} wasn't saved properly`);
+                        }
+                    } catch (storageError) {
+                        console.error(`Error storing chunk ${i}: ${storageError.message}`);
+                        // If we fail a chunk, try a smaller chunk size for that portion
+                        if (MAX_CHUNK_SIZE > 50 && chunks[i].length > 50) {
+                            console.log(`Trying to save chunk ${i} with smaller size`);
+                            const smallerChunks = [];
+                            const problematicChunk = chunks[i];
+                            for (let j = 0; j < problematicChunk.length; j += 50) {
+                                const miniChunk = problematicChunk.slice(j, j + 50);
+                                const miniChunkData = {
+                                    ...cacheData,
+                                    teams: miniChunk,
+                                    chunkIndex: `${i}_${j/50}`,
+                                    isSubChunk: true,
+                                    parentChunk: i,
+                                    totalChunks: chunks.length
+                                };
+                                try {
+                                    localStorage.setItem(`ftc_opr_teams_${season}_subchunk_${i}_${j/50}`, JSON.stringify(miniChunkData));
+                                    successfulChunks += 0.2; // Count partial success
+                                    console.log(`Saved subchunk ${i}_${j/50}`);
+                                } catch (e) {
+                                    console.error(`Failed to save even smaller chunk: ${e.message}`);
+                                }
                             }
                         }
-                        
-                        // Try again
-                        localStorage.setItem(`ftc_opr_teams_${season}`, JSON.stringify(cacheData));
-                        debugLog(`Successfully cached ${teams.length} teams after clearing older caches`);
                     }
                 }
+                
+                // Update the count of chunks we successfully stored
+                try {
+                    localStorage.setItem(`ftc_opr_teams_${season}_successful_chunks`, successfulChunks.toString());
+                    console.log(`Successfully cached ${Math.floor(successfulChunks)} full chunks and ${(successfulChunks % 1) * 5} subchunks for season ${season}`);
+                } catch (e) {
+                    console.error(`Failed to update successful chunks count: ${e.message}`);
+                }
+                
+                // Let the user know the cache was updated
+                const teamsCount = teams.length;
+                const cachingResult = document.createElement('div');
+                cachingResult.style.padding = '10px';
+                cachingResult.style.margin = '10px 0';
+                cachingResult.style.backgroundColor = '#274535';
+                cachingResult.style.borderRadius = '4px';
+                cachingResult.style.color = '#e0e0e0';
+                cachingResult.style.textAlign = 'center';
+                cachingResult.innerHTML = `
+                    <div style="font-weight: bold;">Cache Updated</div>
+                    <div>Successfully saved ${teamsCount} teams to browser storage</div>
+                `;
+                comparisonContainer.insertBefore(cachingResult, comparisonContainer.firstChild);
+                
+                // Auto-remove the notification after 5 seconds
+                setTimeout(() => {
+                    if (cachingResult.parentNode) {
+                        cachingResult.parentNode.removeChild(cachingResult);
+                    }
+                }, 5000);
+                
+                return true;
             } catch (e) {
-                debugLog(`Error caching teams: ${e.message}`);
+                console.error(`Error in cache saving system: ${e.message}`);
+                return false;
             }
         }
 
-        // Get cached teams data if available and not expired
+        // Improved cache retrieval to handle partial or corrupted cache
         function getCachedTeamsData(season) {
+            console.log(`Attempting to load cached teams for season ${season}`);
             try {
-                const cachedData = localStorage.getItem(`ftc_opr_teams_${season}`);
-                if (!cachedData) return null;
-                
-                const data = JSON.parse(cachedData);
-                
-                // Check version only, but don't check expiration
-                if (data.version !== CACHE_VERSION) {
-                    debugLog(`Cache version mismatch, clearing`);
-                    localStorage.removeItem(`ftc_opr_teams_${season}`);
+                // Check if we have metadata about the cache
+                const metadataJson = localStorage.getItem(`ftc_opr_teams_${season}_metadata`);
+                if (!metadataJson) {
+                    console.log(`No cache metadata found for season ${season}`);
                     return null;
                 }
                 
-                debugLog(`Using cached data with ${data.teams.length} teams from ${new Date(data.timestamp).toLocaleString()}`);
-                return data;
+                const metadata = JSON.parse(metadataJson);
+                console.log(`Found cache metadata: ${metadata.chunks} chunks, ${metadata.totalTeams} total teams`);
+                
+                // Check if the metadata is for the current cache version
+                if (metadata.version !== CACHE_VERSION) {
+                    console.log(`Cache version mismatch: ${metadata.version} vs ${CACHE_VERSION}`);
+                    clearCache(season);
+                    return null;
+                }
+                
+                // Get how many chunks we successfully stored
+                const successfulChunksStr = localStorage.getItem(`ftc_opr_teams_${season}_successful_chunks`);
+                const successfulChunks = successfulChunksStr ? parseFloat(successfulChunksStr) : 0;
+                console.log(`We have ${Math.floor(successfulChunks)} full chunks and ${(successfulChunks % 1) * 5} subchunks`);
+                
+                // Read all chunks
+                const allTeams = [];
+                let apiMethod = metadata.apiMethod || "Unknown";
+                let timestamp = metadata.timestamp || Date.now();
+                let chunksLoaded = 0;
+                
+                // First try regular chunks
+                for (let i = 0; i < metadata.chunks; i++) {
+                    const chunkData = localStorage.getItem(`ftc_opr_teams_${season}_chunk_${i}`);
+                    if (chunkData) {
+                        try {
+                            const chunk = JSON.parse(chunkData);
+                            allTeams.push(...chunk.teams);
+                            chunksLoaded++;
+                            console.log(`Loaded chunk ${i} with ${chunk.teams.length} teams`);
+                        } catch (e) {
+                            console.error(`Error parsing chunk ${i}: ${e.message}`);
+                            
+                            // Try to load subchunks if the main chunk failed
+                            let subchunksLoaded = 0;
+                            for (let j = 0; j < 10; j++) { // Try up to 10 subchunks per chunk
+                                const subchunkData = localStorage.getItem(`ftc_opr_teams_${season}_subchunk_${i}_${j}`);
+                                if (subchunkData) {
+                                    try {
+                                        const subchunk = JSON.parse(subchunkData);
+                                        allTeams.push(...subchunk.teams);
+                                        subchunksLoaded++;
+                                        console.log(`Loaded subchunk ${i}_${j} with ${subchunk.teams.length} teams`);
+                                    } catch (subErr) {
+                                        console.error(`Error parsing subchunk ${i}_${j}: ${subErr.message}`);
+                                    }
+                                }
+                            }
+                            console.log(`Loaded ${subchunksLoaded} subchunks for failed chunk ${i}`);
+                        }
+                    } else {
+                        console.log(`Chunk ${i} not found`);
+                    }
+                }
+                
+                // Remove duplicates by team number
+                const uniqueTeamsMap = new Map();
+                for (const team of allTeams) {
+                    if (team && team.number) {
+                        // Keep the most recent version of each team
+                        if (!uniqueTeamsMap.has(team.number) || 
+                            (team.cachedAt && uniqueTeamsMap.get(team.number).cachedAt < team.cachedAt)) {
+                            uniqueTeamsMap.set(team.number, team);
+                        }
+                    }
+                }
+                
+                const uniqueTeams = Array.from(uniqueTeamsMap.values());
+                console.log(`Loaded ${chunksLoaded} chunks with ${uniqueTeams.length} unique teams`);
+                
+                // Create a success message to show the user
+                const loadSuccessMsg = document.createElement('div');
+                loadSuccessMsg.style.padding = '10px';
+                loadSuccessMsg.style.margin = '10px 0';
+                loadSuccessMsg.style.backgroundColor = '#274535';
+                loadSuccessMsg.style.borderRadius = '4px';
+                loadSuccessMsg.style.color = '#e0e0e0';
+                loadSuccessMsg.style.textAlign = 'center';
+                loadSuccessMsg.innerHTML = `
+                    <div style="font-weight: bold;">Cache Loaded</div>
+                    <div>Successfully loaded ${uniqueTeams.length} teams from cache</div>
+                `;
+                comparisonContainer.insertBefore(loadSuccessMsg, comparisonContainer.firstChild);
+                
+                // Auto-remove the notification after 5 seconds
+                setTimeout(() => {
+                    if (loadSuccessMsg.parentNode) {
+                        loadSuccessMsg.parentNode.removeChild(loadSuccessMsg);
+                    }
+                }, 5000);
+                
+                return {
+                    version: CACHE_VERSION,
+                    timestamp: timestamp,
+                    teams: uniqueTeams,
+                    apiMethod: apiMethod,
+                    season: season
+                };
             } catch (e) {
-                debugLog(`Error reading cache: ${e.message}`);
+                console.error(`Error reading cache: ${e.message}`);
                 return null;
             }
         }
+
+        // More thorough cache clearing
+        function clearCache(season) {
+            console.log(`Clearing cache for season ${season}`);
+            try {
+                // Clear all metadata
+                localStorage.removeItem(`ftc_opr_teams_${season}_metadata`);
+                localStorage.removeItem(`ftc_opr_teams_${season}_successful_chunks`);
+                
+                // Clear both regular chunks and subchunks
+                for (let i = 0; i < 200; i++) { // Try up to 200 chunks
+                    localStorage.removeItem(`ftc_opr_teams_${season}_chunk_${i}`);
+                    
+                    // Also clear potential subchunks
+                    for (let j = 0; j < 10; j++) {
+                        localStorage.removeItem(`ftc_opr_teams_${season}_subchunk_${i}_${j}`);
+                    }
+                }
+                
+                // Clear any old format cache
+                localStorage.removeItem(`ftc_opr_teams_${season}`);
+                localStorage.removeItem(`ftc_opr_teams_${season}_chunks`);
+                
+                console.log(`Successfully cleared all cache data for season ${season}`);
+                
+                // Show confirmation to user
+                const clearMsg = document.createElement('div');
+                clearMsg.style.padding = '10px';
+                clearMsg.style.margin = '10px 0';
+                clearMsg.style.backgroundColor = '#6b3030';
+                clearMsg.style.borderRadius = '4px';
+                clearMsg.style.color = '#e0e0e0';
+                clearMsg.style.textAlign = 'center';
+                clearMsg.innerHTML = `
+                    <div style="font-weight: bold;">Cache Cleared</div>
+                    <div>Successfully removed all cached data for season ${season}</div>
+                `;
+                comparisonContainer.insertBefore(clearMsg, comparisonContainer.firstChild);
+                
+                // Auto-remove the notification after 5 seconds
+                setTimeout(() => {
+                    if (clearMsg.parentNode) {
+                        clearMsg.parentNode.removeChild(clearMsg);
+                    }
+                }, 5000);
+                
+                return true;
+            } catch (e) {
+                console.error(`Error clearing cache: ${e.message}`);
+                return false;
+            }
+        }
+
+        // Add an emergency cache all function that can be called from console
+        window.saveCurrentTeams = function() {
+            const season = document.getElementById('season').value;
+            
+            // Get all team elements from the DOM
+            const teamRows = document.querySelectorAll('.team-row');
+            const teams = [];
+            
+            for (const row of teamRows) {
+                const teamNumber = parseInt(row.getAttribute('data-team'));
+                if (!isNaN(teamNumber)) {
+                    // Extract team data from the DOM
+                    const teamName = row.querySelector('.team-name')?.textContent || `Team ${teamNumber}`;
+                    const location = row.querySelector('.team-location')?.textContent || '';
+                    const oprText = row.querySelector('.team-opr')?.textContent || '0';
+                    const opr = parseFloat(oprText) || 0;
+                    
+                    // Parse location
+                    const locationParts = location.split(',').map(part => part.trim());
+                    const city = locationParts[0] || '';
+                    const state = locationParts.length > 1 ? locationParts[1] : '';
+                    const country = locationParts.length > 2 ? locationParts[2] : 'USA';
+                    
+                    teams.push({
+                        number: teamNumber,
+                        name: teamName,
+                        city: city,
+                        state: state,
+                        country: country,
+                        cachedAt: Date.now(),
+                        stats: {
+                            opr: opr,
+                            hasRealData: opr > 0
+                        }
+                    });
+                }
+            }
+            
+            console.log(`Extracted ${teams.length} teams from current display`);
+            
+            if (teams.length > 0) {
+                // Cache the teams
+                cacheTeamsData(season, teams, "EmergencySave");
+                return `Successfully saved ${teams.length} teams to cache`;
+            } else {
+                return "No teams found to save";
+            }
+        };
 
         // Update the fetchAllTeams function to use parallel processing
         async function fetchAllTeams(season) {
@@ -1376,451 +2032,18 @@
             debugLog("Background loading not needed - all teams loaded initially");
         }
 
-        // Update the compareTeams function to handle the transition from live loading to final display
-        async function compareTeams(forceRefresh = false) {
-            comparisonContainer.innerHTML = '<div class="loading">Loading teams with OPR data...</div>';
-            debugLog("Starting team comparison...");
+        // Manual emergency stop
+        (function() {
+            // Reset loading flags
+            window.isLoadingTeams = false;
+            window.stopTeamLoading = true;
             
-            try {
-                const season = seasonSelect.value;
-                debugLog(`Season: ${season}`);
-                
-                // Check for cached data first (unless force refresh)
-                const cachedData = forceRefresh ? null : getCachedTeamsData(season);
-                let teamsWithStats = [];
-                let apiMethod = "Unknown";
-
-                if (cachedData && !forceRefresh) {
-                    // Use cached data - show basic loading since it will be fast
-                    comparisonContainer.innerHTML = `
-                        <div class="loading">
-                            <h3>Loading cached teams with OPR data...</h3>
-                            <p>Using ${cachedData.teams.length} teams from cache</p>
-                        </div>
-                    `;
-                    
-                    teamsWithStats = cachedData.teams;
-                    apiMethod = cachedData.apiMethod;
-                    debugLog(`Using ${teamsWithStats.length} teams from cache`);
-                } else {
-                    // No cache or forced refresh, fetch new data with live display
-                    debugLog(forceRefresh ? 
-                        "Force refreshing data from API" : 
-                        "No cache available, fetching new data");
-                        
-                    const result = await fetchAllTeams(season);
-                    teamsWithStats = result.teams;
-                    apiMethod = result.apiMethod;
-                    
-                    // Cache the new results
-                    cacheTeamsData(season, teamsWithStats, apiMethod);
-                }
-                
-                // Ensure we have data
-                if (!teamsWithStats || teamsWithStats.length === 0) {
-                    throw new Error('No teams found with OPR data');
-                }
-                
-                // Fetch my team data
-                const myTeamNumber = MY_TEAM_NUMBER;
-                let myTeamData;
-                
-                try {
-                    myTeamData = await fetchTeamByGraphQL(myTeamNumber, season);
-                    // Update my team data in the list if it exists
-                    const myTeamIndex = teamsWithStats.findIndex(t => t.number === myTeamNumber);
-                    if (myTeamIndex >= 0) {
-                        teamsWithStats[myTeamIndex] = myTeamData;
-                    } else {
-                        teamsWithStats.push(myTeamData);
-                    }
-                } catch (e) {
-                    debugLog(`Error fetching my team data: ${e.message}`);
-                    myTeamData = teamsWithStats.find(t => t.number === myTeamNumber) || {
-                        number: myTeamNumber,
-                        name: 'TARDIS',
-                    stats: { opr: 0, hasRealData: false }
-                };
-                }
-                
-                // Display the final, paginated team comparison
-                displayTeamComparison(teamsWithStats, myTeamNumber, `FTC Teams with OPR Data (${teamsWithStats.length} of 16,100 teams)`);
-                
-                // Add info banner with more detailed information and cache age
-                setTimeout(() => {
-                    const infoDiv = document.createElement('div');
-                    infoDiv.className = 'api-info-banner';
-                    infoDiv.style.marginBottom = '10px';
-                    infoDiv.style.fontSize = '0.9rem';
-                    infoDiv.style.backgroundColor = '#274535';
-                    infoDiv.style.padding = '8px';
-                    infoDiv.style.borderRadius = '4px';
-                    infoDiv.style.textAlign = 'center';
-                    
-                    // Add cache age information if using cached data
-                    let cacheInfo = '';
-                    if (cachedData && !forceRefresh) {
-                        const cacheAge = Math.round((Date.now() - cachedData.timestamp) / 3600000);
-                        cacheInfo = ` (cached ${cacheAge} hours ago)`;
-                    }
-                    
-                    infoDiv.innerHTML = `
-                        <div>${teamsWithStats.length} teams with OPR data available${cacheInfo}</div>
-                        ${cachedData && !forceRefresh ? 
-                            `<div style="font-size: 0.8rem; margin-top: 4px;">
-                                <a href="#" id="clear-cache-link" style="color: #a0d8ff;">Clear cache and refresh</a>
-                            </div>` : ''}
-                    `;
-                    
-                    const container = document.querySelector('#comparison-container');
-                    if (container && !container.querySelector('.api-info-banner')) {
-                        container.insertBefore(infoDiv, container.firstChild);
-                        
-                        // Add event listener to the "Clear cache" link
-                        document.getElementById('clear-cache-link')?.addEventListener('click', (e) => {
-                            e.preventDefault();
-                            const season = seasonSelect.value;
-                            localStorage.removeItem(`ftc_opr_teams_${season}`);
-                            alert(`Cache cleared for season ${season}. Running full refresh...`);
-                            compareTeams(true);
-                        });
-                    }
-                }, 500);
-            } catch (error) {
-                debugLog(`Error: ${error.message}`);
-                comparisonContainer.innerHTML = `
-                    <div class="error-message">
-                        <p>Error: ${error.message}</p>
-                        <p>We encountered an issue retrieving the team database.</p>
-                        <button id="retry-btn" class="compact-btn" style="margin-top:10px;">Retry</button>
-                        ${!window.isLoadingTeams ? `
-                            <button id="clear-cache-btn" class="compact-btn" style="margin-top:10px; margin-left:10px; background-color:#6b3030;">Clear Cache</button>
-                            <button id="force-refresh-btn" class="compact-btn" style="margin-top:10px; margin-left:10px; background-color:#006b3a;">Force Full Refresh</button>
-                        ` : ''}
-                    </div>
-                `;
-                document.getElementById('retry-btn')?.addEventListener('click', () => compareTeams());
-                document.getElementById('clear-cache-btn')?.addEventListener('click', () => {
-                    localStorage.removeItem(`ftc_opr_teams_${season}`);
-                    alert("Cache cleared. Retrying...");
-                    compareTeams();
-                });
-                document.getElementById('force-refresh-btn')?.addEventListener('click', () => {
-                    localStorage.removeItem(`ftc_opr_teams_${season}`);
-                    alert("Force refreshing all team data...");
-                    compareTeams(true);
-                });
+            // Find and remove progress display
+            const progressDisplay = document.getElementById('progress-display');
+            if (progressDisplay && progressDisplay.parentNode) {
+                progressDisplay.parentNode.removeChild(progressDisplay);
             }
-        }
-
-        // Update the Clear Cache button to force a refresh
-        document.addEventListener('DOMContentLoaded', () => {
-            const controlsDiv = document.querySelector('.controls');
-            
-            const clearCacheBtn = document.createElement('button');
-            clearCacheBtn.id = 'clear-cache-btn';
-            clearCacheBtn.className = 'control-button';
-            clearCacheBtn.style.backgroundColor = '#6b3030';
-            clearCacheBtn.style.marginLeft = '10px';
-            clearCacheBtn.textContent = 'Clear Cache & Refresh';
-            
-            clearCacheBtn.addEventListener('click', () => {
-                const season = seasonSelect.value;
-                localStorage.removeItem(`ftc_opr_teams_${season}`);
-                alert(`Cache cleared for season ${season}. Running full refresh...`);
-                compareTeams(true); // Force a full refresh
-            });
-            
-            controlsDiv.appendChild(clearCacheBtn);
-        });
-
-        // Add the REST fallback function
-        async function fetchTeamsWithRESTFallback(season) {
-            debugLog("Using REST API fallback");
-            
-            // Important FTC teams to try
-            const keyTeams = [5356, 18225, 8680, 16461, 16072, 11115, 8393, 7172]; 
-            const teamsWithOPR = [];
-            
-            for (const teamNumber of keyTeams) {
-                try {
-                    const teamData = await fetchTeamByREST(teamNumber, season);
-                    if (teamData.stats.hasRealData) {
-                        teamsWithOPR.push(teamData);
-                        debugLog(`REST API: Found OPR data for team ${teamNumber}: ${teamData.stats.opr}`);
-                    }
-                } catch (e) {
-                    debugLog(`REST API error for team ${teamNumber}: ${e.message}`);
-                }
-                
-                // Avoid overwhelming the API
-                await new Promise(resolve => setTimeout(resolve, 200));
-            }
-            
-            return teamsWithOPR;
-        }
-
-        // Add the REST API fetch for a single team
-        async function fetchTeamByREST(teamNumber, season) {
-            debugLog(`Fetching team ${teamNumber} via REST API`);
-            
-            try {
-                // Get team info
-                const teamUrl = `https://api.ftcscout.org/rest/v1/teams/${teamNumber}`;
-                const teamResponse = await fetch(teamUrl);
-                
-                if (!teamResponse.ok) {
-                    throw new Error(`Team API error: ${teamResponse.status}`);
-                }
-                
-                const teamData = await teamResponse.json();
-                
-                // Get team stats
-                const statsUrl = `https://api.ftcscout.org/rest/v1/teams/${teamNumber}/quick-stats?season=${season}`;
-                const statsResponse = await fetch(statsUrl);
-                
-                if (statsResponse.ok) {
-                    const statsData = await statsResponse.json();
-                    const oprValue = statsData.tot?.value || 0;
-                    
-                    return {
-                        number: teamNumber,
-                        name: teamData.name || `Team ${teamNumber}`,
-                        city: teamData.city || '',
-                        state: teamData.state || '',
-                        country: teamData.country || '',
-                                stats: {
-                                    opr: oprValue,
-                            rank: statsData.tot?.rank || null,
-                            hasRealData: oprValue > 0
-                                }
-                            };
-                        } else {
-                    return {
-                        number: teamNumber,
-                        name: teamData.name || `Team ${teamNumber}`,
-                        city: teamData.city || '',
-                        state: teamData.state || '',
-                        country: teamData.country || '',
-                                stats: { opr: 0, hasRealData: false }
-                    };
-                        }
-                } catch (error) {
-                debugLog(`Error in REST API for team ${teamNumber}: ${error.message}`);
-                return {
-                    number: teamNumber,
-                    name: `Team ${teamNumber}`,
-                    city: 'Unknown',
-                    state: 'Unknown',
-                    country: 'Unknown',
-                                            stats: { opr: 0, hasRealData: false }
-                };
-            }
-        }
-
-        // Update the processNextTeamBatch function to fix the typo and ensure proper error handling
-        async function processNextTeamBatch(season, existingTeams) {
-            if (window.isLoadingTeams) {
-                alert('Already loading teams. Please wait for the current loading to complete.');
-                return;
-            }
-            
-            window.isLoadingTeams = true;
-            
-            try {
-                // Initialize teamsMap with existing teams
-                const teamsMap = new Map();
-                for (const team of existingTeams) {
-                    teamsMap.set(team.number, team);
-                }
-                
-                // Save the original display before we start loading
-                const originalContent = comparisonContainer.innerHTML;
-                
-                // Load the team list
-                const teamListResponse = await fetch('teamlist.txt');
-                const teamListText = await teamListResponse.text();
-                const lines = teamListText.split('\n').filter(line => line.trim());
-                
-                const allTeamNumbers = new Set();
-                for (let i = 0; i < lines.length; i += 3) {
-                    if (i < lines.length) {
-                        const teamNumber = parseInt(lines[i], 10);
-                        if (!isNaN(teamNumber)) {
-                            allTeamNumbers.add(teamNumber);
-                        }
-                    }
-                }
-                
-                // Get the highest team number from cache
-                const lastProcessedTeam = existingTeams.length > 0 ? 
-                    Math.max(...existingTeams.map(t => t.number)) : 0;
-                
-                // Filter for unprocessed teams
-                const unprocessedTeamNumbers = Array.from(allTeamNumbers)
-                    .filter(num => num > lastProcessedTeam)
-                    .sort((a, b) => a - b);
-                    
-                if (unprocessedTeamNumbers.length === 0) {
-                    alert('All teams have been processed!');
-                    window.isLoadingTeams = false;
-                    return;
-                }
-
-                debugLog(`Continuing from team ${lastProcessedTeam}, ${unprocessedTeamNumbers.length} teams remaining`);
-
-                // Create the floating progress display
-                const progressDisplay = document.createElement('div');
-                progressDisplay.style.position = 'fixed';
-                progressDisplay.style.bottom = '20px';
-                progressDisplay.style.right = '20px';
-                progressDisplay.style.backgroundColor = '#1e1e1e';
-                progressDisplay.style.border = '1px solid #444';
-                progressDisplay.style.padding = '15px';
-                progressDisplay.style.borderRadius = '4px';
-                progressDisplay.style.zIndex = '1000';
-                progressDisplay.style.boxShadow = '0 2px 10px rgba(0,0,0,0.3)';
-                progressDisplay.style.minWidth = '250px';
-                progressDisplay.innerHTML = `
-                    <div style="margin-bottom: 10px;">Loading More Teams...</div>
-                    <progress id="batch-progress" value="${existingTeams.length}" max="${allTeamNumbers.size}" style="width:100%; margin-bottom: 8px;"></progress>
-                    <div id="batch-status" style="font-size: 0.9em; color: #aaa;">
-                        Starting from team ${lastProcessedTeam + 1}
-                    </div>
-                    <div id="teams-found" style="font-size: 0.9em; margin-top: 5px; color: #a200ff;">
-                        ${existingTeams.length} teams with OPR data
-                    </div>
-                    <div id="parallel-status" style="font-size: 0.8em; margin-top: 5px; color: #888;">
-                        Running parallel requests
-                    </div>
-                    <button id="stop-loading" style="
-                        margin-top: 10px;
-                        background-color: #6b3030;
-                        color: white;
-                        border: none;
-                        padding: 5px 10px;
-                        border-radius: 3px;
-                        cursor: pointer;
-                        width: 100%;
-                    ">Stop Loading (Use Current Teams)</button>
-                `;
-                document.body.appendChild(progressDisplay);
-
-                // Process teams in parallel with live updates
-                const PARALLEL_REQUESTS = 15;
-                const BATCH_SIZE = 20;
-                const UPDATE_INTERVAL = 250;
-
-                let stopLoading = false;
-                document.getElementById('stop-loading')?.addEventListener('click', () => {
-                    stopLoading = true;
-                    document.getElementById('stop-loading').textContent = 'Stopping...';
-                    document.getElementById('stop-loading').disabled = true;
-                });
-
-                let lastUpdateTime = Date.now();
-                let processedCount = existingTeams.length;
-
-                // Process teams in batches
-                for (let i = 0; i < unprocessedTeamNumbers.length; i += BATCH_SIZE * PARALLEL_REQUESTS) {
-                    if (stopLoading) break;
-
-                    const batch = unprocessedTeamNumbers.slice(i, i + BATCH_SIZE * PARALLEL_REQUESTS);
-                    const promises = [];
-                    const newTeams = [];
-
-                    // Create parallel requests
-                    for (let j = 0; j < PARALLEL_REQUESTS; j++) {
-                        const teamNumbers = batch.filter((_, idx) => idx % PARALLEL_REQUESTS === j);
-                        promises.push((async () => {
-                            for (const teamNumber of teamNumbers) {
-                                if (stopLoading) break;
-                                try {
-                                    const result = await fetchTeamByGraphQL(teamNumber, season);
-                                    if (result.stats.hasRealData) {
-                                        teamsMap.set(teamNumber, result);
-                                        newTeams.push(result);
-                                        processedCount++;
-
-                                        // Update display if enough time has passed
-                                        const now = Date.now();
-                                        if (now - lastUpdateTime >= UPDATE_INTERVAL) {
-                                            // Get all teams and resort
-                                            const allTeams = Array.from(teamsMap.values());
-                                            
-                                            // Redisplay using displayTeamComparison to ensure consistent UI
-                                            displayTeamComparison(allTeams, MY_TEAM_NUMBER, 
-                                                `FTC Teams with OPR Data (${allTeams.length} of ${allTeamNumbers.size})`);
-                                            
-                                            lastUpdateTime = now;
-                                            
-                                            // Update progress
-                                            const progressEl = document.getElementById('batch-progress');
-                                            const statusEl = document.getElementById('batch-status');
-                                            const teamsFoundEl = document.getElementById('teams-found');
-                                            
-                                            if (progressEl) progressEl.value = processedCount;
-                                            if (statusEl) statusEl.textContent = 
-                                                `Processed ${processedCount} of ${allTeamNumbers.size} teams`;
-                                            if (teamsFoundEl) teamsFoundEl.textContent = 
-                                                `${teamsMap.size} teams with OPR data`;
-                                        }
-                                    }
-                                } catch (error) {
-                                    if (error.message.includes('429')) {
-                                        await new Promise(resolve => setTimeout(resolve, 1000));
-                                        j--; // Retry this team
-                                        continue;
-                                    }
-                                    console.error(`Error fetching team ${teamNumber}:`, error);
-                                }
-                            }
-                        })());
-                    }
-
-                    // Wait for all parallel requests to complete
-                    await Promise.all(promises);
-
-                    // Update the display with all new teams
-                    if (newTeams.length > 0) {
-                        const allTeams = Array.from(teamsMap.values());
-                        displayTeamComparison(allTeams, MY_TEAM_NUMBER, 
-                            `FTC Teams with OPR Data (${allTeams.length} of ${allTeamNumbers.size})`);
-                    }
-
-                    // Ensure we cache more frequently
-                    if (i % (BATCH_SIZE * PARALLEL_REQUESTS) === 0) {  // Cache every batch instead of every 2 batches
-                        const teamsArray = Array.from(teamsMap.values());
-                        debugLog(`Periodic cache update with ${teamsArray.length} teams`);
-                        cacheTeamsData(season, teamsArray, "GraphQL");
-                    }
-                }
-
-                // Final updates - ensure this happens even if loading is stopped
-                try {
-                    const finalTeams = Array.from(teamsMap.values());
-                    debugLog(`Final cache update with ${finalTeams.length} teams`);
-                    cacheTeamsData(season, finalTeams, "GraphQL");
-                    
-                    window.isLoadingTeams = false;
-                    
-                    // Do a final display refresh
-                    compareTeams();
-                    return finalTeams;
-                } catch (cacheError) {
-                    debugLog(`Error during final cache: ${cacheError.message}`);
-                    window.isLoadingTeams = false;
-                    compareTeams();
-                    return Array.from(teamsMap.values()); // Return teams even if caching fails
-                }
-
-            } catch (error) {
-                window.isLoadingTeams = false;
-                debugLog(`Error processing batch: ${error.message}`);
-                alert(`Error loading more teams: ${error.message}`);
-                return existingTeams; // Return the original teams on error
-            }
-        }
+        })();
     </script>
 </body>
 </html>
