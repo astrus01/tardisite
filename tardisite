@@ -1,0 +1,275 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TARDIS Robotics</title>
+    <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary-color: #ffffff;
+            --secondary-color: #1a002b;
+            --text-gray: #808080;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Bebas Neue', sans-serif;
+        }
+
+        body {
+            position: relative;
+            overflow-x: hidden;
+        }
+
+        body::before {
+            content: '';
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            width: 120%;
+            height: 120%;
+            transform: translate(-50%, -50%);
+            background: linear-gradient(rgba(0, 0, 0, 0.2), rgba(0, 0, 0, 0.2)),
+                        url('./ARTEMIS.Still001.png') no-repeat center center;
+            background-size: cover;
+            filter: blur(3px) brightness(0.9);
+            z-index: -1;
+        }
+
+        body::after {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: radial-gradient(circle at center, transparent 0%, rgba(0, 0, 0, 0.4) 100%);
+            z-index: -1;
+        }
+
+        body {
+            color: var(--primary-color);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        nav {
+            padding: 1rem;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 1rem;
+            flex-wrap: wrap;
+        }
+
+        .team-name {
+            font-size: clamp(2.5rem, 5vw, 4rem);
+            color: var(--primary-color);
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 1rem;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+
+        .nav-links a {
+            color: var(--text-gray);
+            text-decoration: none;
+            font-size: clamp(1rem, 3vw, 1.5rem);
+            transition: all 0.3s ease;
+        }
+
+        .nav-links a:hover {
+            color: var(--primary-color);
+            transform: scale(1.1);
+        }
+
+        .nav-links a.active {
+            color: var(--primary-color);
+        }
+
+        .main-content {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 1rem;
+            flex: 1;
+            justify-content: center;
+            gap: 2rem;
+        }
+
+        .logo {
+            width: min(300px, 80vw);
+            transition: transform 0.3s ease;
+        }
+
+        @keyframes spin {
+            from {
+                transform: scale(1) rotate(0deg);
+            }
+            to {
+                transform: scale(10) rotate(3600deg);
+            }
+        }
+
+        .logo:hover {
+            animation: spin 2s linear infinite;
+        }
+
+        .info-sections {
+            display: flex;
+            gap: 2rem;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+
+        .info-box {
+            text-align: center;
+            max-width: min(300px, 90vw);
+            padding: 1rem;
+        }
+
+        .info-title {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+            margin-bottom: 1rem;
+            font-size: clamp(1.2rem, 4vw, 1.5rem);
+            transition: color 0.3s ease;
+            text-decoration: none;
+            color: var(--primary-color);
+        }
+
+        .arrow {
+            color: var(--text-gray);
+            transition: all 0.3s ease;
+        }
+
+        .info-title:hover .arrow {
+            transform: translateX(5px);
+            color: var(--primary-color);
+        }
+
+        .info-description {
+            color: var(--primary-color);
+            line-height: 1.5;
+            font-size: clamp(0.9rem, 2.5vw, 1rem);
+        }
+
+        .sponsors {
+            display: flex;
+            justify-content: center;
+            gap: 1rem;
+            flex-wrap: wrap;
+            margin-top: auto;
+            padding: 1rem;
+        }
+
+        .sponsor-logo {
+            width: min(150px, 40vw);
+        }
+
+        .thank-you {
+            text-align: center;
+            color: var(--text-gray);
+            margin-bottom: 1rem;
+            font-size: clamp(0.9rem, 2.5vw, 1.2rem);
+            padding: 0 1rem;
+        }
+
+        .divider {
+            width: 2px;
+            height: 40px;
+            background-color: var(--text-gray);
+            margin: 0 1rem;
+            display: block;
+        }
+
+        @media (min-width: 768px) {
+            nav {
+                padding: 2rem;
+                gap: 2rem;
+            }
+
+            .main-content {
+                padding: 2rem;
+                gap: 4rem;
+            }
+
+            .sponsors {
+                gap: 2rem;
+                padding: 2rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <nav>
+        <div class="team-name">TARDIS</div>
+        <div class="divider"></div>
+        <div class="nav-links">
+            <a href="index.html" class="active">Home</a>
+            <a href="team.html">Our Team</a>
+            <a href="join.html">Join Us</a>
+        </div>
+    </nav>
+
+    <div class="main-content">
+        <img src="./whitetardis.png" alt="TARDIS Logo" class="logo" id="tardisLogo">
+
+        <div class="info-sections">
+            <div class="info-box">
+                <a href="contact.html" class="info-title">
+                    Contact <span class="arrow">→</span>
+                </a>
+                <p class="info-description">
+                    Get in touch with our team! We're always excited to 
+                    connect with our community.
+                </p>
+            </div>
+            
+            <div class="info-box">
+                <a href="impact.html" class="info-title">
+                    Impact <span class="arrow">→</span>
+                </a>
+                <p class="info-description">
+                    How we make a difference in our community through innovation, 
+                    education, and outreach.
+                </p>
+            </div>
+        </div>
+
+        <div class="sponsors">
+            <a href="sponsor1-link">
+                <img src="zoubi.jpeg" alt="Sponsor 1" class="sponsor-logo">
+            </a>
+            <a href="sponsor2-link">
+                <img src="zoubi.jpeg" alt="Sponsor 2" class="sponsor-logo">
+            </a>
+            <a href="sponsor3-link">
+                <img src="zoubi.jpeg" alt="Sponsor 3" class="sponsor-logo">
+            </a>
+            <a href="sponsor4-link">
+                <img src="zoubi.jpeg" alt="Sponsor 4" class="sponsor-logo">
+            </a>
+            <a href="sponsor5-link">
+                <img src="zoubi.jpeg" alt="Sponsor 5" class="sponsor-logo">
+            </a>
+            <a href="sponsor6-link">
+                <img src="zoubi.jpeg" alt="Sponsor 6" class="sponsor-logo">
+            </a>
+        </div>
+
+        <p class="thank-you">
+            Thank you for the generous sponsors and aid!
+        </p>
+    </div>
+</body>
+</html>
