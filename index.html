@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>TARDIS Robotics</title>
+  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <!-- Video Background Container -->
+  <div class="video-bg" id="videoBg">
+    <video autoplay muted playsinline>
+      <source src="assets/echofinal.mp4" type="video/mp4" />
+      Your browser does not support the video tag.
+    </video>
+    <!-- Scroll Indicator Overlay -->
+    <div class="scroll-indicator" id="scrollIndicator">
+      <p>Scroll Down</p>
+      <div class="arrow"></div>
+    </div>
+  </div>
+
+    <nav>
+        <div class="team-name">TARDIS</div>
+        <div class="divider"></div>
+        <div class="nav-links">
+            <a href="index.html" class="active">Home</a>
+            <a href="team.html">Our Team</a>
+            <a href="resources.html">Resources</a>
+            <a href="oprcomparisontool.html" target="_blank">OPR Tool</a>
+        </div>
+    </nav>
+
+    <div class="main-content">
+        <img src="assets/whitetardis.png" alt="TARDIS Logo" class="logo" id="tardisLogo">
+        
+        <div class="hero-section">
+            <h1>FTC Team 5356</h1>
+            <p class="tagline">The amazing robot does inspiring stuff</p>
+        </div>
+
+        <div class="info-sections">
+            <div class="info-box">
+                <a href="team.html" class="info-title">
+                    Our Team <span class="arrow">→</span>
+                </a>
+                <p class="info-description">
+                    A little bit about us! Team members, coaches/mentors, and more!
+                </p>
+            </div>
+            
+            <div class="info-box">
+                <a href="resources.html" class="info-title">
+                    Resources <span class="arrow">→</span>
+                </a>
+                <p class="info-description">
+                    How we make a difference in our community through innovation, 
+                    education, and outreach.
+                </p>
+            </div>
+            
+            <div class="info-box">
+                <a href="oprcomparisontool.html" class="info-title">
+                    OPR Tool <span class="arrow">→</span>
+                </a>
+                <p class="info-description">
+                    A tool to compare our robot's performance to other teams around the world!
+                </p>
+            </div>
+        </div>
+        
+        <div class="slideshow-container">
+            <h2>Our Journey</h2>
+            <div class="slideshow">
+                <div class="slide active">
+                    <img src="assets\insta\485121249_18305362132232511_8011057784273520181_n.jpeg" alt="Team Photo">
+                    <div class="caption">Team TARDIS at the 2024 competition</div>
+                </div>
+                <div class="slide">
+                    <img src="assets\insta\484990029_18305362159232511_7832992066120643753_n.jpeg" alt="Robot">
+                    <div class="caption">Our robot on the field</div>
+                </div>
+                <div class="slide">
+                    <img src="assets\insta\485666964_18305362180232511_6890157715357846339_n.jpg" alt="Champs!">
+                    <div class="caption">Echo performing auto</div>
+                </div>
+                <div class="slideshow-controls">
+                    <button class="prev">❮</button>
+                    <button class="next">❯</button>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Social Media Links -->
+        <div class="social-links">
+            <h2>Connect With Us</h2>
+            <div class="social-icons">
+                <a href="https://www.instagram.com/tardis5356?utm_source=ig_web_button_share_sheet&igsh=ZDNlZDc0MzIxNw==" class="social-icon" target="_blank">
+                    <img src="assets\icons8-instagram-50.png" alt="Instagram">
+                </a>
+                <a href="https://youtube.com/channel/UCcYj5ayb3-5I02UnHusmC3g" class="social-icon" target="_blank">
+                    <img src="assets\icons8-youtube-50.png" alt="YouTube">
+                </a>
+                <a href="mailto:ftctardis@gmail.com" class="social-icon" target="_blank">
+                    <img src="assets\icons8-email-50.png" alt="Email">
+                </a>
+            </div>
+        </div>
+    </div>
+    
+    <footer>
+        <p>FIRST Tech Challenge Team based in Corning, NY</p>
+    </footer>
+    
+    <script src="slideshow.js"></script>
+
+    <script src="slideshow.js"></script>
+    <script>
+      // Listen for scroll events and remove/hide the video background
+      let videoRemoved = false;
+      window.addEventListener("scroll", function () {
+        if (!videoRemoved && window.scrollY > 50) {
+          const videoBg = document.getElementById("videoBg");
+          // Option 1: Fade out and then remove the video background
+          videoBg.style.transition = "opacity 0.5s ease";
+          videoBg.style.opacity = 0;
+          setTimeout(() => {
+            videoBg.parentNode.removeChild(videoBg);
+          }, 500);
+          videoRemoved = true;
+        }
+      });
+    </script>
+
+</body>
+</html> 
