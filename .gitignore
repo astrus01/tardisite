@@ -1,11 +1,24 @@
-# Large video files
-*.mp4
-
-# Large database files
-*.sql
-
-# Common files to ignore
+# OS files
 .DS_Store
 Thumbs.db
+*.swp
+*.swo
+*~
+
+# Editor files
+.vscode/
+.idea/
+*.sublime-project
+*.sublime-workspace
+
+# Local settings
+.claude/
+*.local.*
+
+# Logs
 *.log
-node_modules/
+npm-debug.log*
+
+# Temporary files
+*.tmp
+*.temp

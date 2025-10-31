@@ -7,11 +7,31 @@
     --bg-darker: #121212;
 }
 
+/* Performance optimization: Will-change hints for animated elements */
+.logo,
+.hamburger,
+.back-to-top,
+.slide {
+    will-change: transform, opacity;
+}
+
 * {
     margin: 0;
     padding: 0;
     box-sizing: border-box;
     font-family: 'Bebas Neue', sans-serif;
+}
+
+html {
+    scroll-behavior: smooth;
+}
+
+/* Optimize image rendering */
+img {
+    image-rendering: -webkit-optimize-contrast;
+    image-rendering: crisp-edges;
+    max-width: 100%;
+    height: auto;
 }
 
 body {
@@ -26,14 +46,14 @@ body {
 body::before {
     content: '';
     position: fixed;
-    top: 50%;
-    left: 50%;
-    width: 120%;
-    height: 120%;
-    transform: translate(-52%, -55%);
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
     background: linear-gradient(rgba(0, 0, 0, 0.2), rgba(0, 0, 0, 0.2)),
-                url('assets/opengripper.Still002.png') no-repeat center center;
-    background-size: cover;
+                url('assets/opengripper.Still002.png') no-repeat;
+    background-size: 105% auto;
+    background-position: 88% 80%;
     filter: blur(3px) brightness(0.9);
     z-index: -1;
 }
@@ -57,6 +77,8 @@ nav {
     gap: 1rem;
     flex-wrap: wrap;
     position: relative;
+    background: transparent;
+    z-index: 100;
 }
 
 .team-name {
@@ -101,7 +123,7 @@ nav {
     width: 2px;
     height: 40px;
     background-color: var(--text-gray);
-    margin: 0 1rem;
+    margin: 0 0.5rem;
     display: block;
 }
 
@@ -284,9 +306,142 @@ nav {
 
 footer {
     text-align: center;
-    padding: 20px;
+    padding: 2rem 1rem;
     color: var(--text-gray);
     font-size: 0.9rem;
+    background-color: rgba(0, 0, 0, 0.3);
+    margin-top: 4rem;
+    border-top: 1px solid rgba(162, 0, 255, 0.2);
+}
+
+footer p {
+    margin-bottom: 0.5rem;
+}
+
+footer .footer-links {
+    display: flex;
+    justify-content: center;
+    gap: 2rem;
+    flex-wrap: wrap;
+    margin-top: 1rem;
+}
+
+footer .footer-links a {
+    color: var(--text-gray);
+    text-decoration: none;
+    transition: color 0.3s ease;
+    font-size: 0.85rem;
+}
+
+footer .footer-links a:hover {
+    color: var(--accent-color);
+}
+
+/* Skip to content link for accessibility */
+.skip-link {
+    position: absolute;
+    top: -40px;
+    left: 0;
+    background: var(--accent-color);
+    color: white;
+    padding: 8px;
+    text-decoration: none;
+    z-index: 10000;
+    border-radius: 0 0 4px 0;
+}
+
+.skip-link:focus {
+    top: 0;
+}
+
+/* Back to top button */
+.back-to-top {
+    position: fixed;
+    bottom: 2rem;
+    right: 2rem;
+    width: 50px;
+    height: 50px;
+    background-color: var(--accent-color);
+    color: white;
+    border: none;
+    border-radius: 50%;
+    cursor: pointer;
+    display: none;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.5rem;
+    z-index: 1000;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 12px rgba(162, 0, 255, 0.4);
+    opacity: 0;
+    transform: translateY(20px);
+}
+
+.back-to-top.visible {
+    display: flex;
+    opacity: 1;
+    transform: translateY(0);
+}
+
+.back-to-top:hover {
+    background-color: #8400d1;
+    transform: translateY(-3px);
+    box-shadow: 0 6px 16px rgba(162, 0, 255, 0.6);
+}
+
+.back-to-top:focus {
+    outline: 2px solid white;
+    outline-offset: 2px;
+}
+
+@media (max-width: 768px) {
+    .back-to-top {
+        bottom: 1rem;
+        right: 1rem;
+        width: 45px;
+        height: 45px;
+        font-size: 1.2rem;
+    }
+}
+
+/* Loading animations */
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(30px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+    }
+    to {
+        opacity: 1;
+    }
+}
+
+.fade-in {
+    animation: fadeIn 0.6s ease-out;
+}
+
+.fade-in-up {
+    animation: fadeInUp 0.8s ease-out;
+}
+
+/* Enhanced focus states for keyboard navigation */
+a:focus,
+button:focus,
+input:focus,
+textarea:focus,
+select:focus {
+    outline: 2px solid var(--accent-color);
+    outline-offset: 2px;
+    border-radius: 2px;
 }
 
 /* Content Section Styling */
@@ -550,6 +705,7 @@ button:hover {
 .logo {
     width: 400px;
     height: auto;
+    object-fit: contain;
 }
 
 .video-bg {
@@ -628,7 +784,7 @@ button:hover {
     overflow: hidden;
     z-index: 9999;
   }
-  
+
   .video-bg video {
     width: 100%;
     height: 100%;
@@ -761,28 +917,35 @@ button:hover {
   .hamburger {
     display: none;
     flex-direction: column;
-    background: none;
+    background: transparent;
     border: none;
     cursor: pointer;
-    padding: 0;
-    z-index: 10;
-    position: absolute;
-    right: 1rem;
-    top: 50%;
-    transform: translateY(-50%);
+    padding: 0.4rem;
+    z-index: 1000;
+    position: relative;
+    /* Adjustable position variables for mobile - modify these values to move the button */
+    /* Edit these in the @media (max-width: 768px) section below */
+    --hamburger-top: 1rem;
+    --hamburger-right: 1rem;
+    /* Precise click area */
+    width: 44px;
+    height: 44px;
+    min-width: 44px;
+    min-height: 44px;
+    box-sizing: border-box;
   }
 
   .hamburger span {
     width: 25px;
     height: 3px;
     background-color: var(--primary-color);
-    margin: 3px 0;
+    margin: 2.5px 0;
     transition: all 0.3s ease;
     border-radius: 3px;
   }
 
   .hamburger.active span:nth-child(1) {
-    transform: rotate(45deg) translate(6px, 6px);
+    transform: rotate(45deg) translate(5px, 5px);
   }
 
   .hamburger.active span:nth-child(2) {
@@ -790,22 +953,110 @@ button:hover {
   }
 
   .hamburger.active span:nth-child(3) {
-    transform: rotate(-45deg) translate(7px, -7px);
+    transform: rotate(-45deg) translate(6px, -6px);
+  }
+
+  /* Mobile Background */
+  @media (max-width: 768px) {
+    body::before {
+      background-size: auto 120%;
+      background-position: 52.5% 100%;
+    }
   }
 
   /* Mobile Navigation */
   @media (max-width: 768px) {
+    /* ============================================
+       HAMBURGER MENU POSITION ADJUSTMENT
+       ============================================
+       To adjust the hamburger button position, change these values below:
+       - top: controls vertical position (increase to move down, decrease to move up)
+       - right: controls horizontal position (increase to move left, decrease to move right)
+       
+       Examples:
+       - top: 0.5rem (closer to top)
+       - top: 2rem (further from top)
+       - right: 0.5rem (closer to right edge)
+       - right: 2rem (further from right edge)
+       ============================================ */
+    
     nav {
-      justify-content: space-between;
-      padding: 1rem 2rem;
+      display: flex;
+      justify-content: flex-start;
+      align-items: center;
+      padding: 1rem;
+      position: relative;
+      flex-wrap: nowrap;
+      /* Ensure nav doesn't block hamburger clicks */
+      pointer-events: none;
+      background: transparent;
+      border: none;
+      box-shadow: none;
+    }
+    
+    nav > * {
+      pointer-events: auto;
+    }
+    
+    /* Hide nav-backdrop from nav children to prevent click interference */
+    nav > .nav-backdrop {
+      pointer-events: none;
+    }
+
+    .team-name {
+      flex: 0 0 auto;
     }
 
     .hamburger {
-      display: flex;
+      display: flex !important;
+      position: fixed !important;
+      /* CHANGE THESE TWO VALUES TO ADJUST POSITION */
+      top: 1rem !important;        /* ← Adjust this for up/down position */
+      right: 1rem !important;      /* ← Adjust this for left/right position */
+      left: auto !important;
+      bottom: auto !important;
+      margin: 0 !important;
+      z-index: 1002 !important;
+      flex-shrink: 0;
+      /* Precise click area */
+      width: 44px !important;
+      height: 44px !important;
+      pointer-events: auto !important;
+      overflow: visible;
+      /* Remove any inherited positioning */
+      transform: none !important;
+    }
+    
+    /* Ensure backdrop is below hamburger */
+    .nav-backdrop {
+      z-index: 998;
     }
 
     .divider {
       display: none;
+    }
+
+    /* Backdrop overlay for mobile menu */
+    .nav-backdrop {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      background-color: rgba(0, 0, 0, 0.3);
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.3s ease;
+      z-index: 998;
+      /* Completely hide when not active */
+      visibility: hidden;
+      display: block;
+    }
+
+    .nav-backdrop.active {
+      opacity: 1;
+      pointer-events: all;
+      visibility: visible;
     }
 
     .nav-links {
@@ -814,13 +1065,15 @@ button:hover {
       right: -100%;
       height: 100vh;
       width: 250px;
-      background-color: rgba(18, 18, 18, 0.98);
+      background-color: rgba(30, 30, 30, 0.75);
+      backdrop-filter: blur(15px);
       flex-direction: column;
-      justify-content: center;
+      justify-content: flex-start;
       align-items: center;
+      padding-top: 5rem;
       gap: 2rem;
       transition: right 0.3s ease;
-      z-index: 9;
+      z-index: 999;
       box-shadow: -5px 0 15px rgba(0, 0, 0, 0.5);
     }
 
@@ -830,5 +1083,18 @@ button:hover {
 
     .nav-links a {
       font-size: 1.5rem;
+    }
+
+    /* Adjust mute button position on mobile */
+    .mute-btn {
+      bottom: 60px;
+      right: 20px;
+      width: 45px;
+      height: 45px;
+    }
+
+    /* Adjust scroll indicator on mobile */
+    .scroll-indicator {
+      bottom: 15%;
     }
   }  
