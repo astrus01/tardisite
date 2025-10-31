@@ -197,22 +197,18 @@
                 tot {
                   value
                   rank
-                  percentile
                 }
                 auto {
                   value
                   rank
-                  percentile
                 }
                 dc {
                   value
                   rank
-                  percentile
                 }
-                egc {
+                eg {
                   value
                   rank
-                  percentile
                 }
               }
             }
@@ -244,22 +240,30 @@
             throw new Error('No data available for team 5356');
           }
 
+          // Estimate total teams (approximate, adjust based on actual count)
+          const TOTAL_TEAMS = 16100;
+
+          // Helper function to calculate percentile from rank
+          function calculatePercentile(rank) {
+            return ((TOTAL_TEAMS - rank) / TOTAL_TEAMS * 100).toFixed(2);
+          }
+
           // Update stats with FTCScout data
           document.getElementById('totalNP').textContent = stats.tot?.value?.toFixed(2) || '--';
           document.getElementById('totalRank').textContent = stats.tot?.rank ? `${stats.tot.rank}${getOrdinalSuffix(stats.tot.rank)}` : '--';
-          document.getElementById('totalPercentile').textContent = stats.tot?.percentile ? `${stats.tot.percentile.toFixed(2)}%` : '--';
+          document.getElementById('totalPercentile').textContent = stats.tot?.rank ? `${calculatePercentile(stats.tot.rank)}%` : '--';
 
           document.getElementById('autoNP').textContent = stats.auto?.value?.toFixed(2) || '--';
           document.getElementById('autoRank').textContent = stats.auto?.rank ? `${stats.auto.rank}${getOrdinalSuffix(stats.auto.rank)}` : '--';
-          document.getElementById('autoPercentile').textContent = stats.auto?.percentile ? `${stats.auto.percentile.toFixed(2)}%` : '--';
+          document.getElementById('autoPercentile').textContent = stats.auto?.rank ? `${calculatePercentile(stats.auto.rank)}%` : '--';
 
           document.getElementById('teleopNP').textContent = stats.dc?.value?.toFixed(2) || '--';
           document.getElementById('teleopRank').textContent = stats.dc?.rank ? `${stats.dc.rank}${getOrdinalSuffix(stats.dc.rank)}` : '--';
-          document.getElementById('teleopPercentile').textContent = stats.dc?.percentile ? `${stats.dc.percentile.toFixed(2)}%` : '--';
+          document.getElementById('teleopPercentile').textContent = stats.dc?.rank ? `${calculatePercentile(stats.dc.rank)}%` : '--';
 
-          document.getElementById('endgameNP').textContent = stats.egc?.value?.toFixed(2) || '--';
-          document.getElementById('endgameRank').textContent = stats.egc?.rank ? `${stats.egc.rank}${getOrdinalSuffix(stats.egc.rank)}` : '--';
-          document.getElementById('endgamePercentile').textContent = stats.egc?.percentile ? `${stats.egc.percentile.toFixed(2)}%` : '--';
+          document.getElementById('endgameNP').textContent = stats.eg?.value?.toFixed(2) || '--';
+          document.getElementById('endgameRank').textContent = stats.eg?.rank ? `${stats.eg.rank}${getOrdinalSuffix(stats.eg.rank)}` : '--';
+          document.getElementById('endgamePercentile').textContent = stats.eg?.rank ? `${calculatePercentile(stats.eg.rank)}%` : '--';
 
           statsLoading.style.display = 'none';
           statsContent.style.display = 'block';
