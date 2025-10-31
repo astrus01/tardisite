@@ -10,8 +10,13 @@
 <body>
     <nav>
         <div class="team-name">TARDIS</div>
+        <button class="hamburger" id="hamburger" aria-label="Toggle menu">
+            <span></span>
+            <span></span>
+            <span></span>
+        </button>
         <div class="divider"></div>
-        <div class="nav-links">
+        <div class="nav-links" id="navLinks">
             <a href="index.html">Home</a>
             <a href="team.html" class="active">Our Team</a>
             <a href="resources.html">Resources</a>
@@ -20,68 +25,8 @@
     </nav>
 
     <div class="main-content">
-        <h1>Our Team</h1>
+        <h1>Our Robot - ECHO</h1>
 
-        <div class="content-section">
-            <h2>Coaches & Mentors</h2>
-        <div class="team-grid">
-            <div class="team-member">
-                <div class="team-member-info">
-                    <div class="team-member-name">Trung Tran</div>
-                    <div class="team-member-role">Head Coach</div>
-                </div>
-            </div>
-            <div class="team-member">
-                <div class="team-member-info">
-                    <div class="team-member-name">Michael Simons</div>
-                    <div class="team-member-role">Outreach Coach</div>
-                </div>
-            </div>
-            <div class="team-member">
-                <div class="team-member-info">
-                    <div class="team-member-name">Penny Chung</div>
-                    <div class="team-member-role">Assistant Coach</div>
-                </div>
-            </div>
-            <div class="team-member">
-                <div class="team-member-info">
-                    <div class="team-member-name">Garrett Piech</div>
-                    <div class="team-member-role">Programming Coach</div>
-                </div>
-            </div>
-            <div class="team-member">
-                <div class="team-member-info">
-                    <div class="team-member-name">Ken Moyer</div>
-                    <div class="team-member-role">CAD Mentor</div>
-                </div>
-            </div>
-            <div class="team-member">
-                <div class="team-member-info">
-                    <div class="team-member-name">Paul Dohn</div>
-                    <div class="team-member-role">Founding Mentor</div>
-                </div>
-            </div>
-            <div class="team-member">
-                <div class="team-member-info">
-                    <div class="team-member-name">Kalina Roussev</div>
-                    <div class="team-member-role">Portfolio Mentor</div>
-                </div>
-            </div>
-            <div class="team-member">
-                <div class="team-member-info">
-                    <div class="team-member-name">Steve Miller</div>
-                    <div class="team-member-role">Finance Mentor</div>
-                </div>
-            </div>
-            <div class="team-member">
-                <div class="team-member-info">
-                    <div class="team-member-name">Mike Walker</div>
-                    <div class="team-member-role">CAD Mentor</div>
-                </div>
-            </div>
-        </div>
-    </div>
-        
         <div class="content-section">
             <h2>Our Robot, ECHO</h2>
             <div class="slideshow">
@@ -128,5 +73,15 @@
     </footer>
     
     <script src="slideshow.js"></script>
+    <script>
+      // Mobile hamburger menu
+      const hamburger = document.getElementById('hamburger');
+      const navLinks = document.getElementById('navLinks');
+
+      hamburger.addEventListener('click', function() {
+        hamburger.classList.toggle('active');
+        navLinks.classList.toggle('active');
+      });
+    </script>
 </body>
 </html> 

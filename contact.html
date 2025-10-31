@@ -10,8 +10,13 @@
 <body>
     <nav>
         <div class="team-name">TARDIS</div>
+        <button class="hamburger" id="hamburger" aria-label="Toggle menu">
+            <span></span>
+            <span></span>
+            <span></span>
+        </button>
         <div class="divider"></div>
-        <div class="nav-links">
+        <div class="nav-links" id="navLinks">
             <a href="index.html">Home</a>
             <a href="team.html">Our Team</a>
             <a href="resources.html">Resources</a>
@@ -78,14 +83,6 @@
                 </form>
             </div>
         </div>
-        
-        <div class="content-section">
-            <h2>Find Us</h2>
-            <div style="width: 100%; height: 400px; background-color: #252525; border-radius: 8px; display: flex; justify-content: center; align-items: center;">
-                <p>Google Maps Embed Would Go Here</p>
-                <!-- In a real implementation, you would add a Google Maps iframe here -->
-            </div>
-        </div>
     </div>
     
     <footer>
@@ -93,9 +90,18 @@
     </footer>
     
     <script>
+        // Mobile hamburger menu
+        const hamburger = document.getElementById('hamburger');
+        const navLinks = document.getElementById('navLinks');
+
+        hamburger.addEventListener('click', function() {
+          hamburger.classList.toggle('active');
+          navLinks.classList.toggle('active');
+        });
+
+        // Contact form
         document.getElementById('contact-form').addEventListener('submit', function(e) {
             e.preventDefault();
-            // In a real implementation, this would send the form data to a server
             alert('Thanks for your message! We\'ll get back to you soon.');
             this.reset();
         });

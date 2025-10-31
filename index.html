@@ -3,14 +3,29 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>TARDIS Robotics</title>
+  <title>TARDIS Robotics - FTC Team 5356 | Corning, NY</title>
+  <meta name="description" content="TARDIS Robotics (FTC Team 5356) is a FIRST Tech Challenge team based in Corning, NY. Follow our robotics journey, competition results, and innovation." />
+  <meta name="keywords" content="TARDIS, FTC, FIRST Tech Challenge, Team 5356, robotics, Corning NY, ECHO robot, STEM education" />
+  <meta name="author" content="TARDIS Robotics Team 5356" />
+
+  <!-- Open Graph / Social Media -->
+  <meta property="og:type" content="website" />
+  <meta property="og:title" content="TARDIS Robotics - FTC Team 5356" />
+  <meta property="og:description" content="Follow TARDIS Robotics (FTC Team 5356) from Corning, NY as we compete in FIRST Tech Challenge competitions." />
+  <meta property="og:url" content="https://tardisteam.org" />
+
+  <!-- Twitter Card -->
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="TARDIS Robotics - FTC Team 5356" />
+  <meta name="twitter:description" content="FIRST Tech Challenge Team 5356 from Corning, NY" />
+
   <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="styles.css" />
 </head>
 <body>
   <!-- Video Background Container -->
   <div class="video-bg" id="videoBg">
-    <video id="bgVideo" autoplay playsinline loop>
+    <video id="bgVideo" autoplay muted playsinline loop>
       <source src="assets/echofinal.mp4" type="video/mp4" />
       Your browser does not support the video tag.
     </video>
@@ -36,8 +51,13 @@
 
     <nav>
         <div class="team-name">TARDIS</div>
+        <button class="hamburger" id="hamburger" aria-label="Toggle menu">
+            <span></span>
+            <span></span>
+            <span></span>
+        </button>
         <div class="divider"></div>
-        <div class="nav-links">
+        <div class="nav-links" id="navLinks">
             <a href="index.html" class="active">Home</a>
             <a href="team.html">Our Team</a>
             <a href="resources.html">Resources</a>
@@ -46,7 +66,7 @@
     </nav>
 
     <div class="main-content">
-        <img src="assets/whitetardis.png" alt="TARDIS Logo" class="logo" id="tardisLogo">
+        <img src="assets/whitetardis.png" alt="TARDIS Logo" class="logo" id="tardisLogo" loading="lazy">
         
         <div class="hero-section">
             <h1>FTC Team 5356</h1>
@@ -121,15 +141,15 @@
             <h2>Our Journey</h2>
             <div class="slideshow">
                 <div class="slide active">
-                    <img src="assets\insta\485121249_18305362132232511_8011057784273520181_n.jpeg" alt="Team Photo">
+                    <img src="assets\insta\485121249_18305362132232511_8011057784273520181_n.jpeg" alt="Team Photo" loading="lazy">
                     <div class="caption">Team TARDIS at the 2024 competition</div>
                 </div>
                 <div class="slide">
-                    <img src="assets\insta\484990029_18305362159232511_7832992066120643753_n.jpeg" alt="Robot">
+                    <img src="assets\insta\484990029_18305362159232511_7832992066120643753_n.jpeg" alt="Robot" loading="lazy">
                     <div class="caption">Our robot on the field</div>
                 </div>
                 <div class="slide">
-                    <img src="assets\insta\485666964_18305362180232511_6890157715357846339_n.jpg" alt="Champs!">
+                    <img src="assets\insta\485666964_18305362180232511_6890157715357846339_n.jpg" alt="Champs!" loading="lazy">
                     <div class="caption">Echo performing auto</div>
                 </div>
                 <div class="slideshow-controls">
@@ -143,14 +163,14 @@
         <div class="social-links">
             <h2>Connect With Us</h2>
             <div class="social-icons">
-                <a href="https://www.instagram.com/tardis5356?utm_source=ig_web_button_share_sheet&igsh=ZDNlZDc0MzIxNw==" class="social-icon" target="_blank">
-                    <img src="assets\icons8-instagram-50.png" alt="Instagram">
+                <a href="https://www.instagram.com/tardis5356?utm_source=ig_web_button_share_sheet&igsh=ZDNlZDc0MzIxNw==" class="social-icon" target="_blank" rel="noopener noreferrer">
+                    <img src="assets\icons8-instagram-50.png" alt="Instagram" loading="lazy">
                 </a>
-                <a href="https://youtube.com/channel/UCcYj5ayb3-5I02UnHusmC3g" class="social-icon" target="_blank">
-                    <img src="assets\icons8-youtube-50.png" alt="YouTube">
+                <a href="https://youtube.com/channel/UCcYj5ayb3-5I02UnHusmC3g" class="social-icon" target="_blank" rel="noopener noreferrer">
+                    <img src="assets\icons8-youtube-50.png" alt="YouTube" loading="lazy">
                 </a>
-                <a href="mailto:ftctardis@gmail.com" class="social-icon" target="_blank">
-                    <img src="assets\icons8-email-50.png" alt="Email">
+                <a href="mailto:ftctardis@gmail.com" class="social-icon">
+                    <img src="assets\icons8-email-50.png" alt="Email" loading="lazy">
                 </a>
             </div>
         </div>
@@ -162,82 +182,84 @@
     
     <script src="slideshow.js"></script>
     <script>
-      // Fetch Team Stats from FTC API
+      // Fetch Team Stats from FTCScout API
       async function fetchTeamStats() {
         const statsLoading = document.querySelector('.stats-loading');
         const statsContent = document.querySelector('.stats-content');
 
         try {
-          // FTC API endpoint for team 5356 stats
-          const response = await fetch('https://ftc-api.firstinspires.org/v2.0/2024/opr/5356', {
-            headers: {
-              'Authorization': 'Basic ' + btoa('your_username:your_api_key'), // You'll need to add your actual API key
-            }
-          });
+          // FTCScout API endpoint for team 5356 quick stats
+          const response = await fetch('https://api.ftcscout.org/rest/v1/teams/5356/quick-stats?season=2024');
 
           if (!response.ok) {
             throw new Error('Failed to fetch stats');
           }
 
           const data = await response.json();
-          const teamData = data.opr;
 
-          // Update stats (you'll need to adjust based on actual API response structure)
-          document.getElementById('totalNP').textContent = teamData.totalPoints?.toFixed(2) || '22.66';
-          document.getElementById('totalRank').textContent = teamData.totalRank || '141st';
-          document.getElementById('totalPercentile').textContent = teamData.totalPercentile || '73.63%';
+          // Update stats with FTCScout data
+          if (data && data.tot) {
+            document.getElementById('totalNP').textContent = data.tot.opr?.toFixed(2) || '--';
+            document.getElementById('totalRank').textContent = data.tot.rank ? `${data.tot.rank}${getOrdinalSuffix(data.tot.rank)}` : '--';
+            document.getElementById('totalPercentile').textContent = data.tot.percentile ? `${data.tot.percentile.toFixed(2)}%` : '--';
 
-          document.getElementById('autoNP').textContent = teamData.autoPoints?.toFixed(2) || '6.67';
-          document.getElementById('autoRank').textContent = teamData.autoRank || '64th';
-          document.getElementById('autoPercentile').textContent = teamData.autoPercentile || '88.14%';
+            document.getElementById('autoNP').textContent = data.auto.opr?.toFixed(2) || '--';
+            document.getElementById('autoRank').textContent = data.auto.rank ? `${data.auto.rank}${getOrdinalSuffix(data.auto.rank)}` : '--';
+            document.getElementById('autoPercentile').textContent = data.auto.percentile ? `${data.auto.percentile.toFixed(2)}%` : '--';
 
-          document.getElementById('teleopNP').textContent = teamData.teleopPoints?.toFixed(2) || '16.00';
-          document.getElementById('teleopRank').textContent = teamData.teleopRank || '191st';
-          document.getElementById('teleopPercentile').textContent = teamData.teleopPercentile || '64.22%';
+            document.getElementById('teleopNP').textContent = data.dc.opr?.toFixed(2) || '--';
+            document.getElementById('teleopRank').textContent = data.dc.rank ? `${data.dc.rank}${getOrdinalSuffix(data.dc.rank)}` : '--';
+            document.getElementById('teleopPercentile').textContent = data.dc.percentile ? `${data.dc.percentile.toFixed(2)}%` : '--';
 
-          document.getElementById('endgameNP').textContent = teamData.endgamePoints?.toFixed(2) || '8.68';
-          document.getElementById('endgameRank').textContent = teamData.endgameRank || '50th';
-          document.getElementById('endgamePercentile').textContent = teamData.endgamePercentile || '90.77%';
+            document.getElementById('endgameNP').textContent = data.egc.opr?.toFixed(2) || '--';
+            document.getElementById('endgameRank').textContent = data.egc.rank ? `${data.egc.rank}${getOrdinalSuffix(data.egc.rank)}` : '--';
+            document.getElementById('endgamePercentile').textContent = data.egc.percentile ? `${data.egc.percentile.toFixed(2)}%` : '--';
+          } else {
+            throw new Error('Invalid data structure');
+          }
 
           statsLoading.style.display = 'none';
           statsContent.style.display = 'block';
         } catch (error) {
           console.error('Error fetching team stats:', error);
-          // Use fallback data from the image
-          document.getElementById('totalNP').textContent = '22.66';
-          document.getElementById('totalRank').textContent = '141st';
-          document.getElementById('totalPercentile').textContent = '73.63%';
-
-          document.getElementById('autoNP').textContent = '6.67';
-          document.getElementById('autoRank').textContent = '64th';
-          document.getElementById('autoPercentile').textContent = '88.14%';
-
-          document.getElementById('teleopNP').textContent = '16.00';
-          document.getElementById('teleopRank').textContent = '191st';
-          document.getElementById('teleopPercentile').textContent = '64.22%';
-
-          document.getElementById('endgameNP').textContent = '8.68';
-          document.getElementById('endgameRank').textContent = '50th';
-          document.getElementById('endgamePercentile').textContent = '90.77%';
-
-          statsLoading.style.display = 'none';
-          statsContent.style.display = 'block';
+          statsLoading.textContent = 'Unable to load live stats. Please try again later.';
         }
+      }
+
+      // Helper function to get ordinal suffix (st, nd, rd, th)
+      function getOrdinalSuffix(num) {
+        const j = num % 10;
+        const k = num % 100;
+        if (j === 1 && k !== 11) return 'st';
+        if (j === 2 && k !== 12) return 'nd';
+        if (j === 3 && k !== 13) return 'rd';
+        return 'th';
       }
 
       // Load stats when page loads
       document.addEventListener('DOMContentLoaded', fetchTeamStats);
+
+      // Mobile hamburger menu
+      const hamburger = document.getElementById('hamburger');
+      const navLinks = document.getElementById('navLinks');
+
+      hamburger.addEventListener('click', function() {
+        hamburger.classList.toggle('active');
+        navLinks.classList.toggle('active');
+      });
 
       // Video control and audio fade
       const video = document.getElementById("bgVideo");
       const muteBtn = document.getElementById("muteBtn");
       const videoBg = document.getElementById("videoBg");
       let videoRemoved = false;
-      let isMuted = false;
+      let isMuted = true; // Start muted for autoplay
 
-      // Start video with sound
-      video.muted = false;
-      video.volume = 0.7; // Start at 70% volume
+      // Set initial volume
+      video.volume = 0.7;
+
+      // Show button as muted initially
+      muteBtn.classList.add("muted");
 
       // Mute/Unmute button toggle
       muteBtn.addEventListener("click", function() {
