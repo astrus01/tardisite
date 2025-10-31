@@ -22,3 +22,7 @@ npm-debug.log*
 # Temporary files
 *.tmp
 *.temp
+
+# Database files (too large for GitHub)
+*.sql
+ftcscout_db_*.sql
