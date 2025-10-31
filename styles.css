@@ -56,6 +56,7 @@ nav {
     align-items: center;
     gap: 1rem;
     flex-wrap: wrap;
+    position: relative;
 }
 
 .team-name {
@@ -753,5 +754,81 @@ button:hover {
   @media (max-width: 600px) {
     .stats-grid {
       grid-template-columns: repeat(2, 1fr);
+    }
+  }
+
+  /* Hamburger Menu */
+  .hamburger {
+    display: none;
+    flex-direction: column;
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 0;
+    z-index: 10;
+    position: absolute;
+    right: 1rem;
+    top: 50%;
+    transform: translateY(-50%);
+  }
+
+  .hamburger span {
+    width: 25px;
+    height: 3px;
+    background-color: var(--primary-color);
+    margin: 3px 0;
+    transition: all 0.3s ease;
+    border-radius: 3px;
+  }
+
+  .hamburger.active span:nth-child(1) {
+    transform: rotate(45deg) translate(6px, 6px);
+  }
+
+  .hamburger.active span:nth-child(2) {
+    opacity: 0;
+  }
+
+  .hamburger.active span:nth-child(3) {
+    transform: rotate(-45deg) translate(7px, -7px);
+  }
+
+  /* Mobile Navigation */
+  @media (max-width: 768px) {
+    nav {
+      justify-content: space-between;
+      padding: 1rem 2rem;
+    }
+
+    .hamburger {
+      display: flex;
+    }
+
+    .divider {
+      display: none;
+    }
+
+    .nav-links {
+      position: fixed;
+      top: 0;
+      right: -100%;
+      height: 100vh;
+      width: 250px;
+      background-color: rgba(18, 18, 18, 0.98);
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      gap: 2rem;
+      transition: right 0.3s ease;
+      z-index: 9;
+      box-shadow: -5px 0 15px rgba(0, 0, 0, 0.5);
+    }
+
+    .nav-links.active {
+      right: 0;
+    }
+
+    .nav-links a {
+      font-size: 1.5rem;
     }
   }  
