@@ -182,47 +182,91 @@
     
     <script src="slideshow.js"></script>
     <script>
-      // Fetch Team Stats from FTCScout API
+      // Fetch Team Stats from FTCScout GraphQL API
       async function fetchTeamStats() {
         const statsLoading = document.querySelector('.stats-loading');
         const statsContent = document.querySelector('.stats-content');
 
         try {
-          // FTCScout API endpoint for team 5356 quick stats
-          const response = await fetch('https://api.ftcscout.org/rest/v1/teams/5356/quick-stats?season=2024');
+          const graphqlUrl = 'https://api.ftcscout.org/graphql';
+          const query = `{
+            teamByNumber(number: 5356) {
+              number
+              name
+              quickStats(season: 2024, region: All) {
+                tot {
+                  value
+                  rank
+                  percentile
+                }
+                auto {
+                  value
+                  rank
+                  percentile
+                }
+                dc {
+                  value
+                  rank
+                  percentile
+                }
+                egc {
+                  value
+                  rank
+                  percentile
+                }
+              }
+            }
+          }`;
+
+          const response = await fetch(graphqlUrl, {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+              'Accept': 'application/json'
+            },
+            body: JSON.stringify({ query })
+          });
 
           if (!response.ok) {
-            throw new Error('Failed to fetch stats');
+            throw new Error(`API error: ${response.status}`);
           }
 
-          const data = await response.json();
+          const result = await response.json();
+
+          if (result.errors) {
+            throw new Error(`GraphQL errors: ${JSON.stringify(result.errors)}`);
+          }
+
+          const teamData = result.data?.teamByNumber;
+          const stats = teamData?.quickStats;
+
+          if (!teamData || !stats) {
+            throw new Error('No data available for team 5356');
+          }
 
           // Update stats with FTCScout data
-          if (data && data.tot) {
-            document.getElementById('totalNP').textContent = data.tot.opr?.toFixed(2) || '--';
-            document.getElementById('totalRank').textContent = data.tot.rank ? `${data.tot.rank}${getOrdinalSuffix(data.tot.rank)}` : '--';
-            document.getElementById('totalPercentile').textContent = data.tot.percentile ? `${data.tot.percentile.toFixed(2)}%` : '--';
+          document.getElementById('totalNP').textContent = stats.tot?.value?.toFixed(2) || '--';
+          document.getElementById('totalRank').textContent = stats.tot?.rank ? `${stats.tot.rank}${getOrdinalSuffix(stats.tot.rank)}` : '--';
+          document.getElementById('totalPercentile').textContent = stats.tot?.percentile ? `${stats.tot.percentile.toFixed(2)}%` : '--';
 
-            document.getElementById('autoNP').textContent = data.auto.opr?.toFixed(2) || '--';
-            document.getElementById('autoRank').textContent = data.auto.rank ? `${data.auto.rank}${getOrdinalSuffix(data.auto.rank)}` : '--';
-            document.getElementById('autoPercentile').textContent = data.auto.percentile ? `${data.auto.percentile.toFixed(2)}%` : '--';
+          document.getElementById('autoNP').textContent = stats.auto?.value?.toFixed(2) || '--';
+          document.getElementById('autoRank').textContent = stats.auto?.rank ? `${stats.auto.rank}${getOrdinalSuffix(stats.auto.rank)}` : '--';
+          document.getElementById('autoPercentile').textContent = stats.auto?.percentile ? `${stats.auto.percentile.toFixed(2)}%` : '--';
 
-            document.getElementById('teleopNP').textContent = data.dc.opr?.toFixed(2) || '--';
-            document.getElementById('teleopRank').textContent = data.dc.rank ? `${data.dc.rank}${getOrdinalSuffix(data.dc.rank)}` : '--';
-            document.getElementById('teleopPercentile').textContent = data.dc.percentile ? `${data.dc.percentile.toFixed(2)}%` : '--';
+          document.getElementById('teleopNP').textContent = stats.dc?.value?.toFixed(2) || '--';
+          document.getElementById('teleopRank').textContent = stats.dc?.rank ? `${stats.dc.rank}${getOrdinalSuffix(stats.dc.rank)}` : '--';
+          document.getElementById('teleopPercentile').textContent = stats.dc?.percentile ? `${stats.dc.percentile.toFixed(2)}%` : '--';
 
-            document.getElementById('endgameNP').textContent = data.egc.opr?.toFixed(2) || '--';
-            document.getElementById('endgameRank').textContent = data.egc.rank ? `${data.egc.rank}${getOrdinalSuffix(data.egc.rank)}` : '--';
-            document.getElementById('endgamePercentile').textContent = data.egc.percentile ? `${data.egc.percentile.toFixed(2)}%` : '--';
-          } else {
-            throw new Error('Invalid data structure');
-          }
+          document.getElementById('endgameNP').textContent = stats.egc?.value?.toFixed(2) || '--';
+          document.getElementById('endgameRank').textContent = stats.egc?.rank ? `${stats.egc.rank}${getOrdinalSuffix(stats.egc.rank)}` : '--';
+          document.getElementById('endgamePercentile').textContent = stats.egc?.percentile ? `${stats.egc.percentile.toFixed(2)}%` : '--';
 
           statsLoading.style.display = 'none';
           statsContent.style.display = 'block';
         } catch (error) {
           console.error('Error fetching team stats:', error);
           statsLoading.textContent = 'Unable to load live stats. Please try again later.';
+          statsLoading.style.color = '#ff9494';
         }
       }
 
