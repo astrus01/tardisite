@@ -13,7 +13,10 @@
       "Bash(git reset:*)",
       "Bash(git rm:*)",
       "Bash(git filter-repo:*)",
-      "Bash(git filter-branch:*)"
+      "Bash(git filter-branch:*)",
+      "Bash(curl:*)",
+      "Bash(dir:*)",
+      "Bash(findstr:*)"
     ],
     "deny": [],
     "ask": []

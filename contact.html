@@ -3,7 +3,14 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Contact Us - TARDIS Robotics</title>
+    <title>Contact Us - TARDIS Robotics | FTC Team 5356</title>
+    <meta name="description" content="Contact TARDIS Robotics (FTC Team 5356). Get in touch for partnerships, questions, or collaboration opportunities." />
+    <meta property="og:title" content="Contact Us - TARDIS Robotics" />
+    <meta property="og:description" content="Contact TARDIS Robotics for partnerships, questions, or collaboration opportunities." />
+    <meta property="og:url" content="https://tardis5356.com/contact.html" />
+    <link rel="icon" type="image/png" sizes="32x32" href="assets/whitetardis.png" />
+    <link rel="icon" type="image/png" sizes="16x16" href="assets/whitetardis.png" />
+    <link rel="apple-touch-icon" sizes="180x180" href="assets/whitetardis.png" />
     <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="styles.css">
 </head>
@@ -16,6 +23,7 @@
             <span></span>
         </button>
         <div class="divider"></div>
+        <div class="nav-backdrop" id="navBackdrop"></div>
         <div class="nav-links" id="navLinks">
             <a href="index.html">Home</a>
             <a href="team.html">Our Team</a>
@@ -86,25 +94,132 @@
     </div>
     
     <footer>
-        <p>FIRST Tech Challenge Team based in Corning, NY</p>
+        <p>FIRST Tech Challenge Team 5356 - TARDIS Robotics</p>
+        <p style="font-size: 0.8rem; margin-top: 0.5rem;">Based in Corning, NY</p>
+        <div class="footer-links">
+            <a href="index.html">Home</a>
+            <a href="team.html">Our Team</a>
+            <a href="resources.html">Resources</a>
+            <a href="contact.html">Contact</a>
+            <a href="https://www.firstinspires.org/" target="_blank" rel="noopener noreferrer">FIRST Robotics</a>
+        </div>
+        <p style="font-size: 0.75rem; margin-top: 1rem; opacity: 0.7;">© 2024 TARDIS Robotics. All rights reserved.</p>
     </footer>
+    
+    <!-- Back to top button -->
+    <button class="back-to-top" id="backToTop" aria-label="Back to top">
+        ↑
+    </button>
     
     <script>
         // Mobile hamburger menu
         const hamburger = document.getElementById('hamburger');
         const navLinks = document.getElementById('navLinks');
+        const navBackdrop = document.getElementById('navBackdrop');
 
         hamburger.addEventListener('click', function() {
           hamburger.classList.toggle('active');
           navLinks.classList.toggle('active');
+          if (navBackdrop) {
+            navBackdrop.classList.toggle('active');
+          }
         });
 
-        // Contact form
-        document.getElementById('contact-form').addEventListener('submit', function(e) {
-            e.preventDefault();
-            alert('Thanks for your message! We\'ll get back to you soon.');
-            this.reset();
-        });
+        // Close menu when clicking backdrop
+        if (navBackdrop) {
+          navBackdrop.addEventListener('click', function() {
+            hamburger.classList.remove('active');
+            navLinks.classList.remove('active');
+            navBackdrop.classList.remove('active');
+          });
+        }
+
+        // Back to top button functionality
+        const backToTopBtn = document.getElementById('backToTop');
+        if (backToTopBtn) {
+          window.addEventListener('scroll', function() {
+            if (window.scrollY > 300) {
+              backToTopBtn.classList.add('visible');
+            } else {
+              backToTopBtn.classList.remove('visible');
+            }
+          });
+
+          backToTopBtn.addEventListener('click', function() {
+            window.scrollTo({
+              top: 0,
+              behavior: 'smooth'
+            });
+          });
+        }
+
+        // Contact form with validation
+        const contactForm = document.getElementById('contact-form');
+        if (contactForm) {
+            contactForm.addEventListener('submit', function(e) {
+                e.preventDefault();
+                
+                // Get form values
+                const name = document.getElementById('name').value.trim();
+                const email = document.getElementById('email').value.trim();
+                const subject = document.getElementById('subject').value.trim();
+                const message = document.getElementById('message').value.trim();
+                
+                // Validation
+                if (!name || !email || !subject || !message) {
+                    showFormMessage('Please fill in all fields.', 'error');
+                    return;
+                }
+                
+                // Email validation
+                const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+                if (!emailRegex.test(email)) {
+                    showFormMessage('Please enter a valid email address.', 'error');
+                    return;
+                }
+                
+                // Contact form implementation using mailto
+                const mailtoLink = `mailto:ftctardis@gmail.com?subject=${encodeURIComponent('Contact: ' + subject)}&body=${encodeURIComponent(`From: ${name} (${email})\n\n${message}`)}`;
+                window.location.href = mailtoLink;
+                
+                // Show success message
+                showFormMessage('Thank you! Opening your email client...', 'success');
+                this.reset();
+            });
+        }
+        
+        function showFormMessage(text, type) {
+            // Remove existing message
+            const existingMsg = document.querySelector('.form-message');
+            if (existingMsg) {
+                existingMsg.remove();
+            }
+            
+            // Create new message
+            const message = document.createElement('div');
+            message.className = `form-message ${type}`;
+            message.textContent = text;
+            message.style.cssText = `
+                padding: 1rem;
+                margin: 1rem 0;
+                border-radius: 4px;
+                text-align: center;
+                animation: fadeIn 0.3s ease;
+                ${type === 'success' 
+                    ? 'background-color: rgba(76, 175, 80, 0.2); color: #4caf50; border: 1px solid #4caf50;' 
+                    : 'background-color: rgba(244, 67, 54, 0.2); color: #f44336; border: 1px solid #f44336;'}
+            `;
+            
+            const form = document.getElementById('contact-form');
+            form.insertBefore(message, form.firstChild);
+            
+            // Remove message after 5 seconds
+            setTimeout(() => {
+                message.style.opacity = '0';
+                message.style.transition = 'opacity 0.3s ease';
+                setTimeout(() => message.remove(), 300);
+            }, 5000);
+        }
     </script>
 </body>
 </html> 

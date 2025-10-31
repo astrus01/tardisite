@@ -3,7 +3,14 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Resources - TARDIS Robotics</title>
+    <title>Resources - TARDIS Robotics | FTC Team 5356</title>
+    <meta name="description" content="FTC resources and links for Team TARDIS Robotics (FTC Team 5356). Access FIRST documentation, forums, and team resources." />
+    <meta property="og:title" content="Resources - TARDIS Robotics" />
+    <meta property="og:description" content="FTC resources and links for Team TARDIS Robotics." />
+    <meta property="og:url" content="https://tardis5356.com/resources.html" />
+    <link rel="icon" type="image/png" sizes="32x32" href="assets/whitetardis.png" />
+    <link rel="icon" type="image/png" sizes="16x16" href="assets/whitetardis.png" />
+    <link rel="apple-touch-icon" sizes="180x180" href="assets/whitetardis.png" />
     <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="styles.css">
 </head>
@@ -16,6 +23,7 @@
             <span></span>
         </button>
         <div class="divider"></div>
+        <div class="nav-backdrop" id="navBackdrop"></div>
         <div class="nav-links" id="navLinks">
             <a href="index.html">Home</a>
             <a href="team.html">Our Team</a>
@@ -61,17 +69,64 @@
     </div>
     
     <footer>
-        <p>FIRST Tech Challenge Team based in Corning, NY</p>
+        <p>FIRST Tech Challenge Team 5356 - TARDIS Robotics</p>
+        <p style="font-size: 0.8rem; margin-top: 0.5rem;">Based in Corning, NY</p>
+        <div class="footer-links">
+            <a href="index.html">Home</a>
+            <a href="team.html">Our Team</a>
+            <a href="resources.html">Resources</a>
+            <a href="contact.html">Contact</a>
+            <a href="https://www.firstinspires.org/" target="_blank" rel="noopener noreferrer">FIRST Robotics</a>
+        </div>
+        <p style="font-size: 0.75rem; margin-top: 1rem; opacity: 0.7;">© 2024 TARDIS Robotics. All rights reserved.</p>
     </footer>
+    
+    <!-- Back to top button -->
+    <button class="back-to-top" id="backToTop" aria-label="Back to top">
+        ↑
+    </button>
+    
     <script>
       // Mobile hamburger menu
       const hamburger = document.getElementById('hamburger');
       const navLinks = document.getElementById('navLinks');
+      const navBackdrop = document.getElementById('navBackdrop');
 
       hamburger.addEventListener('click', function() {
         hamburger.classList.toggle('active');
         navLinks.classList.toggle('active');
+        if (navBackdrop) {
+          navBackdrop.classList.toggle('active');
+        }
       });
+
+      // Close menu when clicking backdrop
+      if (navBackdrop) {
+        navBackdrop.addEventListener('click', function() {
+          hamburger.classList.remove('active');
+          navLinks.classList.remove('active');
+          navBackdrop.classList.remove('active');
+        });
+      }
+
+      // Back to top button functionality
+      const backToTopBtn = document.getElementById('backToTop');
+      if (backToTopBtn) {
+        window.addEventListener('scroll', function() {
+          if (window.scrollY > 300) {
+            backToTopBtn.classList.add('visible');
+          } else {
+            backToTopBtn.classList.remove('visible');
+          }
+        });
+
+        backToTopBtn.addEventListener('click', function() {
+          window.scrollTo({
+            top: 0,
+            behavior: 'smooth'
+          });
+        });
+      }
     </script>
 </body>
 </html> 

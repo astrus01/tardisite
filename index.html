@@ -12,17 +12,96 @@
   <meta property="og:type" content="website" />
   <meta property="og:title" content="TARDIS Robotics - FTC Team 5356" />
   <meta property="og:description" content="Follow TARDIS Robotics (FTC Team 5356) from Corning, NY as we compete in FIRST Tech Challenge competitions." />
-  <meta property="og:url" content="https://tardisteam.org" />
+  <meta property="og:url" content="https://tardis5356.com" />
 
   <!-- Twitter Card -->
   <meta name="twitter:card" content="summary_large_image" />
   <meta name="twitter:title" content="TARDIS Robotics - FTC Team 5356" />
   <meta name="twitter:description" content="FIRST Tech Challenge Team 5356 from Corning, NY" />
 
+  <!-- Structured Data (JSON-LD) for SEO -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "Organization",
+    "name": "TARDIS Robotics",
+    "alternateName": "FTC Team 5356",
+    "url": "https://tardis5356.com",
+    "logo": "https://tardis5356.com/assets/whitetardis.png",
+    "description": "TARDIS Robotics (FTC Team 5356) is a FIRST Tech Challenge team based in Corning, NY. We build robots, compete in FTC competitions, and promote STEM education.",
+    "address": {
+      "@type": "PostalAddress",
+      "addressLocality": "Corning",
+      "addressRegion": "NY",
+      "addressCountry": "US"
+    },
+    "email": "ftctardis@gmail.com",
+    "sameAs": [
+      "https://www.instagram.com/tardis5356",
+      "https://youtube.com/channel/UCcYj5ayb3-5I02UnHusmC3g"
+    ],
+    "memberOf": {
+      "@type": "Organization",
+      "name": "FIRST Tech Challenge",
+      "url": "https://www.firstinspires.org/"
+    }
+  }
+  </script>
+
+  <!-- Favicon -->
+  <link rel="icon" type="image/png" sizes="32x32" href="assets/whitetardis.png" />
+  <link rel="icon" type="image/png" sizes="16x16" href="assets/whitetardis.png" />
+  <link rel="apple-touch-icon" sizes="180x180" href="assets/whitetardis.png" />
+  <script>
+    // Create square favicon from non-square PNG
+    (function() {
+      const img = new Image();
+      img.onload = function() {
+        const canvas = document.createElement('canvas');
+        // Use a larger size for better quality (browsers will scale down)
+        const size = 256;
+        canvas.width = size;
+        canvas.height = size;
+        const ctx = canvas.getContext('2d');
+        // Fill with transparent background
+        ctx.clearRect(0, 0, size, size);
+        // Calculate scaling to fit image within square while maintaining aspect ratio
+        const scale = Math.min(size / img.width, size / img.height);
+        const scaledWidth = img.width * scale;
+        const scaledHeight = img.height * scale;
+        const x = (size - scaledWidth) / 2;
+        const y = (size - scaledHeight) / 2;
+        ctx.drawImage(img, x, y, scaledWidth, scaledHeight);
+        // Create favicon link
+        const link = document.createElement('link');
+        link.rel = 'icon';
+        link.type = 'image/png';
+        link.href = canvas.toDataURL('image/png');
+        // Remove existing favicon links and add new one
+        const existingLinks = document.querySelectorAll('link[rel="icon"]');
+        existingLinks.forEach(l => l.remove());
+        document.getElementsByTagName('head')[0].appendChild(link);
+      };
+      img.onerror = function() {
+        // If image fails to load, keep original favicon
+        console.warn('Failed to load favicon image for processing');
+      };
+      img.src = 'assets/whitetardis.png';
+    })();
+  </script>
+
+  <!-- Preconnect to external domains for performance -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link rel="preconnect" href="https://api.ftcscout.org" />
+  <link rel="dns-prefetch" href="https://www.youtube.com" />
+  
   <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="styles.css" />
 </head>
 <body>
+  <!-- Skip to content link for accessibility -->
+  <a href="#main-content" class="skip-link">Skip to main content</a>
   <!-- Video Background Container -->
   <div class="video-bg" id="videoBg">
     <video id="bgVideo" autoplay muted playsinline loop>
@@ -57,6 +136,7 @@
             <span></span>
         </button>
         <div class="divider"></div>
+        <div class="nav-backdrop" id="navBackdrop"></div>
         <div class="nav-links" id="navLinks">
             <a href="index.html" class="active">Home</a>
             <a href="team.html">Our Team</a>
@@ -65,12 +145,12 @@
         </div>
     </nav>
 
-    <div class="main-content">
-        <img src="assets/whitetardis.png" alt="TARDIS Logo" class="logo" id="tardisLogo" loading="lazy">
+    <div class="main-content" id="main-content">
+        <img src="assets/whitetardis.png" alt="TARDIS Logo" class="logo" id="tardisLogo" loading="eager" fetchpriority="high" width="400" height="auto">
         
         <div class="hero-section">
             <h1>FTC Team 5356</h1>
-            <p class="tagline">The amazing robot does inspiring stuff</p>
+            <p class="tagline">Building Tomorrow's Innovators Through Robotics</p>
         </div>
 
         <div class="info-sections">
@@ -141,15 +221,15 @@
             <h2>Our Journey</h2>
             <div class="slideshow">
                 <div class="slide active">
-                    <img src="assets\insta\485121249_18305362132232511_8011057784273520181_n.jpeg" alt="Team Photo" loading="lazy">
+                    <img src="assets\insta\485121249_18305362132232511_8011057784273520181_n.jpeg" alt="Team Photo" loading="lazy" decoding="async">
                     <div class="caption">Team TARDIS at the 2024 competition</div>
                 </div>
                 <div class="slide">
-                    <img src="assets\insta\484990029_18305362159232511_7832992066120643753_n.jpeg" alt="Robot" loading="lazy">
+                    <img src="assets\insta\484990029_18305362159232511_7832992066120643753_n.jpeg" alt="Robot" loading="lazy" decoding="async">
                     <div class="caption">Our robot on the field</div>
                 </div>
                 <div class="slide">
-                    <img src="assets\insta\485666964_18305362180232511_6890157715357846339_n.jpg" alt="Champs!" loading="lazy">
+                    <img src="assets\insta\485666964_18305362180232511_6890157715357846339_n.jpg" alt="Champs!" loading="lazy" decoding="async">
                     <div class="caption">Echo performing auto</div>
                 </div>
                 <div class="slideshow-controls">
@@ -177,8 +257,22 @@
     </div>
     
     <footer>
-        <p>FIRST Tech Challenge Team based in Corning, NY</p>
+        <p>FIRST Tech Challenge Team 5356 - TARDIS Robotics</p>
+        <p style="font-size: 0.8rem; margin-top: 0.5rem;">Based in Corning, NY</p>
+        <div class="footer-links">
+            <a href="index.html">Home</a>
+            <a href="team.html">Our Team</a>
+            <a href="resources.html">Resources</a>
+            <a href="contact.html">Contact</a>
+            <a href="https://www.firstinspires.org/" target="_blank" rel="noopener noreferrer">FIRST Robotics</a>
+        </div>
+        <p style="font-size: 0.75rem; margin-top: 1rem; opacity: 0.7;">© 2024 TARDIS Robotics. All rights reserved.</p>
     </footer>
+    
+    <!-- Back to top button -->
+    <button class="back-to-top" id="backToTop" aria-label="Back to top">
+        ↑
+    </button>
     
     <script src="slideshow.js"></script>
     <script>
@@ -287,13 +381,69 @@
       // Load stats when page loads
       document.addEventListener('DOMContentLoaded', fetchTeamStats);
 
+
       // Mobile hamburger menu
       const hamburger = document.getElementById('hamburger');
       const navLinks = document.getElementById('navLinks');
+      const navBackdrop = document.getElementById('navBackdrop');
 
       hamburger.addEventListener('click', function() {
         hamburger.classList.toggle('active');
         navLinks.classList.toggle('active');
+        if (navBackdrop) {
+          navBackdrop.classList.toggle('active');
+        }
+      });
+
+      // Close menu when clicking backdrop
+      if (navBackdrop) {
+        navBackdrop.addEventListener('click', function() {
+          hamburger.classList.remove('active');
+          navLinks.classList.remove('active');
+          navBackdrop.classList.remove('active');
+        });
+      }
+
+      // Back to top button functionality
+      const backToTopBtn = document.getElementById('backToTop');
+      if (backToTopBtn) {
+        window.addEventListener('scroll', function() {
+          if (window.scrollY > 300) {
+            backToTopBtn.classList.add('visible');
+          } else {
+            backToTopBtn.classList.remove('visible');
+          }
+        });
+
+        backToTopBtn.addEventListener('click', function() {
+          window.scrollTo({
+            top: 0,
+            behavior: 'smooth'
+          });
+        });
+      }
+
+      // Add fade-in animations to elements on scroll
+      const observerOptions = {
+        threshold: 0.1,
+        rootMargin: '0px 0px -50px 0px'
+      };
+
+      const observer = new IntersectionObserver(function(entries) {
+        entries.forEach(entry => {
+          if (entry.isIntersecting) {
+            entry.target.classList.add('fade-in-up');
+            observer.unobserve(entry.target);
+          }
+        });
+      }, observerOptions);
+
+      // Observe elements for animation
+      document.addEventListener('DOMContentLoaded', function() {
+        const animateElements = document.querySelectorAll('.info-box, .stats-widget, .slideshow-container, .social-links');
+        animateElements.forEach(el => {
+          observer.observe(el);
+        });
       });
 
       // Video control and audio fade
