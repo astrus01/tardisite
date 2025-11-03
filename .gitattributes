@@ -1,7 +1,6 @@
 # Git Large File Storage (LFS) configuration
 # This handles large files like videos
-# Track video files with Git LFS
-*.mp4 filter=lfs diff=lfs merge=lfs -text
+# Track video files with Git LFS (except compressed videos under 100MB)
 *.mov filter=lfs diff=lfs merge=lfs -text
 *.avi filter=lfs diff=lfs merge=lfs -text
 *.mkv filter=lfs diff=lfs merge=lfs -text
