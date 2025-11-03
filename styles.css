@@ -1001,7 +1001,7 @@ button:hover {
   @media (max-width: 768px) {
     body::before {
       background-size: auto 120%;
-      background-position: 52.5% 100%;
+      background-position: center 100%;
     }
   }
 
