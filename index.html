@@ -456,51 +456,64 @@
         });
       });
 
-      // Video control and audio fade
-      const video = document.getElementById("bgVideo");
-      const muteBtn = document.getElementById("muteBtn");
-      const videoBg = document.getElementById("videoBg");
-      let videoHidden = false;
-      let isMuted = true; // Start muted for autoplay
+      // Video control and audio fade - initialize after page loads
+      function initializeVideo() {
+        const video = document.getElementById("bgVideo");
+        const muteBtn = document.getElementById("muteBtn");
+        const videoBg = document.getElementById("videoBg");
+        let videoHidden = false;
+        let isMuted = true; // Start muted for autoplay
 
-      // Video play overlay elements
-      const playOverlay = document.getElementById("playOverlay");
-      const playBtn = document.getElementById("playBtn");
-      
-      // Function to attempt video playback
-      function attemptVideoPlay() {
-        if (!video) return;
+        // Video play overlay elements
+        const playOverlay = document.getElementById("playOverlay");
+        const playBtn = document.getElementById("playBtn");
         
-        const playPromise = video.play();
-        if (playPromise !== undefined) {
-          playPromise
-            .then(() => {
-              // Video is playing - hide overlay
-              console.log('Video started playing');
-              if (playOverlay) {
-                playOverlay.style.display = 'none';
-              }
-            })
-            .catch((error) => {
-              // Autoplay was prevented - show overlay
-              console.warn('Autoplay prevented:', error);
-              if (playOverlay) {
-                playOverlay.style.display = 'flex';
-              }
-            });
+        if (!video) {
+          console.warn('Video element not found');
+          return;
         }
-      }
-      
-      // Ensure video plays - handle browser autoplay policies
-      if (video) {
+        
+        // Function to attempt video playback
+        function attemptVideoPlay() {
+          if (!video) return;
+          
+          // Check if video is ready
+          if (video.readyState === 0) {
+            console.log('Video not loaded yet, waiting...');
+            return;
+          }
+          
+          const playPromise = video.play();
+          if (playPromise !== undefined) {
+            playPromise
+              .then(() => {
+                // Video is playing - hide overlay
+                console.log('Video started playing');
+                if (playOverlay) {
+                  playOverlay.style.display = 'none';
+                }
+              })
+              .catch((error) => {
+                // Autoplay was prevented - show overlay
+                console.warn('Autoplay prevented:', error);
+                if (playOverlay) {
+                  playOverlay.style.display = 'flex';
+                }
+              });
+          }
+        }
+        
         // Set initial volume
         video.volume = 0.7;
         
         // Ensure video is muted for autoplay
         video.muted = true;
         
-        // Try playing immediately
-        attemptVideoPlay();
+        // Try playing when video has enough data
+        if (video.readyState >= 2) {
+          // Video already has enough data
+          attemptVideoPlay();
+        }
         
         // Handle video loading errors
         video.addEventListener('error', function(e) {
@@ -529,6 +542,12 @@
           attemptVideoPlay();
         });
         
+        // Handle video canplaythrough - best time to play
+        video.addEventListener('canplaythrough', function() {
+          console.log('Video can play through');
+          attemptVideoPlay();
+        });
+        
         // Check if video is actually playing
         video.addEventListener('playing', function() {
           console.log('Video is playing');
@@ -548,74 +567,82 @@
             }, 500);
           }
         });
-      }
-      
-      // Click to play button handler
-      if (playBtn && video) {
-        playBtn.addEventListener('click', function(e) {
-          e.stopPropagation();
-          attemptVideoPlay();
-        });
-      }
-      
-      // Also allow clicking on overlay background to play
-      if (playOverlay && video) {
-        playOverlay.addEventListener('click', function(e) {
-          if (e.target === playOverlay) {
+        
+        // Click to play button handler
+        if (playBtn) {
+          playBtn.addEventListener('click', function(e) {
+            e.stopPropagation();
             attemptVideoPlay();
-          }
-        });
-      }
-
-      // Show button as muted initially
-      if (muteBtn) {
-        muteBtn.classList.add("muted");
-      }
-
-      // Mute/Unmute button toggle - also tries to play if video is paused
-      if (muteBtn && video) {
-        muteBtn.addEventListener("click", function(e) {
-          e.stopPropagation();
-          
-          // If video is paused, try to play it first
-          if (video.paused) {
-            attemptVideoPlay();
-          }
-          
-          // Toggle mute
-          isMuted = !isMuted;
-          video.muted = isMuted;
-          muteBtn.classList.toggle("muted", isMuted);
-        });
-      }
-
-      // Listen for scroll events
-      window.addEventListener("scroll", function () {
-        const scrollY = window.scrollY;
-
-        // Fade out audio based on scroll (0-300px range)
-        if (video && scrollY < 300 && !videoHidden) {
-          const fadeAmount = 1 - (scrollY / 300);
-          video.volume = Math.max(0, Math.min(0.7, fadeAmount * 0.7));
+          });
         }
-
-        // Hide video background after scrolling past threshold
-        // Just hide it visually instead of removing from DOM to avoid interrupting playback
-        if (videoBg && !videoHidden && scrollY > 50) {
-          videoBg.style.transition = "opacity 0.5s ease";
-          videoBg.style.opacity = 0;
-          videoBg.style.pointerEvents = "none"; // Prevent interaction with hidden video
-          videoHidden = true;
-          
-          // Remove from DOM much later (after 2 seconds) to ensure video has time to play
-          setTimeout(() => {
-            if (videoBg && videoBg.parentNode) {
-              // Don't pause - just remove silently
-              videoBg.parentNode.removeChild(videoBg);
+        
+        // Also allow clicking on overlay background to play
+        if (playOverlay) {
+          playOverlay.addEventListener('click', function(e) {
+            if (e.target === playOverlay) {
+              attemptVideoPlay();
             }
-          }, 2000);
+          });
         }
-      });
+
+        // Show button as muted initially
+        if (muteBtn) {
+          muteBtn.classList.add("muted");
+        }
+
+        // Mute/Unmute button toggle - also tries to play if video is paused
+        if (muteBtn) {
+          muteBtn.addEventListener("click", function(e) {
+            e.stopPropagation();
+            
+            // If video is paused, try to play it first
+            if (video.paused) {
+              attemptVideoPlay();
+            }
+            
+            // Toggle mute
+            isMuted = !isMuted;
+            video.muted = isMuted;
+            muteBtn.classList.toggle("muted", isMuted);
+          });
+        }
+
+        // Listen for scroll events
+        window.addEventListener("scroll", function () {
+          const scrollY = window.scrollY;
+
+          // Fade out audio based on scroll (0-300px range)
+          if (video && scrollY < 300 && !videoHidden) {
+            const fadeAmount = 1 - (scrollY / 300);
+            video.volume = Math.max(0, Math.min(0.7, fadeAmount * 0.7));
+          }
+
+          // Hide video background after scrolling past threshold
+          // Just hide it visually instead of removing from DOM to avoid interrupting playback
+          if (videoBg && !videoHidden && scrollY > 50) {
+            videoBg.style.transition = "opacity 0.5s ease";
+            videoBg.style.opacity = 0;
+            videoBg.style.pointerEvents = "none"; // Prevent interaction with hidden video
+            videoHidden = true;
+            
+            // Remove from DOM much later (after 2 seconds) to ensure video has time to play
+            setTimeout(() => {
+              if (videoBg && videoBg.parentNode) {
+                // Don't pause - just remove silently
+                videoBg.parentNode.removeChild(videoBg);
+              }
+            }, 2000);
+          }
+        });
+      }
+      
+      // Initialize video when DOM is ready
+      if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', initializeVideo);
+      } else {
+        // DOM already loaded
+        initializeVideo();
+      }
     </script>
 
 </body>
