@@ -24,6 +24,7 @@
 
 html {
     scroll-behavior: smooth;
+    background-color: #000000;
 }
 
 /* Optimize image rendering */
@@ -41,6 +42,7 @@ body {
     display: flex;
     flex-direction: column;
     color: var(--primary-color);
+    background-color: #000000;
 }
 
 body::before {
@@ -390,8 +392,8 @@ footer .footer-links a:hover {
 }
 
 .back-to-top:focus {
-    outline: 2px solid white;
-    outline-offset: 2px;
+    outline: none;
+    box-shadow: 0 0 0 3px rgba(162, 0, 255, 0.5);
 }
 
 @media (max-width: 768px) {
