@@ -51,7 +51,47 @@ document.addEventListener('DOMContentLoaded', function() {
         slideshow.addEventListener('mouseleave', () => {
             slideInterval = setInterval(nextSlide, 5000);
         });
-        
+
+        // Touch swipe support for mobile
+        let touchStartX = 0;
+        let touchEndX = 0;
+        let touchStartY = 0;
+        let touchEndY = 0;
+
+        slideshow.addEventListener('touchstart', (e) => {
+            touchStartX = e.changedTouches[0].screenX;
+            touchStartY = e.changedTouches[0].screenY;
+            // Pause auto-advance during touch
+            clearInterval(slideInterval);
+        }, { passive: true });
+
+        slideshow.addEventListener('touchend', (e) => {
+            touchEndX = e.changedTouches[0].screenX;
+            touchEndY = e.changedTouches[0].screenY;
+            handleSwipe();
+            // Resume auto-advance after swipe
+            slideInterval = setInterval(nextSlide, 5000);
+        }, { passive: true });
+
+        function handleSwipe() {
+            const swipeThreshold = 50; // Minimum distance for a swipe
+            const swipeDistanceX = touchEndX - touchStartX;
+            const swipeDistanceY = touchEndY - touchStartY;
+
+            // Only trigger if horizontal swipe is greater than vertical (to avoid interfering with scrolling)
+            if (Math.abs(swipeDistanceX) > Math.abs(swipeDistanceY)) {
+                if (Math.abs(swipeDistanceX) > swipeThreshold) {
+                    if (swipeDistanceX > 0) {
+                        // Swipe right - go to previous slide
+                        prevSlide();
+                    } else {
+                        // Swipe left - go to next slide
+                        nextSlide();
+                    }
+                }
+            }
+        }
+
         // Initialize first slide
         showSlide(currentIndex);
     });
