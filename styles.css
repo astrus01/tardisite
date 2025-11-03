@@ -52,7 +52,7 @@ body::before {
     height: 100%;
     background: linear-gradient(rgba(0, 0, 0, 0.2), rgba(0, 0, 0, 0.2)),
                 url('assets/opengripper.Still002.png') no-repeat;
-    background-size: 100% 100%;
+    background-size: cover;
     background-position: center 80%;
     filter: blur(3px) brightness(0.9);
     z-index: -1;
