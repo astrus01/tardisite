@@ -108,6 +108,16 @@
       <source src="assets/echofinal.mp4" type="video/mp4" />
       Your browser does not support the video tag.
     </video>
+    <!-- Click to Play Overlay (shown if autoplay fails) -->
+    <div class="video-play-overlay" id="playOverlay" style="display: none;">
+      <button class="play-btn" id="playBtn" aria-label="Play video">
+        <svg width="64" height="64" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <circle cx="12" cy="12" r="10" stroke="white" stroke-width="2" fill="rgba(0,0,0,0.3)"/>
+          <path d="M10 8L16 12L10 16V8Z" fill="white"/>
+        </svg>
+        <p>Click to Play Video</p>
+      </button>
+    </div>
     <!-- Mute/Unmute Button -->
     <button class="mute-btn" id="muteBtn" aria-label="Toggle mute">
       <svg class="sound-on" width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -453,6 +463,34 @@
       let videoRemoved = false;
       let isMuted = true; // Start muted for autoplay
 
+      // Video play overlay elements
+      const playOverlay = document.getElementById("playOverlay");
+      const playBtn = document.getElementById("playBtn");
+      
+      // Function to attempt video playback
+      function attemptVideoPlay() {
+        if (!video) return;
+        
+        const playPromise = video.play();
+        if (playPromise !== undefined) {
+          playPromise
+            .then(() => {
+              // Video is playing - hide overlay
+              console.log('Video started playing');
+              if (playOverlay) {
+                playOverlay.style.display = 'none';
+              }
+            })
+            .catch((error) => {
+              // Autoplay was prevented - show overlay
+              console.warn('Autoplay prevented:', error);
+              if (playOverlay) {
+                playOverlay.style.display = 'flex';
+              }
+            });
+        }
+      }
+      
       // Ensure video plays - handle browser autoplay policies
       if (video) {
         // Set initial volume
@@ -461,25 +499,8 @@
         // Ensure video is muted for autoplay
         video.muted = true;
         
-        // Attempt to play the video
-        const playPromise = video.play();
-        
-        if (playPromise !== undefined) {
-          playPromise
-            .then(() => {
-              // Video is playing
-              console.log('Video started playing');
-            })
-            .catch((error) => {
-              // Autoplay was prevented
-              console.warn('Autoplay prevented:', error);
-              // Try to play again after user interaction
-              document.addEventListener('click', function playVideoOnClick() {
-                video.play().catch(err => console.warn('Video play failed:', err));
-                document.removeEventListener('click', playVideoOnClick);
-              }, { once: true });
-            });
-        }
+        // Try playing immediately
+        attemptVideoPlay();
         
         // Handle video loading errors
         video.addEventListener('error', function(e) {
@@ -488,6 +509,10 @@
           if (videoElement.error) {
             console.error('Video error code:', videoElement.error.code);
             console.error('Video error message:', videoElement.error.message);
+            // Show overlay if video fails to load
+            if (playOverlay) {
+              playOverlay.style.display = 'flex';
+            }
           }
         });
         
@@ -495,13 +520,50 @@
         video.addEventListener('loadeddata', function() {
           console.log('Video data loaded');
           // Try to play again once data is loaded
-          video.play().catch(err => console.warn('Video play failed after load:', err));
+          attemptVideoPlay();
         });
         
         // Handle video canplay event
         video.addEventListener('canplay', function() {
           console.log('Video can start playing');
-          video.play().catch(err => console.warn('Video play failed:', err));
+          attemptVideoPlay();
+        });
+        
+        // Check if video is actually playing
+        video.addEventListener('playing', function() {
+          console.log('Video is playing');
+          if (playOverlay) {
+            playOverlay.style.display = 'none';
+          }
+        });
+        
+        // Check if video paused (might indicate autoplay was blocked)
+        video.addEventListener('pause', function() {
+          // Only show overlay if video was never played and it's paused
+          if (video.readyState >= 2 && video.paused) {
+            setTimeout(() => {
+              if (video.paused && playOverlay) {
+                playOverlay.style.display = 'flex';
+              }
+            }, 500);
+          }
+        });
+      }
+      
+      // Click to play button handler
+      if (playBtn && video) {
+        playBtn.addEventListener('click', function(e) {
+          e.stopPropagation();
+          attemptVideoPlay();
+        });
+      }
+      
+      // Also allow clicking on overlay background to play
+      if (playOverlay && video) {
+        playOverlay.addEventListener('click', function(e) {
+          if (e.target === playOverlay) {
+            attemptVideoPlay();
+          }
         });
       }
 
@@ -510,9 +572,17 @@
         muteBtn.classList.add("muted");
       }
 
-      // Mute/Unmute button toggle
+      // Mute/Unmute button toggle - also tries to play if video is paused
       if (muteBtn && video) {
-        muteBtn.addEventListener("click", function() {
+        muteBtn.addEventListener("click", function(e) {
+          e.stopPropagation();
+          
+          // If video is paused, try to play it first
+          if (video.paused) {
+            attemptVideoPlay();
+          }
+          
+          // Toggle mute
           isMuted = !isMuted;
           video.muted = isMuted;
           muteBtn.classList.toggle("muted", isMuted);
