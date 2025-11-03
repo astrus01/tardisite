@@ -468,6 +468,23 @@
           console.warn('Autoplay prevented:', error);
         });
 
+        // Ensure video loops properly
+        video.addEventListener('ended', function() {
+          video.currentTime = 0;
+          video.play().catch(error => console.warn('Loop play failed:', error));
+        });
+
+        // If video pauses unexpectedly, try to resume (but not if user scrolled)
+        video.addEventListener('pause', function() {
+          if (!videoHidden && document.visibilityState === 'visible') {
+            setTimeout(() => {
+              if (video.paused && !videoHidden) {
+                video.play().catch(error => console.warn('Resume play failed:', error));
+              }
+            }, 100);
+          }
+        });
+
         // Show button as muted initially
         if (muteBtn) {
           muteBtn.classList.add("muted");
