@@ -104,7 +104,7 @@
   <a href="#main-content" class="skip-link">Skip to main content</a>
   <!-- Video Background Container -->
   <div class="video-bg" id="videoBg">
-    <video id="bgVideo" autoplay muted playsinline loop>
+    <video id="bgVideo" autoplay muted playsinline loop preload="auto">
       <source src="assets/echofinal.mp4" type="video/mp4" />
       Your browser does not support the video tag.
     </video>
@@ -453,35 +453,90 @@
       let videoRemoved = false;
       let isMuted = true; // Start muted for autoplay
 
-      // Set initial volume
-      video.volume = 0.7;
+      // Ensure video plays - handle browser autoplay policies
+      if (video) {
+        // Set initial volume
+        video.volume = 0.7;
+        
+        // Ensure video is muted for autoplay
+        video.muted = true;
+        
+        // Attempt to play the video
+        const playPromise = video.play();
+        
+        if (playPromise !== undefined) {
+          playPromise
+            .then(() => {
+              // Video is playing
+              console.log('Video started playing');
+            })
+            .catch((error) => {
+              // Autoplay was prevented
+              console.warn('Autoplay prevented:', error);
+              // Try to play again after user interaction
+              document.addEventListener('click', function playVideoOnClick() {
+                video.play().catch(err => console.warn('Video play failed:', err));
+                document.removeEventListener('click', playVideoOnClick);
+              }, { once: true });
+            });
+        }
+        
+        // Handle video loading errors
+        video.addEventListener('error', function(e) {
+          console.error('Video loading error:', e);
+          const videoElement = e.target;
+          if (videoElement.error) {
+            console.error('Video error code:', videoElement.error.code);
+            console.error('Video error message:', videoElement.error.message);
+          }
+        });
+        
+        // Handle video load event
+        video.addEventListener('loadeddata', function() {
+          console.log('Video data loaded');
+          // Try to play again once data is loaded
+          video.play().catch(err => console.warn('Video play failed after load:', err));
+        });
+        
+        // Handle video canplay event
+        video.addEventListener('canplay', function() {
+          console.log('Video can start playing');
+          video.play().catch(err => console.warn('Video play failed:', err));
+        });
+      }
 
       // Show button as muted initially
-      muteBtn.classList.add("muted");
+      if (muteBtn) {
+        muteBtn.classList.add("muted");
+      }
 
       // Mute/Unmute button toggle
-      muteBtn.addEventListener("click", function() {
-        isMuted = !isMuted;
-        video.muted = isMuted;
-        muteBtn.classList.toggle("muted", isMuted);
-      });
+      if (muteBtn && video) {
+        muteBtn.addEventListener("click", function() {
+          isMuted = !isMuted;
+          video.muted = isMuted;
+          muteBtn.classList.toggle("muted", isMuted);
+        });
+      }
 
       // Listen for scroll events
       window.addEventListener("scroll", function () {
         const scrollY = window.scrollY;
 
         // Fade out audio based on scroll (0-300px range)
-        if (scrollY < 300 && !videoRemoved) {
+        if (video && scrollY < 300 && !videoRemoved) {
           const fadeAmount = 1 - (scrollY / 300);
           video.volume = Math.max(0, Math.min(0.7, fadeAmount * 0.7));
         }
 
         // Remove video background after scrolling past threshold
-        if (!videoRemoved && scrollY > 50) {
+        if (videoBg && !videoRemoved && scrollY > 50) {
           videoBg.style.transition = "opacity 0.5s ease";
           videoBg.style.opacity = 0;
           setTimeout(() => {
-            videoBg.parentNode.removeChild(videoBg);
+            if (videoBg && videoBg.parentNode) {
+              videoBg.parentNode.removeChild(videoBg);
+            }
           }, 500);
           videoRemoved = true;
         }
