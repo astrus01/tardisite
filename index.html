@@ -460,9 +460,8 @@
       const video = document.getElementById("bgVideo");
       const muteBtn = document.getElementById("muteBtn");
       const videoBg = document.getElementById("videoBg");
-      let videoRemoved = false;
+      let videoHidden = false;
       let isMuted = true; // Start muted for autoplay
-      let videoHasPlayed = false; // Track if video has successfully started playing
 
       // Video play overlay elements
       const playOverlay = document.getElementById("playOverlay");
@@ -533,7 +532,6 @@
         // Check if video is actually playing
         video.addEventListener('playing', function() {
           console.log('Video is playing');
-          videoHasPlayed = true; // Mark that video has started playing
           if (playOverlay) {
             playOverlay.style.display = 'none';
           }
@@ -596,34 +594,26 @@
         const scrollY = window.scrollY;
 
         // Fade out audio based on scroll (0-300px range)
-        if (video && scrollY < 300 && !videoRemoved) {
+        if (video && scrollY < 300 && !videoHidden) {
           const fadeAmount = 1 - (scrollY / 300);
           video.volume = Math.max(0, Math.min(0.7, fadeAmount * 0.7));
         }
 
-        // Remove video background after scrolling past threshold
-        // Only remove if video has played OR if user has scrolled significantly (500px)
-        // This prevents interrupting the video before it starts
-        if (videoBg && !videoRemoved && scrollY > 50) {
-          // If video hasn't played yet, wait until it does or user scrolls more
-          if (!videoHasPlayed && scrollY < 500) {
-            // Don't remove yet - video is still trying to start
-            return;
-          }
-          
-          // Video has played or user scrolled far enough - safe to remove
+        // Hide video background after scrolling past threshold
+        // Just hide it visually instead of removing from DOM to avoid interrupting playback
+        if (videoBg && !videoHidden && scrollY > 50) {
           videoBg.style.transition = "opacity 0.5s ease";
           videoBg.style.opacity = 0;
+          videoBg.style.pointerEvents = "none"; // Prevent interaction with hidden video
+          videoHidden = true;
+          
+          // Remove from DOM much later (after 2 seconds) to ensure video has time to play
           setTimeout(() => {
             if (videoBg && videoBg.parentNode) {
-              // Pause video before removing to prevent errors
-              if (video) {
-                video.pause();
-              }
+              // Don't pause - just remove silently
               videoBg.parentNode.removeChild(videoBg);
             }
-          }, 500);
-          videoRemoved = true;
+          }, 2000);
         }
       });
     </script>
