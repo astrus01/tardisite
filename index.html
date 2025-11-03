@@ -462,6 +462,7 @@
       const videoBg = document.getElementById("videoBg");
       let videoRemoved = false;
       let isMuted = true; // Start muted for autoplay
+      let videoHasPlayed = false; // Track if video has successfully started playing
 
       // Video play overlay elements
       const playOverlay = document.getElementById("playOverlay");
@@ -532,6 +533,7 @@
         // Check if video is actually playing
         video.addEventListener('playing', function() {
           console.log('Video is playing');
+          videoHasPlayed = true; // Mark that video has started playing
           if (playOverlay) {
             playOverlay.style.display = 'none';
           }
@@ -600,11 +602,24 @@
         }
 
         // Remove video background after scrolling past threshold
+        // Only remove if video has played OR if user has scrolled significantly (500px)
+        // This prevents interrupting the video before it starts
         if (videoBg && !videoRemoved && scrollY > 50) {
+          // If video hasn't played yet, wait until it does or user scrolls more
+          if (!videoHasPlayed && scrollY < 500) {
+            // Don't remove yet - video is still trying to start
+            return;
+          }
+          
+          // Video has played or user scrolled far enough - safe to remove
           videoBg.style.transition = "opacity 0.5s ease";
           videoBg.style.opacity = 0;
           setTimeout(() => {
             if (videoBg && videoBg.parentNode) {
+              // Pause video before removing to prevent errors
+              if (video) {
+                video.pause();
+              }
               videoBg.parentNode.removeChild(videoBg);
             }
           }, 500);
