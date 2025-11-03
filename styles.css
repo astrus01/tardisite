@@ -52,8 +52,8 @@ body::before {
     height: 100%;
     background: linear-gradient(rgba(0, 0, 0, 0.2), rgba(0, 0, 0, 0.2)),
                 url('assets/opengripper.Still002.png') no-repeat;
-    background-size: cover;
-    background-position: center 80%;
+    background-size: auto 130%;
+    background-position: 69% 68%;
     filter: blur(3px) brightness(0.9);
     z-index: -1;
 }
@@ -1001,7 +1001,7 @@ button:hover {
   @media (max-width: 768px) {
     body::before {
       background-size: auto 120%;
-      background-position: 52.5% 100%;
+      background-position: 53% 100%;
     }
   }
 
