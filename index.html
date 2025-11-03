@@ -464,10 +464,36 @@
         // Ensure video is muted for autoplay
         video.muted = true;
 
-        // Try to play video
-        video.play().catch(error => {
-          console.warn('Autoplay prevented:', error);
-        });
+        // Enhanced mobile autoplay handling
+        function attemptPlay() {
+          video.play().then(() => {
+            console.log('Video autoplay successful');
+          }).catch(error => {
+            console.warn('Autoplay prevented:', error);
+            // On mobile, try playing on first user interaction
+            const playOnInteraction = () => {
+              video.play().then(() => {
+                console.log('Video started after user interaction');
+              }).catch(err => console.warn('Play failed:', err));
+              // Remove listeners after first successful play
+              document.removeEventListener('touchstart', playOnInteraction);
+              document.removeEventListener('click', playOnInteraction);
+              document.removeEventListener('scroll', playOnInteraction);
+            };
+            document.addEventListener('touchstart', playOnInteraction, { once: true, passive: true });
+            document.addEventListener('click', playOnInteraction, { once: true });
+            document.addEventListener('scroll', playOnInteraction, { once: true, passive: true });
+          });
+        }
+
+        // Wait for video to be ready before attempting to play
+        if (video.readyState >= 3) {
+          // Video is already loaded enough to play
+          attemptPlay();
+        } else {
+          // Wait for video to be ready
+          video.addEventListener('canplay', attemptPlay, { once: true });
+        }
 
         // Ensure video loops properly
         video.addEventListener('ended', function() {
