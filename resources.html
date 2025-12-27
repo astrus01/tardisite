@@ -1,132 +1,360 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" class="scroll-smooth">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta http-equiv="Content-Security-Policy" content="upgrade-insecure-requests">
-    <title>Resources - TARDIS Robotics | FTC Team 5356</title>
-    <meta name="description" content="FTC resources and links for Team TARDIS Robotics (FTC Team 5356). Access FIRST documentation, forums, and team resources." />
-    <meta property="og:title" content="Resources - TARDIS Robotics" />
-    <meta property="og:description" content="FTC resources and links for Team TARDIS Robotics." />
-    <meta property="og:url" content="https://tardis5356.com/resources.html" />
-    <link rel="icon" type="image/png" sizes="32x32" href="assets/whitetardis.png" />
-    <link rel="icon" type="image/png" sizes="16x16" href="assets/whitetardis.png" />
-    <link rel="apple-touch-icon" sizes="180x180" href="assets/whitetardis.png" />
-    <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="styles.css">
-</head>
-<body>
-    <nav>
-        <div class="team-name">TARDIS</div>
-        <button class="hamburger" id="hamburger" aria-label="Toggle menu">
-            <span></span>
-            <span></span>
-            <span></span>
-        </button>
-        <div class="divider"></div>
-        <div class="nav-backdrop" id="navBackdrop"></div>
-        <div class="nav-links" id="navLinks">
-            <a href="index.html">Home</a>
-            <a href="team.html">Our Team</a>
-            <a href="resources.html" class="active">Resources</a>
-            <a href="contact.html">Contact</a>
-        </div>
-    </nav>
+  <title>Resources - TARDIS Robotics | FTC Team 5356</title>
+  <meta name="description" content="FTC resources and links for Team TARDIS Robotics (FTC Team 5356). Access FIRST documentation, forums, and team resources.">
+  <meta property="og:title" content="Resources - TARDIS Robotics">
+  <meta property="og:description" content="FTC resources and links for Team TARDIS Robotics.">
+  <meta property="og:url" content="https://tardis5356.com/resources.html">
+  <link rel="icon" type="image/png" sizes="32x32" href="assets/whitetardis.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="assets/whitetardis.png">
+  <link rel="apple-touch-icon" sizes="180x180" href="assets/whitetardis.png">
 
-    <div class="main-content">
-        <h1>FTC Resources</h1>
-        
-        <div class="content-section">
-            <h2>Team Resources</h2>
-            
-            <div class="resource-links">
-                <a href="https://www.firstinspires.org/resource-library" target="_blank" class="resource-link">
-                    FIRST Resource Library
-                </a>
-                <a href="https://ftc-docs.firstinspires.org/" target="_blank" class="resource-link">
-                    FTC Documentation
-                </a>
-                <a href="https://github.com/FIRST-Tech-Challenge" target="_blank" class="resource-link">
-                    FTC GitHub Repositories
-                </a>
-                <a href="https://ftcforum.firstinspires.org/" target="_blank" class="resource-link">
-                    FTC Forums
-                </a>
-                <a href="https://ftc-events.firstinspires.org/" target="_blank" class="resource-link">
-                    FTC Events Portal
-                </a>
-                <a href="https://ftcscout.org/" target="_blank" class="resource-link">
-                    FTC Scout
-                </a>
-            </div>
-        </div>
-        
-        <div class="youtube-section">
-            <h2>Team TARDIS 5356 Engineering Portfolio Workshop - FTC - Into the Deep</h2>
-            <div class="video-container">
-                <iframe width="560" height="315" src="https://www.youtube.com/embed/RHjLxc8Y6Bw?si=OLo9USsrAEScS_Bk" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
-            </div>
-        </div>
-    </div>
-    
-    <footer>
-        <p>FIRST Tech Challenge Team 5356 - TARDIS Robotics</p>
-        <p style="font-size: 0.8rem; margin-top: 0.5rem;">Based in Corning, NY</p>
-        <div class="footer-links">
-            <a href="index.html">Home</a>
-            <a href="team.html">Our Team</a>
-            <a href="resources.html">Resources</a>
-            <a href="contact.html">Contact</a>
-            <a href="https://www.firstinspires.org/" target="_blank" rel="noopener noreferrer">FIRST Robotics</a>
-        </div>
-    </footer>
-    
-    <!-- Back to top button -->
-    <button class="back-to-top" id="backToTop" aria-label="Back to top">
-        ↑
-    </button>
-    
-    <script>
-      // Mobile hamburger menu
-      const hamburger = document.getElementById('hamburger');
-      const navLinks = document.getElementById('navLinks');
-      const navBackdrop = document.getElementById('navBackdrop');
+  <!-- Tailwind CSS -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- Icons -->
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <!-- Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Inter:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
 
-      hamburger.addEventListener('click', function() {
-        hamburger.classList.toggle('active');
-        navLinks.classList.toggle('active');
-        if (navBackdrop) {
-          navBackdrop.classList.toggle('active');
-        }
-      });
-
-      // Close menu when clicking backdrop
-      if (navBackdrop) {
-        navBackdrop.addEventListener('click', function() {
-          hamburger.classList.remove('active');
-          navLinks.classList.remove('active');
-          navBackdrop.classList.remove('active');
-        });
-      }
-
-      // Back to top button functionality
-      const backToTopBtn = document.getElementById('backToTop');
-      if (backToTopBtn) {
-        window.addEventListener('scroll', function() {
-          if (window.scrollY > 300) {
-            backToTopBtn.classList.add('visible');
-          } else {
-            backToTopBtn.classList.remove('visible');
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['Inter', 'sans-serif'],
+            display: ['Bebas Neue', 'sans-serif'],
+            mono: ['JetBrains Mono', 'monospace'],
+          },
+          colors: {
+            galaxy: {
+              900: '#05030A',
+              800: '#0F0A1F',
+              card: 'rgba(25, 15, 40, 0.4)',
+              border: 'rgba(139, 92, 246, 0.15)'
+            },
+            accent: {
+              purple: '#8B5CF6',
+              glow: '#A78BFA',
+              deep: '#581c87'
+            }
+          },
+          animation: {
+            'fade-in': 'fadeIn 0.8s ease-out forwards',
+          },
+          keyframes: {
+            fadeIn: {
+              '0%': { opacity: '0', transform: 'translateY(10px)' },
+              '100%': { opacity: '1', transform: 'translateY(0)' },
+            },
           }
-        });
-
-        backToTopBtn.addEventListener('click', function() {
-          window.scrollTo({
-            top: 0,
-            behavior: 'smooth'
-          });
-        });
+        }
       }
-    </script>
+    }
+  </script>
+
+  <style>
+    html, body {
+      min-height: 100%;
+    }
+    html {
+      background: #05030A;
+    }
+
+    ::-webkit-scrollbar {
+      width: 6px;
+    }
+    ::-webkit-scrollbar-track {
+      background: #05030A;
+    }
+    ::-webkit-scrollbar-thumb {
+      background: #581c87;
+      border-radius: 4px;
+    }
+    ::-webkit-scrollbar-thumb:hover {
+      background: #7c3aed;
+    }
+
+    .glass-panel {
+      background: rgba(20, 10, 35, 0.3);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      border: 1px solid rgba(139, 92, 246, 0.15);
+      box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
+    }
+    .glass-nav {
+      background: rgba(5, 3, 10, 0.6);
+      backdrop-filter: blur(20px);
+      border-bottom: 1px solid rgba(139, 92, 246, 0.1);
+    }
+
+    .text-gradient {
+      background: linear-gradient(to right, #e9d5ff, #a855f7, #c084fc);
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
+      filter: drop-shadow(0 0 20px rgba(168, 85, 247, 0.4));
+    }
+
+    .hover-glow {
+      transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+    .hover-glow:hover {
+      border-color: rgba(167, 139, 250, 0.5);
+      background: rgba(30, 15, 50, 0.4);
+      box-shadow: 0 0 40px -5px rgba(139, 92, 246, 0.25);
+      transform: translateY(-2px);
+    }
+  </style>
+</head>
+
+<body class="font-sans antialiased selection:bg-purple-500 selection:text-white text-slate-300 min-h-screen">
+
+  <!-- Purple tint layer -->
+  <div class="fixed inset-0 w-full h-full pointer-events-none z-0 bg-purple-950/20"></div>
+
+  <!-- Unicorn Studio Background -->
+  <div class="fixed inset-0 -z-10" style="width: 100%; height: 100vh;">
+    <div
+      data-us-project="cqcLtDwfoHqqRPttBbQE"
+      style="width: 100%; height: 100%;"
+    ></div>
+  </div>
+  <script type="text/javascript">
+    !function(){if(!window.UnicornStudio){window.UnicornStudio={isInitialized:!1};var i=document.createElement("script");i.src="https://cdn.jsdelivr.net/gh/hiunicornstudio/unicornstudio.js@v1.4.29/dist/unicornStudio.umd.js",i.onload=function(){window.UnicornStudio.isInitialized||(UnicornStudio.init(),window.UnicornStudio.isInitialized=!0)},(document.head || document.body).appendChild(i)}}();
+  </script>
+
+  <!-- Navigation -->
+  <nav class="fixed top-0 w-full z-50 glass-nav transition-all duration-300 border-b border-purple-500/10" id="navbar">
+    <div class="max-w-7xl mx-auto px-6 h-20 flex items-center justify-between">
+      <a href="index.html" class="flex items-center gap-3 group">
+        <div class="w-12 h-12 relative overflow-hidden rounded border border-purple-500/30 flex items-center justify-center group-hover:border-purple-400/60 transition-colors shadow-[0_0_15px_-3px_rgba(168,85,247,0.3)] bg-purple-900/30">
+          <img src="assets/whitetardis.png" alt="TARDIS Logo" class="w-10 h-10 object-contain opacity-90 group-hover:opacity-100 transition-opacity">
+        </div>
+        <div class="flex flex-col">
+          <span class="text-[10px] uppercase tracking-[0.2em] text-purple-400/80">Team</span>
+          <span class="font-display text-2xl tracking-wide group-hover:text-purple-300 transition-colors leading-none text-white">TARDIS</span>
+        </div>
+      </a>
+
+      <!-- Desktop Links -->
+      <div class="hidden md:flex items-center gap-10">
+        <a href="index.html" class="text-lg font-display tracking-wider transition-colors relative after:content-[''] after:absolute after:bottom-[-4px] after:left-0 after:w-full after:h-[2px] after:bg-purple-500 after:scale-x-0 hover:after:scale-x-100 after:transition-transform after:origin-right hover:after:origin-left text-slate-400 hover:text-purple-300">Home</a>
+        <a href="team.html" class="text-lg font-display tracking-wider transition-colors relative after:content-[''] after:absolute after:bottom-[-4px] after:left-0 after:w-full after:h-[2px] after:bg-purple-500 after:scale-x-0 hover:after:scale-x-100 after:transition-transform after:origin-right hover:after:origin-left text-slate-400 hover:text-purple-300">Team</a>
+        <a href="resources.html" class="text-lg font-display tracking-wider relative after:content-[''] after:absolute after:bottom-[-4px] after:left-0 after:w-full after:h-[2px] after:bg-purple-500 after:scale-x-100 after:transition-transform text-white">Resources</a>
+        <a href="contact.html" class="px-5 py-2 rounded border border-purple-500/30 bg-purple-500/10 hover:bg-purple-500/20 text-lg font-display tracking-wide transition-all hover:shadow-[0_0_20px_-5px_rgba(168,85,247,0.4)] text-purple-200 hover:text-white">Contact</a>
+      </div>
+
+      <!-- Mobile Menu Button -->
+      <button id="hamburger" class="md:hidden p-2 hover:bg-purple-500/10 rounded text-purple-300 hover:text-white">
+        <i data-lucide="menu" class="w-7 h-7"></i>
+      </button>
+    </div>
+  </nav>
+
+  <!-- Mobile Nav Overlay -->
+  <div id="mobileMenu" class="fixed inset-0 z-40 backdrop-blur-2xl transform translate-x-full transition-transform duration-300 md:hidden flex flex-col items-center justify-center gap-10 bg-galaxy-900/95">
+    <button id="closeMenu" class="absolute top-6 right-6 p-2 hover:rotate-90 transition-all duration-300 text-purple-400 hover:text-white">
+      <i data-lucide="x" class="w-8 h-8"></i>
+    </button>
+    <a href="index.html" class="text-5xl font-display transition-colors tracking-wide text-slate-400 hover:text-purple-400">Home</a>
+    <a href="team.html" class="text-5xl font-display transition-colors tracking-wide text-slate-400 hover:text-purple-400">Team</a>
+    <a href="resources.html" class="text-5xl font-display tracking-wide transition-colors text-white hover:text-purple-400">Resources</a>
+    <a href="contact.html" class="text-5xl font-display transition-colors tracking-wide text-slate-400 hover:text-purple-400">Contact</a>
+  </div>
+
+  <!-- Main Content -->
+  <main class="relative z-10 pt-32 pb-20 px-6">
+    <div class="max-w-5xl mx-auto">
+
+      <!-- Page Header -->
+      <div class="text-center mb-16 animate-fade-in">
+        <h1 class="text-5xl md:text-7xl font-display tracking-wide mb-4 text-white">
+          FTC <span class="text-gradient">Resources</span>
+        </h1>
+        <p class="text-lg text-slate-400 max-w-2xl mx-auto">Helpful links and documentation for FIRST Tech Challenge teams.</p>
+      </div>
+
+      <!-- Resource Links Grid -->
+      <div class="glass-panel rounded-2xl p-6 mb-16 animate-fade-in" style="animation-delay: 0.1s;">
+        <h2 class="text-3xl font-display tracking-wide mb-8 text-center text-white flex items-center justify-center gap-3">
+          <span class="text-purple-400">///</span> Team Resources
+        </h2>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <a href="https://www.firstinspires.org/resource-library" target="_blank" rel="noopener noreferrer"
+             class="group glass-panel p-6 rounded-xl hover-glow flex items-center gap-4">
+            <div class="w-12 h-12 rounded bg-purple-500/10 border border-purple-500/20 flex items-center justify-center group-hover:scale-110 transition-transform duration-300 group-hover:shadow-[0_0_15px_rgba(168,85,247,0.4)]">
+              <i data-lucide="library" class="w-6 h-6 text-purple-400"></i>
+            </div>
+            <div class="flex-1">
+              <h3 class="text-xl font-display tracking-wide text-white group-hover:text-purple-300 transition-colors">FIRST Resource Library</h3>
+              <p class="text-sm text-slate-400">Official FIRST documentation and resources</p>
+            </div>
+            <i data-lucide="external-link" class="w-5 h-5 text-purple-400 opacity-50 group-hover:opacity-100 transition-opacity"></i>
+          </a>
+
+          <a href="https://ftc-docs.firstinspires.org/" target="_blank" rel="noopener noreferrer"
+             class="group glass-panel p-6 rounded-xl hover-glow flex items-center gap-4">
+            <div class="w-12 h-12 rounded bg-purple-500/10 border border-purple-500/20 flex items-center justify-center group-hover:scale-110 transition-transform duration-300 group-hover:shadow-[0_0_15px_rgba(168,85,247,0.4)]">
+              <i data-lucide="book-open" class="w-6 h-6 text-purple-400"></i>
+            </div>
+            <div class="flex-1">
+              <h3 class="text-xl font-display tracking-wide text-white group-hover:text-purple-300 transition-colors">FTC Documentation</h3>
+              <p class="text-sm text-slate-400">Official FTC docs and guides</p>
+            </div>
+            <i data-lucide="external-link" class="w-5 h-5 text-purple-400 opacity-50 group-hover:opacity-100 transition-opacity"></i>
+          </a>
+
+          <a href="https://github.com/FIRST-Tech-Challenge" target="_blank" rel="noopener noreferrer"
+             class="group glass-panel p-6 rounded-xl hover-glow flex items-center gap-4">
+            <div class="w-12 h-12 rounded bg-purple-500/10 border border-purple-500/20 flex items-center justify-center group-hover:scale-110 transition-transform duration-300 group-hover:shadow-[0_0_15px_rgba(168,85,247,0.4)]">
+              <i data-lucide="github" class="w-6 h-6 text-purple-400"></i>
+            </div>
+            <div class="flex-1">
+              <h3 class="text-xl font-display tracking-wide text-white group-hover:text-purple-300 transition-colors">FTC GitHub Repositories</h3>
+              <p class="text-sm text-slate-400">Official SDK and sample code</p>
+            </div>
+            <i data-lucide="external-link" class="w-5 h-5 text-purple-400 opacity-50 group-hover:opacity-100 transition-opacity"></i>
+          </a>
+
+          <a href="https://ftcforum.firstinspires.org/" target="_blank" rel="noopener noreferrer"
+             class="group glass-panel p-6 rounded-xl hover-glow flex items-center gap-4">
+            <div class="w-12 h-12 rounded bg-purple-500/10 border border-purple-500/20 flex items-center justify-center group-hover:scale-110 transition-transform duration-300 group-hover:shadow-[0_0_15px_rgba(168,85,247,0.4)]">
+              <i data-lucide="messages-square" class="w-6 h-6 text-purple-400"></i>
+            </div>
+            <div class="flex-1">
+              <h3 class="text-xl font-display tracking-wide text-white group-hover:text-purple-300 transition-colors">FTC Forums</h3>
+              <p class="text-sm text-slate-400">Community discussions and Q&A</p>
+            </div>
+            <i data-lucide="external-link" class="w-5 h-5 text-purple-400 opacity-50 group-hover:opacity-100 transition-opacity"></i>
+          </a>
+
+          <a href="https://ftc-events.firstinspires.org/" target="_blank" rel="noopener noreferrer"
+             class="group glass-panel p-6 rounded-xl hover-glow flex items-center gap-4">
+            <div class="w-12 h-12 rounded bg-purple-500/10 border border-purple-500/20 flex items-center justify-center group-hover:scale-110 transition-transform duration-300 group-hover:shadow-[0_0_15px_rgba(168,85,247,0.4)]">
+              <i data-lucide="calendar" class="w-6 h-6 text-purple-400"></i>
+            </div>
+            <div class="flex-1">
+              <h3 class="text-xl font-display tracking-wide text-white group-hover:text-purple-300 transition-colors">FTC Events Portal</h3>
+              <p class="text-sm text-slate-400">Competition schedules and results</p>
+            </div>
+            <i data-lucide="external-link" class="w-5 h-5 text-purple-400 opacity-50 group-hover:opacity-100 transition-opacity"></i>
+          </a>
+
+          <a href="https://ftcscout.org/" target="_blank" rel="noopener noreferrer"
+             class="group glass-panel p-6 rounded-xl hover-glow flex items-center gap-4">
+            <div class="w-12 h-12 rounded bg-purple-500/10 border border-purple-500/20 flex items-center justify-center group-hover:scale-110 transition-transform duration-300 group-hover:shadow-[0_0_15px_rgba(168,85,247,0.4)]">
+              <i data-lucide="bar-chart-3" class="w-6 h-6 text-purple-400"></i>
+            </div>
+            <div class="flex-1">
+              <h3 class="text-xl font-display tracking-wide text-white group-hover:text-purple-300 transition-colors">FTC Scout</h3>
+              <p class="text-sm text-slate-400">Team statistics and rankings</p>
+            </div>
+            <i data-lucide="external-link" class="w-5 h-5 text-purple-400 opacity-50 group-hover:opacity-100 transition-opacity"></i>
+          </a>
+        </div>
+      </div>
+
+      <!-- Video Section -->
+      <div class="glass-panel rounded-2xl p-6 animate-fade-in" style="animation-delay: 0.2s;">
+        <h2 class="text-3xl font-display tracking-wide mb-6 text-center text-white flex items-center justify-center gap-3">
+          <span class="text-purple-400">///</span> Engineering Portfolio Workshop
+        </h2>
+        <p class="text-center text-slate-400 mb-6">Team TARDIS 5356 - FTC Into the Deep</p>
+
+        <div class="relative rounded-xl overflow-hidden aspect-video border border-purple-500/30">
+          <iframe
+            class="w-full h-full"
+            src="https://www.youtube.com/embed/RHjLxc8Y6Bw?si=OLo9USsrAEScS_Bk"
+            title="Engineering Portfolio Workshop"
+            frameborder="0"
+            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+            referrerpolicy="strict-origin-when-cross-origin"
+            allowfullscreen>
+          </iframe>
+        </div>
+      </div>
+
+    </div>
+  </main>
+
+  <!-- Footer -->
+  <div class="border-t border-purple-500/10 pt-20 bg-gradient-to-b from-transparent -mx-0 px-6 pb-10 to-purple-900/10 relative z-10">
+    <div class="max-w-7xl mx-auto flex flex-col md:flex-row justify-between items-center gap-10">
+      <div class="flex flex-col items-center md:items-start">
+        <span class="font-display text-3xl tracking-wide mb-1 text-gradient text-white">TARDIS Robotics</span>
+        <span class="text-sm font-mono text-purple-300/60">FTC Team 5356 - Corning, NY</span>
+      </div>
+
+      <div class="flex gap-4">
+        <a href="https://www.instagram.com/tardis5356" target="_blank" rel="noopener noreferrer" class="p-3 rounded-full bg-galaxy-card border border-purple-500/20 hover:shadow-[0_0_20px_rgba(168,85,247,0.5)] transition-all group hover:bg-purple-600 hover:text-white hover:border-purple-400 text-purple-300">
+          <i data-lucide="instagram" class="w-5 h-5 group-hover:rotate-12 transition-transform"></i>
+        </a>
+        <a href="https://youtube.com/channel/UCcYj5ayb3-5I02UnHusmC3g" target="_blank" rel="noopener noreferrer" class="p-3 rounded-full bg-galaxy-card border border-purple-500/20 hover:shadow-[0_0_20px_rgba(168,85,247,0.5)] transition-all group hover:bg-purple-600 hover:text-white hover:border-purple-400 text-purple-300">
+          <i data-lucide="youtube" class="w-5 h-5 group-hover:rotate-12 transition-transform"></i>
+        </a>
+        <a href="mailto:ftctardis@gmail.com" class="p-3 rounded-full bg-galaxy-card border border-purple-500/20 hover:shadow-[0_0_20px_rgba(168,85,247,0.5)] transition-all group hover:bg-purple-600 hover:text-white hover:border-purple-400 text-purple-300">
+          <i data-lucide="mail" class="w-5 h-5 group-hover:rotate-12 transition-transform"></i>
+        </a>
+      </div>
+    </div>
+
+    <div class="max-w-7xl mx-auto mt-16 text-center text-[10px] text-slate-500 uppercase tracking-widest">
+      Team TARDIS - FIRST Tech Challenge Team 5356
+      <a href="https://www.firstinspires.org/" target="_blank" rel="noopener noreferrer" class="transition-colors ml-2 hover:text-purple-400">FIRST Robotics</a>
+    </div>
+  </div>
+
+  <!-- Back To Top -->
+  <button id="backToTop" class="fixed bottom-6 right-6 z-40 p-3 rounded-full border shadow-[0_0_20px_rgba(124,58,237,0.5)] hover:bg-purple-500 hover:scale-110 translate-y-24 transition-all duration-500 opacity-0 bg-purple-600 border-purple-400 text-white">
+    <i data-lucide="arrow-up" class="w-5 h-5"></i>
+  </button>
+
+  <script>
+    // Initialize Icons
+    lucide.createIcons();
+
+    // Mobile Menu Logic
+    const hamburger = document.getElementById('hamburger');
+    const mobileMenu = document.getElementById('mobileMenu');
+    const closeMenu = document.getElementById('closeMenu');
+
+    function toggleMenu() {
+      const isClosed = mobileMenu.classList.contains('translate-x-full');
+      if (isClosed) {
+        mobileMenu.classList.remove('translate-x-full');
+        document.body.style.overflow = 'hidden';
+      } else {
+        mobileMenu.classList.add('translate-x-full');
+        document.body.style.overflow = '';
+      }
+    }
+
+    hamburger.addEventListener('click', toggleMenu);
+    closeMenu.addEventListener('click', toggleMenu);
+
+    // Scroll Effects
+    window.addEventListener("scroll", () => {
+      const scrollY = window.scrollY;
+      const backToTopBtn = document.getElementById('backToTop');
+      if (scrollY > 600) {
+        backToTopBtn.classList.remove('translate-y-24', 'opacity-0');
+      } else {
+        backToTopBtn.classList.add('translate-y-24', 'opacity-0');
+      }
+    });
+
+    document.getElementById('backToTop').addEventListener('click', () => {
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    });
+  </script>
+
 </body>
-</html> 
+</html>

@@ -1,142 +1,355 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" class="scroll-smooth">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta http-equiv="Content-Security-Policy" content="upgrade-insecure-requests">
-    <title>Our Team - TARDIS Robotics | FTC Team 5356</title>
-    <meta name="description" content="Meet Team TARDIS Robotics (FTC Team 5356) and learn about our robot ECHO. Watch our competition videos and see our robot in action." />
-    <meta property="og:title" content="Our Team - TARDIS Robotics" />
-    <meta property="og:description" content="Meet Team TARDIS Robotics and learn about our robot ECHO." />
-    <meta property="og:url" content="https://tardis5356.com/team.html" />
-    <link rel="icon" type="image/png" sizes="32x32" href="assets/whitetardis.png" />
-    <link rel="icon" type="image/png" sizes="16x16" href="assets/whitetardis.png" />
-    <link rel="apple-touch-icon" sizes="180x180" href="assets/whitetardis.png" />
-    <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="styles.css">
+  <title>Our Team - TARDIS Robotics | FTC Team 5356</title>
+  <meta name="description" content="Meet Team TARDIS Robotics (FTC Team 5356) and learn about our robot ECHO. Watch our competition videos and see our robot in action.">
+  <meta property="og:title" content="Our Team - TARDIS Robotics">
+  <meta property="og:description" content="Meet Team TARDIS Robotics and learn about our robot ECHO.">
+  <meta property="og:url" content="https://tardis5356.com/team.html">
+  <link rel="icon" type="image/png" sizes="32x32" href="assets/whitetardis.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="assets/whitetardis.png">
+  <link rel="apple-touch-icon" sizes="180x180" href="assets/whitetardis.png">
+
+  <!-- Tailwind CSS -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- Icons -->
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <!-- Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Inter:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['Inter', 'sans-serif'],
+            display: ['Bebas Neue', 'sans-serif'],
+            mono: ['JetBrains Mono', 'monospace'],
+          },
+          colors: {
+            galaxy: {
+              900: '#05030A',
+              800: '#0F0A1F',
+              card: 'rgba(25, 15, 40, 0.4)',
+              border: 'rgba(139, 92, 246, 0.15)'
+            },
+            accent: {
+              purple: '#8B5CF6',
+              glow: '#A78BFA',
+              deep: '#581c87'
+            }
+          },
+          animation: {
+            'fade-in': 'fadeIn 0.8s ease-out forwards',
+          },
+          keyframes: {
+            fadeIn: {
+              '0%': { opacity: '0', transform: 'translateY(10px)' },
+              '100%': { opacity: '1', transform: 'translateY(0)' },
+            },
+          }
+        }
+      }
+    }
+  </script>
+
+  <style>
+    html, body {
+      min-height: 100%;
+    }
+    html {
+      background: #05030A;
+    }
+
+    ::-webkit-scrollbar {
+      width: 6px;
+    }
+    ::-webkit-scrollbar-track {
+      background: #05030A;
+    }
+    ::-webkit-scrollbar-thumb {
+      background: #581c87;
+      border-radius: 4px;
+    }
+    ::-webkit-scrollbar-thumb:hover {
+      background: #7c3aed;
+    }
+
+    .glass-panel {
+      background: rgba(20, 10, 35, 0.3);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      border: 1px solid rgba(139, 92, 246, 0.15);
+      box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
+    }
+    .glass-nav {
+      background: rgba(5, 3, 10, 0.6);
+      backdrop-filter: blur(20px);
+      border-bottom: 1px solid rgba(139, 92, 246, 0.1);
+    }
+
+    .text-gradient {
+      background: linear-gradient(to right, #e9d5ff, #a855f7, #c084fc);
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
+      filter: drop-shadow(0 0 20px rgba(168, 85, 247, 0.4));
+    }
+  </style>
 </head>
-<body>
-    <nav>
-        <div class="team-name">TARDIS</div>
-        <button class="hamburger" id="hamburger" aria-label="Toggle menu">
-            <span></span>
-            <span></span>
-            <span></span>
-        </button>
-        <div class="divider"></div>
-        <div class="nav-backdrop" id="navBackdrop"></div>
-        <div class="nav-links" id="navLinks">
-            <a href="index.html">Home</a>
-            <a href="team.html" class="active">Our Team</a>
-            <a href="resources.html">Resources</a>
-            <a href="contact.html">Contact</a>
-        </div>
-    </nav>
 
-    <div class="main-content">
-        <h1>Our Robot - ECHO</h1>
+<body class="font-sans antialiased selection:bg-purple-500 selection:text-white text-slate-300 min-h-screen">
 
-        <div class="content-section">
-            <h2>Our Robot, ECHO</h2>
-            <div class="slideshow">
-                <div class="slide active">
-                    <img src="assets\Screenshot 2025-03-02 163221.png" alt="Echo">
-                    <div class="caption">View of our 2024 INTO THE DEEP robot</div>
-                </div>
-                <div class="slide">
-                    <img src="assets\blend\thaiintake.png" alt="Intake">
-                    <div class="caption">Render of Echo's intake</div>
-                </div>
-                <div class="slide">
-                    <img src="assets\blend\layerlines.png" alt="Gripper">
-                    <div class="caption">Close-up render of gripper</div>
-                </div>
-                <div class="slide">
-                    <img src="assets\blend\axon.png" alt="Axon">
-                    <div class="caption">Rendered view of axon</div>
-                </div>
-                <div class="slideshow-controls">
-                    <button class="prev">❮</button>
-                    <button class="next">❯</button>
-                </div>
-            </div>
+  <!-- Purple tint layer -->
+  <div class="fixed inset-0 w-full h-full pointer-events-none z-0 bg-purple-950/20"></div>
+
+  <!-- Unicorn Studio Background -->
+  <div class="fixed inset-0 -z-10" style="width: 100%; height: 100vh;">
+    <div
+      data-us-project="cqcLtDwfoHqqRPttBbQE"
+      style="width: 100%; height: 100%;"
+    ></div>
+  </div>
+  <script type="text/javascript">
+    !function(){if(!window.UnicornStudio){window.UnicornStudio={isInitialized:!1};var i=document.createElement("script");i.src="https://cdn.jsdelivr.net/gh/hiunicornstudio/unicornstudio.js@v1.4.29/dist/unicornStudio.umd.js",i.onload=function(){window.UnicornStudio.isInitialized||(UnicornStudio.init(),window.UnicornStudio.isInitialized=!0)},(document.head || document.body).appendChild(i)}}();
+  </script>
+
+  <!-- Navigation -->
+  <nav class="fixed top-0 w-full z-50 glass-nav transition-all duration-300 border-b border-purple-500/10" id="navbar">
+    <div class="max-w-7xl mx-auto px-6 h-20 flex items-center justify-between">
+      <a href="index.html" class="flex items-center gap-3 group">
+        <div class="w-12 h-12 relative overflow-hidden rounded border border-purple-500/30 flex items-center justify-center group-hover:border-purple-400/60 transition-colors shadow-[0_0_15px_-3px_rgba(168,85,247,0.3)] bg-purple-900/30">
+          <img src="assets/whitetardis.png" alt="TARDIS Logo" class="w-10 h-10 object-contain opacity-90 group-hover:opacity-100 transition-opacity">
         </div>
-        
-        <div class="youtube-section">
-            <h2>Watch Us in Action</h2>
-            <div class="video-container">
-                <iframe 
-                    width="560" 
-                    height="315" 
-                    src="https://www.youtube.com/embed/-0s6WAPLIJU" 
-                    title="Echo 5 Specimen Autonomous" 
-                    frameborder="0" 
-                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
-                    allowfullscreen>
-                </iframe>
-            </div>
+        <div class="flex flex-col">
+          <span class="text-[10px] uppercase tracking-[0.2em] text-purple-400/80">Team</span>
+          <span class="font-display text-2xl tracking-wide group-hover:text-purple-300 transition-colors leading-none text-white">TARDIS</span>
         </div>
+      </a>
+
+      <!-- Desktop Links -->
+      <div class="hidden md:flex items-center gap-10">
+        <a href="index.html" class="text-lg font-display tracking-wider transition-colors relative after:content-[''] after:absolute after:bottom-[-4px] after:left-0 after:w-full after:h-[2px] after:bg-purple-500 after:scale-x-0 hover:after:scale-x-100 after:transition-transform after:origin-right hover:after:origin-left text-slate-400 hover:text-purple-300">Home</a>
+        <a href="team.html" class="text-lg font-display tracking-wider relative after:content-[''] after:absolute after:bottom-[-4px] after:left-0 after:w-full after:h-[2px] after:bg-purple-500 after:scale-x-100 after:transition-transform text-white">Team</a>
+        <a href="resources.html" class="text-lg font-display tracking-wider transition-colors relative after:content-[''] after:absolute after:bottom-[-4px] after:left-0 after:w-full after:h-[2px] after:bg-purple-500 after:scale-x-0 hover:after:scale-x-100 after:transition-transform after:origin-right hover:after:origin-left text-slate-400 hover:text-purple-300">Resources</a>
+        <a href="contact.html" class="px-5 py-2 rounded border border-purple-500/30 bg-purple-500/10 hover:bg-purple-500/20 text-lg font-display tracking-wide transition-all hover:shadow-[0_0_20px_-5px_rgba(168,85,247,0.4)] text-purple-200 hover:text-white">Contact</a>
+      </div>
+
+      <!-- Mobile Menu Button -->
+      <button id="hamburger" class="md:hidden p-2 hover:bg-purple-500/10 rounded text-purple-300 hover:text-white">
+        <i data-lucide="menu" class="w-7 h-7"></i>
+      </button>
     </div>
-    
-    <footer>
-        <p>FIRST Tech Challenge Team 5356 - TARDIS Robotics</p>
-        <p style="font-size: 0.8rem; margin-top: 0.5rem;">Based in Corning, NY</p>
-        <div class="footer-links">
-            <a href="index.html">Home</a>
-            <a href="team.html">Our Team</a>
-            <a href="resources.html">Resources</a>
-            <a href="contact.html">Contact</a>
-            <a href="https://www.firstinspires.org/" target="_blank" rel="noopener noreferrer">FIRST Robotics</a>
-        </div>
-    </footer>
-    
-    <!-- Back to top button -->
-    <button class="back-to-top" id="backToTop" aria-label="Back to top">
-        ↑
-    </button>
-    
-    <script src="slideshow.js"></script>
-    <script>
-      // Mobile hamburger menu
-      const hamburger = document.getElementById('hamburger');
-      const navLinks = document.getElementById('navLinks');
-      const navBackdrop = document.getElementById('navBackdrop');
+  </nav>
 
-      hamburger.addEventListener('click', function() {
-        hamburger.classList.toggle('active');
-        navLinks.classList.toggle('active');
-        if (navBackdrop) {
-          navBackdrop.classList.toggle('active');
+  <!-- Mobile Nav Overlay -->
+  <div id="mobileMenu" class="fixed inset-0 z-40 backdrop-blur-2xl transform translate-x-full transition-transform duration-300 md:hidden flex flex-col items-center justify-center gap-10 bg-galaxy-900/95">
+    <button id="closeMenu" class="absolute top-6 right-6 p-2 hover:rotate-90 transition-all duration-300 text-purple-400 hover:text-white">
+      <i data-lucide="x" class="w-8 h-8"></i>
+    </button>
+    <a href="index.html" class="text-5xl font-display transition-colors tracking-wide text-slate-400 hover:text-purple-400">Home</a>
+    <a href="team.html" class="text-5xl font-display tracking-wide transition-colors text-white hover:text-purple-400">Team</a>
+    <a href="resources.html" class="text-5xl font-display transition-colors tracking-wide text-slate-400 hover:text-purple-400">Resources</a>
+    <a href="contact.html" class="text-5xl font-display transition-colors tracking-wide text-slate-400 hover:text-purple-400">Contact</a>
+  </div>
+
+  <!-- Main Content -->
+  <main class="relative z-10 pt-32 pb-20 px-6">
+    <div class="max-w-5xl mx-auto">
+
+      <!-- Page Header -->
+      <div class="text-center mb-16 animate-fade-in">
+        <h1 class="text-5xl md:text-7xl font-display tracking-wide mb-4 text-white">
+          Our Robot - <span class="text-gradient">ECHO</span>
+        </h1>
+        <p class="text-lg text-slate-400 max-w-2xl mx-auto">Meet the machine that represents Team TARDIS on the competition field.</p>
+      </div>
+
+      <!-- Robot Slideshow -->
+      <div class="glass-panel rounded-2xl p-6 mb-16 animate-fade-in" style="animation-delay: 0.1s;">
+        <h2 class="text-3xl font-display tracking-wide mb-6 text-center text-white flex items-center justify-center gap-3">
+          <span class="text-purple-400">///</span> Our Robot, ECHO
+        </h2>
+
+        <div class="relative rounded-xl overflow-hidden aspect-video border border-purple-500/30">
+          <!-- Corner Accents -->
+          <div class="absolute top-4 left-4 w-4 h-4 border-l-2 border-t-2 z-30 border-white/50"></div>
+          <div class="absolute top-4 right-4 w-4 h-4 border-r-2 border-t-2 z-30 border-white/50"></div>
+          <div class="absolute bottom-4 left-4 w-4 h-4 border-l-2 border-b-2 z-30 border-white/50"></div>
+          <div class="absolute bottom-4 right-4 w-4 h-4 border-r-2 border-b-2 z-30 border-white/50"></div>
+
+          <div id="slideshow" class="w-full h-full relative bg-black/30">
+            <div class="slide absolute inset-0 transition-all duration-700 opacity-100 z-10">
+              <img src="assets/Screenshot 2025-03-02 163221.png" alt="Echo" class="w-full h-full object-contain">
+              <div class="absolute bottom-0 left-0 w-full bg-gradient-to-t to-transparent p-6 pt-16 from-black via-black/60">
+                <h3 class="text-xl font-display tracking-wide text-white">INTO THE DEEP Robot</h3>
+                <p class="text-sm text-purple-300">View of our 2024 competition robot</p>
+              </div>
+            </div>
+            <div class="slide absolute inset-0 transition-all duration-700 opacity-0 z-0">
+              <img src="assets/blend/thaiintake.png" alt="Intake" class="w-full h-full object-contain">
+              <div class="absolute bottom-0 left-0 w-full bg-gradient-to-t to-transparent p-6 pt-16 from-black via-black/60">
+                <h3 class="text-xl font-display tracking-wide text-white">Intake System</h3>
+                <p class="text-sm text-purple-300">Render of Echo's intake</p>
+              </div>
+            </div>
+            <div class="slide absolute inset-0 transition-all duration-700 opacity-0 z-0">
+              <img src="assets/blend/layerlines.png" alt="Gripper" class="w-full h-full object-contain">
+              <div class="absolute bottom-0 left-0 w-full bg-gradient-to-t to-transparent p-6 pt-16 from-black via-black/60">
+                <h3 class="text-xl font-display tracking-wide text-white">Gripper Detail</h3>
+                <p class="text-sm text-purple-300">Close-up render of gripper</p>
+              </div>
+            </div>
+            <div class="slide absolute inset-0 transition-all duration-700 opacity-0 z-0">
+              <img src="assets/blend/axon.png" alt="Axon" class="w-full h-full object-contain">
+              <div class="absolute bottom-0 left-0 w-full bg-gradient-to-t to-transparent p-6 pt-16 from-black via-black/60">
+                <h3 class="text-xl font-display tracking-wide text-white">Axon Servo</h3>
+                <p class="text-sm text-purple-300">Rendered view of axon</p>
+              </div>
+            </div>
+          </div>
+
+          <!-- Controls -->
+          <button id="prevSlide" class="absolute left-4 top-1/2 -translate-y-1/2 z-20 p-3 rounded-full backdrop-blur border transition-all hover:scale-110 bg-black/40 hover:bg-purple-600/80 text-white border-white/10 hover:border-purple-400">
+            <i data-lucide="chevron-left" class="w-6 h-6"></i>
+          </button>
+          <button id="nextSlide" class="absolute right-4 top-1/2 -translate-y-1/2 z-20 p-3 rounded-full backdrop-blur border transition-all hover:scale-110 bg-black/40 hover:bg-purple-600/80 text-white border-white/10 hover:border-purple-400">
+            <i data-lucide="chevron-right" class="w-6 h-6"></i>
+          </button>
+        </div>
+      </div>
+
+      <!-- Video Section -->
+      <div class="glass-panel rounded-2xl p-6 animate-fade-in" style="animation-delay: 0.2s;">
+        <h2 class="text-3xl font-display tracking-wide mb-6 text-center text-white flex items-center justify-center gap-3">
+          <span class="text-purple-400">///</span> Watch Us in Action
+        </h2>
+
+        <div class="relative rounded-xl overflow-hidden aspect-video border border-purple-500/30">
+          <iframe
+            class="w-full h-full"
+            src="https://www.youtube.com/embed/-0s6WAPLIJU"
+            title="Echo 5 Specimen Autonomous"
+            frameborder="0"
+            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+            allowfullscreen>
+          </iframe>
+        </div>
+      </div>
+
+    </div>
+  </main>
+
+  <!-- Footer -->
+  <div class="border-t border-purple-500/10 pt-20 bg-gradient-to-b from-transparent -mx-0 px-6 pb-10 to-purple-900/10 relative z-10">
+    <div class="max-w-7xl mx-auto flex flex-col md:flex-row justify-between items-center gap-10">
+      <div class="flex flex-col items-center md:items-start">
+        <span class="font-display text-3xl tracking-wide mb-1 text-gradient text-white">TARDIS Robotics</span>
+        <span class="text-sm font-mono text-purple-300/60">FTC Team 5356 - Corning, NY</span>
+      </div>
+
+      <div class="flex gap-4">
+        <a href="https://www.instagram.com/tardis5356" target="_blank" rel="noopener noreferrer" class="p-3 rounded-full bg-galaxy-card border border-purple-500/20 hover:shadow-[0_0_20px_rgba(168,85,247,0.5)] transition-all group hover:bg-purple-600 hover:text-white hover:border-purple-400 text-purple-300">
+          <i data-lucide="instagram" class="w-5 h-5 group-hover:rotate-12 transition-transform"></i>
+        </a>
+        <a href="https://youtube.com/channel/UCcYj5ayb3-5I02UnHusmC3g" target="_blank" rel="noopener noreferrer" class="p-3 rounded-full bg-galaxy-card border border-purple-500/20 hover:shadow-[0_0_20px_rgba(168,85,247,0.5)] transition-all group hover:bg-purple-600 hover:text-white hover:border-purple-400 text-purple-300">
+          <i data-lucide="youtube" class="w-5 h-5 group-hover:rotate-12 transition-transform"></i>
+        </a>
+        <a href="mailto:ftctardis@gmail.com" class="p-3 rounded-full bg-galaxy-card border border-purple-500/20 hover:shadow-[0_0_20px_rgba(168,85,247,0.5)] transition-all group hover:bg-purple-600 hover:text-white hover:border-purple-400 text-purple-300">
+          <i data-lucide="mail" class="w-5 h-5 group-hover:rotate-12 transition-transform"></i>
+        </a>
+      </div>
+    </div>
+
+    <div class="max-w-7xl mx-auto mt-16 text-center text-[10px] text-slate-500 uppercase tracking-widest">
+      Team TARDIS - FIRST Tech Challenge Team 5356
+      <a href="https://www.firstinspires.org/" target="_blank" rel="noopener noreferrer" class="transition-colors ml-2 hover:text-purple-400">FIRST Robotics</a>
+    </div>
+  </div>
+
+  <!-- Back To Top -->
+  <button id="backToTop" class="fixed bottom-6 right-6 z-40 p-3 rounded-full border shadow-[0_0_20px_rgba(124,58,237,0.5)] hover:bg-purple-500 hover:scale-110 translate-y-24 transition-all duration-500 opacity-0 bg-purple-600 border-purple-400 text-white">
+    <i data-lucide="arrow-up" class="w-5 h-5"></i>
+  </button>
+
+  <script>
+    // Initialize Icons
+    lucide.createIcons();
+
+    // Mobile Menu Logic
+    const hamburger = document.getElementById('hamburger');
+    const mobileMenu = document.getElementById('mobileMenu');
+    const closeMenu = document.getElementById('closeMenu');
+
+    function toggleMenu() {
+      const isClosed = mobileMenu.classList.contains('translate-x-full');
+      if (isClosed) {
+        mobileMenu.classList.remove('translate-x-full');
+        document.body.style.overflow = 'hidden';
+      } else {
+        mobileMenu.classList.add('translate-x-full');
+        document.body.style.overflow = '';
+      }
+    }
+
+    hamburger.addEventListener('click', toggleMenu);
+    closeMenu.addEventListener('click', toggleMenu);
+
+    // Scroll Effects
+    window.addEventListener("scroll", () => {
+      const scrollY = window.scrollY;
+      const backToTopBtn = document.getElementById('backToTop');
+      if (scrollY > 600) {
+        backToTopBtn.classList.remove('translate-y-24', 'opacity-0');
+      } else {
+        backToTopBtn.classList.add('translate-y-24', 'opacity-0');
+      }
+    });
+
+    document.getElementById('backToTop').addEventListener('click', () => {
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    });
+
+    // Slideshow Logic
+    const slides = document.querySelectorAll('.slide');
+    const prevBtn = document.getElementById('prevSlide');
+    const nextBtn = document.getElementById('nextSlide');
+    let currentSlide = 0;
+
+    function showSlide(index) {
+      slides.forEach((slide, i) => {
+        if (i === index) {
+          slide.classList.remove('opacity-0', 'z-0');
+          slide.classList.add('opacity-100', 'z-10');
+        } else {
+          slide.classList.remove('opacity-100', 'z-10');
+          slide.classList.add('opacity-0', 'z-0');
         }
       });
+    }
 
-      // Close menu when clicking backdrop
-      if (navBackdrop) {
-        navBackdrop.addEventListener('click', function() {
-          hamburger.classList.remove('active');
-          navLinks.classList.remove('active');
-          navBackdrop.classList.remove('active');
-        });
-      }
+    function nextSlideFunc() {
+      currentSlide = (currentSlide + 1) % slides.length;
+      showSlide(currentSlide);
+    }
 
-      // Back to top button functionality
-      const backToTopBtn = document.getElementById('backToTop');
-      if (backToTopBtn) {
-        window.addEventListener('scroll', function() {
-          if (window.scrollY > 300) {
-            backToTopBtn.classList.add('visible');
-          } else {
-            backToTopBtn.classList.remove('visible');
-          }
-        });
+    function prevSlideFunc() {
+      currentSlide = (currentSlide - 1 + slides.length) % slides.length;
+      showSlide(currentSlide);
+    }
 
-        backToTopBtn.addEventListener('click', function() {
-          window.scrollTo({
-            top: 0,
-            behavior: 'smooth'
-          });
-        });
-      }
-    </script>
+    nextBtn.addEventListener('click', nextSlideFunc);
+    prevBtn.addEventListener('click', prevSlideFunc);
+
+    // Auto advance
+    setInterval(nextSlideFunc, 6000);
+  </script>
+
 </body>
-</html> 
+</html>
