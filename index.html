@@ -124,6 +124,9 @@
             'glow-pulse': 'glowPulse 3s infinite',
             'float': 'float 20s ease-in-out infinite',
             'float-delayed': 'float 25s ease-in-out infinite reverse',
+            'letter-fade': 'letterFade 0.6s ease-out forwards',
+            'text-fade': 'textFade 0.8s ease-out forwards',
+            'purple-pulse': 'purplePulse 2.5s ease-in-out infinite',
           },
           keyframes: {
             fadeIn: {
@@ -139,6 +142,18 @@
               '25%': { transform: 'translate(5%, 10%) scale(1.05)' },
               '50%': { transform: 'translate(-5%, 5%) scale(0.95)' },
               '75%': { transform: 'translate(3%, -5%) scale(1.02)' },
+            },
+            letterFade: {
+              '0%': { opacity: '0', transform: 'translateY(-20px)' },
+              '100%': { opacity: '1', transform: 'translateY(0)' },
+            },
+            textFade: {
+              '0%': { opacity: '0' },
+              '100%': { opacity: '1' },
+            },
+            purplePulse: {
+              '0%, 100%': { filter: 'drop-shadow(0 0 15px rgba(147, 51, 234, 1))' },
+              '50%': { filter: 'drop-shadow(0 0 25px rgba(147, 51, 234, 1)) drop-shadow(0 0 40px rgba(147, 51, 234, 0.6))' },
             }
           }
         }
@@ -223,6 +238,25 @@
       box-shadow: 0 0 40px -5px rgba(139, 92, 246, 0.25);
       transform: translateY(-2px);
     }
+
+    /* Hero Title Animations */
+    @keyframes letterFade {
+      0% { opacity: 0; transform: translateY(-20px); }
+      100% { opacity: 1; transform: translateY(0); }
+    }
+    @keyframes textFade {
+      0% { opacity: 0; }
+      100% { opacity: 1; }
+    }
+    @keyframes purpleFlicker {
+      0%, 100% { filter: drop-shadow(0 0 10px rgba(147, 51, 234, 0.8)); opacity: 1; }
+      15% { filter: drop-shadow(0 0 20px rgba(147, 51, 234, 1)); opacity: 1; }
+      30% { filter: drop-shadow(0 0 8px rgba(147, 51, 234, 0.6)); opacity: 0.95; }
+      45% { filter: drop-shadow(0 0 25px rgba(147, 51, 234, 1)) drop-shadow(0 0 40px rgba(147, 51, 234, 0.5)); opacity: 1; }
+      60% { filter: drop-shadow(0 0 12px rgba(147, 51, 234, 0.9)); opacity: 0.98; }
+      75% { filter: drop-shadow(0 0 18px rgba(147, 51, 234, 1)); opacity: 1; }
+      90% { filter: drop-shadow(0 0 6px rgba(147, 51, 234, 0.7)); opacity: 0.97; }
+    }
   </style>
 </head>
 
@@ -299,12 +333,12 @@
         <img src="assets/whitetardis.png" alt="TARDIS Logo" class="relative z-10 w-full h-auto drop-shadow-2xl opacity-90 object-contain">
       </div>
 
-      <h1 class="text-7xl md:text-9xl font-display tracking-wide mb-6 animate-fade-in leading-[0.9] text-white" style="animation-delay: 0.2s;">
-        <span class="text-purple-700 drop-shadow-[0_0_15px_rgba(147,51,234,1)]">T</span>he <span class="text-purple-700 drop-shadow-[0_0_15px_rgba(147,51,234,1)]">A</span>mazing <br>
-        <span class="text-purple-700 drop-shadow-[0_0_15px_rgba(147,51,234,1)]">R</span>obot <span class="text-purple-700 drop-shadow-[0_0_15px_rgba(147,51,234,1)]">D</span>oes <span class="text-purple-700 drop-shadow-[0_0_15px_rgba(147,51,234,1)]">I</span>nspiring <span class="text-purple-700 drop-shadow-[0_0_15px_rgba(147,51,234,1)]">S</span>tuff
+      <h1 class="text-7xl md:text-9xl font-display tracking-wide mb-6 leading-[0.9] text-white">
+        <span class="text-purple-700 opacity-0" style="animation: letterFade 1s ease-in 0.5s forwards, purpleFlicker 3s ease-in-out 2.5s infinite;">T</span><span class="text-gradient opacity-0" style="animation: textFade 1.2s ease-in 3.8s forwards;">he </span><span class="text-purple-700 opacity-0" style="animation: letterFade 1s ease-in 0.9s forwards, purpleFlicker 2.7s ease-in-out 2.1s infinite;">A</span><span class="text-gradient opacity-0" style="animation: textFade 1.2s ease-in 3.8s forwards;">mazing </span><br>
+        <span class="text-purple-700 opacity-0" style="animation: letterFade 1s ease-in 1.3s forwards, purpleFlicker 3.2s ease-in-out 2.8s infinite;">R</span><span class="text-gradient opacity-0" style="animation: textFade 1.2s ease-in 3.8s forwards;">obot </span><span class="text-purple-700 opacity-0" style="animation: letterFade 1s ease-in 1.7s forwards, purpleFlicker 2.5s ease-in-out 2.3s infinite;">D</span><span class="text-gradient opacity-0" style="animation: textFade 1.2s ease-in 3.8s forwards;">oes </span><span class="text-purple-700 opacity-0" style="animation: letterFade 1s ease-in 2.1s forwards, purpleFlicker 2.9s ease-in-out 2.6s infinite;">I</span><span class="text-gradient opacity-0" style="animation: textFade 1.2s ease-in 3.8s forwards;">nspiring </span><span class="text-purple-700 opacity-0" style="animation: letterFade 1s ease-in 2.5s forwards, purpleFlicker 3.1s ease-in-out 2.4s infinite;">S</span><span class="text-gradient opacity-0" style="animation: textFade 1.2s ease-in 3.8s forwards;">tuff</span>
       </h1>
 
-      <p class="text-lg md:text-xl max-w-2xl mx-auto leading-relaxed animate-fade-in font-light text-slate-400" style="animation-delay: 0.3s;">
+      <p class="text-lg md:text-xl max-w-2xl mx-auto leading-relaxed animate-fade-in font-light text-slate-400 opacity-0" style="animation-delay: 5s;">
         We are <span class="font-medium text-purple-300">Team TARDIS</span> from Corning, NY.
       </p>
 
@@ -382,12 +416,12 @@
           </h2>
           <p class="text-sm max-w-md text-slate-400">Performance metrics from the current FIRST Tech Challenge season.</p>
         </div>
-        <div class="flex items-center gap-2">
+        <div id="apiStatus" class="flex items-center gap-2">
           <span class="relative flex h-2 w-2">
-            <span class="animate-ping absolute inline-flex h-full w-full rounded-full opacity-75 bg-emerald-400"></span>
-            <span class="relative inline-flex rounded-full h-2 w-2 bg-emerald-500"></span>
+            <span class="status-ping animate-ping absolute inline-flex h-full w-full rounded-full opacity-75 bg-amber-400"></span>
+            <span class="status-dot relative inline-flex rounded-full h-2 w-2 bg-amber-500"></span>
           </span>
-          <span class="text-xs font-mono tracking-wider text-emerald-400">SYSTEMS ONLINE</span>
+          <span class="status-text text-xs font-mono tracking-wider text-amber-400">CONNECTING...</span>
         </div>
       </div>
 
@@ -455,21 +489,21 @@
             <img src="assets/insta/485121249_18305362132232511_8011057784273520181_n.jpeg" alt="Team 2024" class="w-full h-full object-cover">
             <div class="absolute bottom-0 left-0 w-full bg-gradient-to-t to-transparent p-10 pt-20 from-black via-black/60">
               <h3 class="text-2xl font-display tracking-wide text-shadow text-white">Team TARDIS 2024</h3>
-              <p class="text-sm font-light text-purple-300">Competition Day - Corning, NY</p>
+              <p class="text-sm font-light text-purple-300">Competition Day</p>
             </div>
           </div>
           <div class="slide absolute inset-0 transition-all duration-1000 opacity-0 z-0 scale-105">
             <img src="assets/insta/484990029_18305362159232511_7832992066120643753_n.jpeg" alt="Robot Field" class="w-full h-full object-cover">
             <div class="absolute bottom-0 left-0 w-full bg-gradient-to-t to-transparent p-10 pt-20 from-black via-black/60">
               <h3 class="text-2xl font-display tracking-wide text-shadow text-white">Field Operations</h3>
-              <p class="text-sm font-light text-purple-300">Precision positioning during match play</p>
+              <p class="text-sm font-light text-purple-300">Precision positioning</p>
             </div>
           </div>
           <div class="slide absolute inset-0 transition-all duration-1000 opacity-0 z-0 scale-105">
             <img src="assets/insta/485666964_18305362180232511_6890157715357846339_n.jpg" alt="Echo Auto" class="w-full h-full object-cover">
             <div class="absolute bottom-0 left-0 w-full bg-gradient-to-t to-transparent p-10 pt-20 from-black via-black/60">
               <h3 class="text-2xl font-display tracking-wide text-shadow text-white">Echo Autonomous</h3>
-              <p class="text-sm font-light text-purple-300">High-scoring autonomous routine execution</p>
+              <p class="text-sm font-light text-purple-300">High-scoring autonomous</p>
             </div>
           </div>
         </div>
@@ -569,6 +603,21 @@
     async function fetchTeamStats() {
       const statsLoading = document.querySelector('.stats-loading');
       const statsContent = document.querySelector('.stats-content');
+      const statusPing = document.querySelector('.status-ping');
+      const statusDot = document.querySelector('.status-dot');
+      const statusText = document.querySelector('.status-text');
+
+      const setStatus = (state) => {
+        const states = {
+          online: { ping: 'bg-emerald-400', dot: 'bg-emerald-500', text: 'text-emerald-400', label: 'SYSTEMS ONLINE' },
+          offline: { ping: 'bg-red-400', dot: 'bg-red-500', text: 'text-red-400', label: 'SYSTEMS OFFLINE' }
+        };
+        const s = states[state];
+        statusPing.className = `status-ping animate-ping absolute inline-flex h-full w-full rounded-full opacity-75 ${s.ping}`;
+        statusDot.className = `status-dot relative inline-flex rounded-full h-2 w-2 ${s.dot}`;
+        statusText.className = `status-text text-xs font-mono tracking-wider ${s.text}`;
+        statusText.textContent = s.label;
+      };
 
       try {
         const query = `{
@@ -616,8 +665,10 @@
         statsLoading.classList.add('hidden');
         statsContent.classList.remove('hidden');
         statsContent.classList.add('grid');
+        setStatus('online');
       } catch (e) {
         statsLoading.innerHTML = '<span class="text-slate-500">Stats offline</span>';
+        setStatus('offline');
       }
     }
     fetchTeamStats();
