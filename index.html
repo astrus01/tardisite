@@ -52,42 +52,44 @@
   <!-- Favicon -->
   <link rel="icon" type="image/png" href="assets/favicon.png">
     <link rel="apple-touch-icon" sizes="180x180" href="assets/apple-touch-icon.png">
-  <script>
-    // Create square favicon from non-square PNG
-    (function() {
-      const img = new Image();
-      img.onload = function() {
-        const canvas = document.createElement('canvas');
-        const size = 256;
-        canvas.width = size;
-        canvas.height = size;
-        const ctx = canvas.getContext('2d');
-        ctx.clearRect(0, 0, size, size);
-        const scale = Math.min(size / img.width, size / img.height);
-        const scaledWidth = img.width * scale;
-        const scaledHeight = img.height * scale;
-        const x = (size - scaledWidth) / 2;
-        const y = (size - scaledHeight) / 2;
-        ctx.drawImage(img, x, y, scaledWidth, scaledHeight);
-        const link = document.createElement('link');
-        link.rel = 'icon';
-        link.type = 'image/png';
-        link.href = canvas.toDataURL('image/png');
-        const existingLinks = document.querySelectorAll('link[rel="icon"]');
-        existingLinks.forEach(l => l.remove());
-        document.getElementsByTagName('head')[0].appendChild(link);
-      };
-      img.onerror = function() {
-        console.warn('Failed to load favicon image for processing');
-      };
-      img.src = 'assets/whitetardis.png';
-    })();
-  </script>
 
   <!-- Tailwind CSS -->
-  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+tailwind.config = {
+  darkMode: 'class',
+  theme: {
+    extend: {
+      fontFamily: {
+        sans: ['Inter', 'sans-serif'],
+        display: ['Bebas Neue', 'sans-serif'],
+        mono: ['JetBrains Mono', 'monospace'],
+      },
+      colors: {
+        galaxy: {
+          900: '#05030A',
+          800: '#0F0A1F',
+          card: 'rgba(25, 15, 40, 0.4)',
+          border: 'rgba(139, 92, 246, 0.15)'
+        },
+        accent: {
+          purple: '#8B5CF6',
+          glow: '#A78BFA',
+          deep: '#581c87'
+        }
+      }
+    }
+  }
+}
+</script>
+<script src="https://cdn.tailwindcss.com"></script>
+<script>
+// Production optimized Tailwind
+if (window.tailwind) {
+  window.tailwind.config.mode = 'jit';
+}
+</script>
   <!-- Icons -->
-  <script src="https://unpkg.com/lucide@latest"></script>
+  <script src="https://unpkg.com/lucide@0.263.1" crossorigin></script>
   <!-- Fonts -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
