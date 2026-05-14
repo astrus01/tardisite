@@ -12,46 +12,33 @@
   <link rel="icon" type="image/png" href="assets/favicon.png">
     <link rel="apple-touch-icon" sizes="180x180" href="assets/apple-touch-icon.png">
 
-  <!-- Tailwind CSS -->
+  <!-- Tailwind CSS (load library before tailwind.config) -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://cdn.jsdelivr.net/npm/lucide@0.263.0/dist/umd/lucide.min.js"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Inter:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+
   <script>
-tailwind.config = {
-  darkMode: 'class',
-  theme: {
-    extend: {
-      fontFamily: {
-        sans: ['Inter', 'sans-serif'],
-        display: ['Bebas Neue', 'sans-serif'],
-        mono: ['JetBrains Mono', 'monospace'],
-      },
-      colors: {
-        galaxy: {
-          900: '#05030A',
-          800: '#0F0A1F',
-          card: 'rgba(25, 15, 40, 0.4)',
-          border: 'rgba(139, 92, 246, 0.15)'
-        },
-        accent: {
-          purple: '#8B5CF6',
-          glow: '#A78BFA',
-          deep: '#581c87'
-        }
-      },
-      animation: {
-        'fade-in': 'fadeIn 0.8s ease-out forwards',
-      },
-      keyframes: {
-        fadeIn: {
-          '0%': { opacity: '0', transform: 'translateY(10px)' },
-          '100%': { opacity: '1', transform: 'translateY(0)' },
-        },
-      }
-    }
-  }
-}
-</script>
-<script src="https://cdn.tailwindcss.com"></script>
-<script>
-// Production optimized Tailwind
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['Inter', 'sans-serif'],
+            display: ['Bebas Neue', 'sans-serif'],
+            mono: ['JetBrains Mono', 'monospace'],
+          },
+          colors: {
+            galaxy: {
+              900: '#05030A',
+              800: '#0F0A1F',
+              card: 'rgba(25, 15, 40, 0.4)',
+              border: 'rgba(139, 92, 246, 0.15)'
+            },
+            accent: {
+              purple: '#8B5CF6',
+              glow: '#A78BFA',
               deep: '#581c87'
             }
           },
@@ -290,7 +277,9 @@ tailwind.config = {
 
   <script>
     // Initialize Icons
-    lucide.createIcons();
+    if (typeof lucide !== 'undefined' && lucide.createIcons) {
+      lucide.createIcons();
+    }
 
     // Mobile Menu Logic
     const hamburger = document.getElementById('hamburger');
