@@ -1,13 +1,7 @@
-# Git Large File Storage (LFS) configuration
-# This handles large files like videos
-# Track video files with Git LFS (except compressed videos under 100MB)
+# Git Large File Storage (LFS) — use only for large video; GitHub Pages does not serve LFS blobs for images.
 *.mov filter=lfs diff=lfs merge=lfs -text
 *.avi filter=lfs diff=lfs merge=lfs -text
 *.mkv filter=lfs diff=lfs merge=lfs -text
-# Track large image files if needed
-*.png filter=lfs diff=lfs merge=lfs -text linguist-generated=true
-*.jpg filter=lfs diff=lfs merge=lfs -text linguist-generated=true
-*.jpeg filter=lfs diff=lfs merge=lfs -text linguist-generated=true
 # Regular text files
 *.html text eol=lf
 *.css text eol=lf
@@ -19,6 +13,3 @@
 assets/echofinal.mp4 filter=lfs diff=lfs merge=lfs -text
 # Compressed video is regular file (under 100MB limit for GitHub Pages)
 assets/echofinal_compressed.mp4 -filter -diff -merge text=false
-*.png !text !filter !merge !diff
-*.jpg !text !filter !merge !diff
-*.jpeg !text !filter !merge !diff
