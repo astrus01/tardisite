@@ -1,0 +1,3 @@
+# Simple GitHub Pages configuration
+baseurl: /tardisite
+include: ['assets']
