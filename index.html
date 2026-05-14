@@ -53,43 +53,10 @@
   <link rel="icon" type="image/png" href="assets/favicon.png">
     <link rel="apple-touch-icon" sizes="180x180" href="assets/apple-touch-icon.png">
 
-  <!-- Tailwind CSS -->
-  <script>
-tailwind.config = {
-  darkMode: 'class',
-  theme: {
-    extend: {
-      fontFamily: {
-        sans: ['Inter', 'sans-serif'],
-        display: ['Bebas Neue', 'sans-serif'],
-        mono: ['JetBrains Mono', 'monospace'],
-      },
-      colors: {
-        galaxy: {
-          900: '#05030A',
-          800: '#0F0A1F',
-          card: 'rgba(25, 15, 40, 0.4)',
-          border: 'rgba(139, 92, 246, 0.15)'
-        },
-        accent: {
-          purple: '#8B5CF6',
-          glow: '#A78BFA',
-          deep: '#581c87'
-        }
-      }
-    }
-  }
-}
-</script>
-<script src="https://cdn.tailwindcss.com"></script>
-<script>
-// Production optimized Tailwind
-if (window.tailwind) {
-  window.tailwind.config.mode = 'jit';
-}
-</script>
-  <!-- Icons -->
-  <script src="https://unpkg.com/lucide@0.263.1" crossorigin></script>
+  <!-- Tailwind CSS (load library before any tailwind.config assignment) -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- Icons: package root URL is not a JS file; use UMD build -->
+  <script src="https://cdn.jsdelivr.net/npm/lucide@0.263.0/dist/umd/lucide.min.js"></script>
   <!-- Fonts -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -553,8 +520,10 @@ if (window.tailwind) {
   </button>
 
   <script>
-    // Initialize Icons
-    lucide.createIcons();
+    // Initialize Icons (UMD may fail if CDN blocked; do not abort the rest of this script)
+    if (typeof lucide !== 'undefined' && lucide.createIcons) {
+      lucide.createIcons();
+    }
 
     // -- Mobile Menu Logic --
     const hamburger = document.getElementById('hamburger');
